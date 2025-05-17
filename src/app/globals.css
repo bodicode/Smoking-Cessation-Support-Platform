@@ -1,9 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap&subset=vietnamese");
 @import "tailwindcss";
 
 html,
-body,
-:root {
+body {
   height: 100%;
+  font-family: "Montserrat", sans-serif;
+}
+
+.smoke-container {
+  position: relative;
+}
+
+.smoke {
+  position: absolute;
+  bottom: 0;
+  width: 20px;
+  height: 40px;
+  background: rgba(128, 128, 128, 0.5);
+  border-radius: 50%;
+  filter: blur(4px);
+  animation: rise 4s linear forwards;
+}
+
+@keyframes rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-150px) scale(2);
+    opacity: 0;
+  }
 }
 
 @custom-variant dark (&:is(.dark *));
