@@ -1,9 +1,5 @@
+import { redirect } from 'next/navigation';
 
-
-export default function Home() {
-  return (
-    <div className="text-red-400">
-      Hello World
-    </div>
-  );
+export default function RootRedirect() {
+    redirect('/vi');
 }

@@ -1,0 +1,118 @@
+{
+    "header": {
+        "login": "Login",
+        "english": "English",
+        "vietnamese": "Vietnamese"
+    },
+    "hero": {
+        "title": {
+            "line1": "Quit",
+            "highlight": "Smoking",
+            "line2": "Right Now"
+        },
+        "subtitle": "Join us now"
+    },
+    "achieve": {
+        "leaderboardTitle": "🏆 Leaderboard",
+        "daysSmokeFree": "{days} days smoke-free",
+        "moneySaved": "Money saved: ${amount}"
+    },
+    "support": {
+        "title": "Lend a Helping Hand",
+        "intro": "Supporting someone quitting smoking can make all the difference.",
+        "tip1": {
+            "iconSrc": "/images/brain.png",
+            "iconAlt": "Know the triggers",
+            "heading": "What Is Addiction?",
+            "body": "Smoking is an addiction, not just a bad habit. These products are engineered to hook you, making quitting hard—but not impossible!"
+        },
+        "tip2": {
+            "iconSrc": "/images/idea.png",
+            "iconAlt": "Be patient and positive",
+            "heading": "Be Patient & Positive",
+            "body": "Cheer them on through slip-ups and celebrate wins to keep motivation high."
+        },
+        "tip3": {
+            "iconSrc": "/images/help.png",
+            "iconAlt": "Keep the conversation going",
+            "heading": "How You Can Help",
+            "body": "There are many ways to help someone quit—offer advice, lend an ear, and stay non-judgmental."
+        },
+        "cta": {
+            "text": "Join our community now →",
+            "href": "/community"
+        },
+        "communityAlt": "Reair Community"
+    },
+    "blogSection": {
+        "sectionTitle": "Information & Knowledge",
+        "readMore": "Read more →",
+        "blog1": {
+            "title": "Benefits of Quitting Smoking",
+            "excerpt": "Discover the positive health changes from week one to lifelong when you stop smoking.",
+            "link": "/images/blog1"
+        },
+        "blog2": {
+            "title": "How to Overcome Cravings",
+            "excerpt": "Effective strategies to help you face the toughest moments in your quitting journey.",
+            "link": "/images/blog2"
+        },
+        "blog3": {
+            "title": "Success Stories from Ex-Smokers",
+            "excerpt": "Inspiring testimonials from those who conquered the challenge and reclaimed a smoke-free life.",
+            "link": "/images/blog3"
+        }
+    },
+    "successStories": {
+        "sectionTitle": "Success Stories",
+        "readMore": "Read more →",
+        "testimonials": {
+            "1": {
+                "text": "ReAir has always been my support whenever I faced difficulties on my quitting journey.",
+                "name": "Nguyen Van A."
+            },
+            "2": {
+                "text": "They never judged me, and the flexible, non-formulaic approach was the key to my success.",
+                "name": "Nguyen Van B."
+            },
+            "3": {
+                "text": "Thanks to ReAir, I always feel someone is cheering me on.",
+                "name": "Nguyen Van C."
+            },
+            "4": {
+                "text": "The program has been a tremendous help for me. Those messages reminded me not to give up.",
+                "name": "Nguyen Van C."
+            },
+            "5": {
+                "text": "The smoking cessation coaches helped me succeed and stay motivated. Someone once told me: “You can do it.”",
+                "name": "Nguyen Van D."
+            },
+            "6": {
+                "text": "I never thought I could quit, but the team's dedicated support changed everything. They were always there when I needed them.",
+                "name": "Nguyen Van E."
+            },
+            "7": {
+                "text": "Every message, every encouragement made me feel less alone. I know I can overcome.",
+                "name": "Nguyen Van V."
+            }
+        }
+    },
+    "footer": {
+        "subscribe": "Subscribe now",
+        "placeholderEmail": "Email",
+        "quickLinks": "Quick Links",
+        "aboutUs": "About Us",
+        "contactUs": "Contact Us",
+        "howToQuit": "How to Quit",
+        "news": "News",
+        "community": "Community",
+        "helpOthers": "Help Others",
+        "copyright": "© 2025 ReAir. All rights reserved.",
+        "addressLine1": "ReAir,",
+        "addressLine2": "D1 Street, High-Tech Park, Long Thanh My Ward, Thu Duc City, Ho Chi Minh City",
+        "brand": "ReAir"
+    },
+    "map": {
+        "title": "Our Position"
+    }
+}

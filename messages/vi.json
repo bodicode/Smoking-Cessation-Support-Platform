@@ -1,0 +1,110 @@
+{
+    "header": {
+        "login": "Đăng nhập",
+        "english": "Tiếng Anh",
+        "vietnamese": "Tiếng Việt"
+    },
+    "hero": {
+        "title": {
+            "line1": "Từ bỏ",
+            "highlight": "Thuốc lá",
+            "line2": "Ngay bây giờ"
+        },
+        "subtitle": "Tham gia với chúng tôi ngay"
+    },
+    "achieve": {
+        "leaderboardTitle": "🏆 Bảng xếp hạng",
+        "daysSmokeFree": "{days} ngày không hút",
+        "moneySaved": "Tiết kiệm: {amount}₫"
+    },
+    "support": {
+        "title": "Chung tay giúp đỡ",
+        "intro": "Giúp một người hút thuốc trong hành trình bỏ thuốc lá là quan trọng. Hỗ trợ của bạn có thể tạo ra sự khác biệt.",
+        "tip1": {
+            "heading": "Nghiện là gì?",
+            "body": "Hút thuốc là một cơn nghiện, không phải là một thói quen xấu. Những sản phẩm này được thiết kế để gây nghiện, khiến việc bỏ thuốc trở nên khó khăn, nhưng không phải là không thể!"
+        },
+        "tip2": {
+            "heading": "Kiên nhẫn và tích cực",
+            "body": "Hãy ủng hộ họ trong những lần thất bại và ăn mừng tiến bộ để giữ cho họ có động lực."
+        },
+        "tip3": {
+            "heading": "Làm thế nào bạn có thể giúp đỡ?",
+            "body": "Có nhiều cách để giúp ai đó bỏ thuốc, điều quan trọng là phải không phán xét. Hãy là nơi để họ dễ dàng giao tiếp, nhận lời khuyên và truyền động lực."
+        },
+        "cta": {
+            "text": "Tham gia vào cộng đồng chúng tôi ngay →"
+        }
+    },
+    "blogSection": {
+        "sectionTitle": "Thông tin & Kiến thức",
+        "readMore": "Xem thêm →",
+        "blog1": {
+            "title": "Lợi ích của việc bỏ thuốc lá",
+            "excerpt": "Tìm hiểu những thay đổi tích cực cho sức khỏe của bạn khi bạn từ bỏ thuốc lá, từ tuần đầu tiên đến cả đời.",
+            "link": "/images/blog1"
+        },
+        "blog2": {
+            "title": "Cách vượt qua cơn thèm thuốc",
+            "excerpt": "Những chiến lược hiệu quả giúp bạn đối mặt với những thời điểm khó khăn nhất trong hành trình bỏ thuốc.",
+            "link": "/images/blog2"
+        },
+        "blog3": {
+            "title": "Chia sẻ từ người đã bỏ thuốc thành công",
+            "excerpt": "Câu chuyện truyền cảm hứng từ những người đã vượt qua thử thách và làm chủ được cuộc sống không thuốc lá.",
+            "link": "/images/blog3"
+        }
+    },
+    "successStories": {
+        "sectionTitle": "Những câu chuyện thành công",
+        "readMore": "Xem thêm →",
+        "testimonials": {
+            "1": {
+                "text": "ReAir luôn là chỗ dựa mỗi khi tôi cảm thấy khó khăn trên hành trình cai thuốc.",
+                "name": "Nguyễn Văn A."
+            },
+            "2": {
+                "text": "Họ hoàn toàn không phán xét gì cả, và cách tiếp cận linh hoạt, không rập khuôn chính là chìa khóa giúp tôi thành công.",
+                "name": "Nguyễn Văn B."
+            },
+            "3": {
+                "text": "Nhờ ReAir, tôi luôn có cảm giác có người đang ủng hộ mình..",
+                "name": "Nguyễn Văn C."
+            },
+            "4": {
+                "text": "Chương trình thực sự là một trợ giúp tuyệt vời cho tôi. Những tin nhắn đó nhắc tôi không bỏ cuộc.",
+                "name": "Nguyễn Văn C."
+            },
+            "5": {
+                "text": "Các huấn luyện viên cai thuốc đã giúp tôi thành công và luôn giữ được động lực. Một người từng nói với tôi: “Bạn sẽ làm được mà.”",
+                "name": "Nguyễn Văn D."
+            },
+            "6": {
+                "text": "Tôi không nghĩ mình có thể bỏ thuốc, nhưng sự hỗ trợ tận tình từ đội ngũ đã thay đổi mọi thứ. Họ luôn ở đó khi tôi cần.",
+                "name": "Nguyễn Văn E."
+            },
+            "7": {
+                "text": "Mỗi tin nhắn, mỗi lời động viên khiến tôi cảm thấy mình không đơn độc. Tôi biết mình có thể vượt qua.",
+                "name": "Nguyễn Văn V."
+            }
+        }
+    },
+    "footer": {
+        "subscribe": "Đăng ký ngay",
+        "placeholderEmail": "Email",
+        "quickLinks": "Liên kết nhanh",
+        "aboutUs": "Về chúng tôi",
+        "contactUs": "Liên hệ với chúng tôi",
+        "howToQuit": "Cách cai nghiện",
+        "news": "Tin tức",
+        "community": "Kết nối với cộng đồng",
+        "helpOthers": "Giúp đỡ người khác",
+        "copyright": "Bản quyền © 2025 bởi ReAir. Mọi quyền hạn không được phép sao chép.",
+        "addressLine1": "ReAir,",
+        "addressLine2": "Đường D1 Khu Công nghệ cao, P. Long Thạnh Mỹ, TP. Thủ Đức, TP. Hồ Chí Minh",
+        "brand": "ReAir"
+    },
+    "map": {
+        "title": "Vị trí của chúng tôi"
+    }
+}
