@@ -1,6 +1,10 @@
-'use client'
+'use client';
+
+import { useTranslations } from 'next-intl';
 
 const Achieveboard = () => {
+    const t = useTranslations('achieve');
+
     const leaderboard = [
         {
             name: "Nguyễn Văn A",
@@ -27,28 +31,45 @@ const Achieveboard = () => {
 
     return (
         <div className="max-w-4xl mx-auto mt-4 p-4 bg-white rounded-xl shadow-md">
-            <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">🏆 Bảng xếp hạng</h2>
+            <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+                {t('leaderboardTitle')}
+            </h2>
+
             <div className="space-y-4">
-                {leaderboard.map((user, index) => (
+                {leaderboard.map((user, idx) => (
                     <div
-                        key={index}
+                        key={idx}
                         className="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow-sm"
                     >
                         <div className="flex items-center space-x-4">
-                            <img src={user.avatar} alt={user.name} className="w-12 h-12 rounded-full" />
+                            <img
+                                src={user.avatar}
+                                alt={user.name}
+                                className="w-12 h-12 rounded-full"
+                            />
                             <div>
-                                <p className="text-lg font-semibold text-gray-700">{user.name}</p>
-                                <p className="text-sm text-gray-500">{user.daysSmokeFree} ngày không hút</p>
+                                <p className="text-lg font-semibold text-gray-700">
+                                    {user.name}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    {t('daysSmokeFree', { days: user.daysSmokeFree })}
+                                </p>
                                 <p className="text-sm text-green-600 font-medium">
-                                    Tiết kiệm: {user.moneySaved.toLocaleString()}đ
+                                    {t('moneySaved', {
+                                        amount: user.moneySaved.toLocaleString(),
+                                    })}
                                 </p>
                             </div>
                         </div>
+
                         <div className="text-sm text-right space-y-1">
                             {user.badges.map((badge, i) => (
-                                <div key={i} className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full inline-block">
+                                <span
+                                    key={i}
+                                    className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full inline-block"
+                                >
                                     {badge}
-                                </div>
+                                </span>
                             ))}
                         </div>
                     </div>
@@ -56,6 +77,6 @@ const Achieveboard = () => {
             </div>
         </div>
     );
-}
+};
 
 export default Achieveboard;

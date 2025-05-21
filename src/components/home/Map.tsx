@@ -6,6 +6,7 @@ import L, { LatLngExpression } from "leaflet";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import { useTranslations } from "next-intl";
 
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: markerIcon2x.src || markerIcon2x,
@@ -14,13 +15,14 @@ L.Icon.Default.mergeOptions({
 });
 
 const FixedMapComponent = () => {
+    const t = useTranslations("map")
     const fixedPosition: LatLngExpression = [10.841412097713482, 106.8100010126096];
 
     return (
         <div>
             <hr />
             <h4 className="text-2xl font-bold my-4 text-nowrap text-accent uppercase">
-                Vị trí của chúng tôi
+                {t("title")}
             </h4>
             <MapContainer
                 center={fixedPosition}
