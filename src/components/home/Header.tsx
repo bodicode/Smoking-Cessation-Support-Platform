@@ -5,6 +5,7 @@ import { Phone, Globe } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from '@/i18n/navigation';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 
 const Header = () => {
   const t = useTranslations('header');
@@ -48,9 +49,9 @@ const Header = () => {
           </div>
         </div>
 
-        <button className="bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-4 py-2 rounded-full shadow-2xl cursor-pointer">
+        <Link href={`/${locale}/login`} className="bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-4 py-2 rounded-full shadow-2xl cursor-pointer">
           {t('login')}
-        </button>
+        </Link>
 
         <button className="text-2xl">
           ☰

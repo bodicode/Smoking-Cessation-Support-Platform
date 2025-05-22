@@ -106,5 +106,24 @@
     },
     "map": {
         "title": "Vị trí của chúng tôi"
+    },
+    "login": {
+        "title": "Chào mừng trở lại",
+        "description": "Hôm nay là một ngày mới. Đăng nhập để bắt đầu theo dõi tiến trình cai thuốc của bạn.",
+        "emailLabel": "Email",
+        "passwordLabel": "Mật khẩu",
+        "passwordPlaceholder": "Ít nhất 6 ký tự",
+        "forgotPassword": "Quên mật khẩu?",
+        "signIn": "Đăng nhập",
+        "or": "Hoặc",
+        "signInWithGoogle": "Đăng nhập bằng Google",
+        "noAccount": "Bạn chưa có tài khoản?",
+        "signUp": "Đăng ký",
+        "back": "Quay lại trang chủ",
+        "schema": {
+            "email": "Email không hợp lệ",
+            "password": "Mật khẩu ít nhất 6 ký tự"
+        },
+        "path": "/dang-nhap"
     }
 }
