@@ -123,7 +123,27 @@
         "schema": {
             "email": "Email không hợp lệ",
             "password": "Mật khẩu ít nhất 6 ký tự"
+        }
+    },
+    "signup": {
+        "title": "Tạo tài khoản mới",
+        "description": "Bắt đầu hành trình của bạn. Đăng ký để tham gia cộng đồng ReAir.",
+        "nameLabel": "Họ và tên",
+        "namePlaceholder": "Họ và tên",
+        "emailLabel": "Email",
+        "emailPlaceholder": "email@gmail.com",
+        "passwordLabel": "Mật khẩu",
+        "passwordPlaceholder": "Ít nhất 6 ký tự",
+        "signUp": "Đăng ký",
+        "or": "Hoặc",
+        "signUpWithGoogle": "Đăng ký bằng Google",
+        "haveAccount": "Bạn đã có tài khoản?",
+        "signIn": "Đăng nhập",
+        "schema": {
+            "name": "Tên ít nhất 2 ký tự",
+            "email": "Email không hợp lệ",
+            "password": "Mật khẩu ít nhất 6 ký tự"
         },
-        "path": "/dang-nhap"
+        "back": "Quay lại trang chủ"
     }
 }

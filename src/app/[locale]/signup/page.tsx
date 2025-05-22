@@ -6,30 +6,37 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FaGoogle } from "react-icons/fa";
 import { useTranslations } from "next-intl";
-import { LoginForm, loginSchema } from "@/schemas/loginSchema";
-import { useParams } from "next/navigation";
+import { SignupForm, signupSchema } from "@/schemas/signupSchema";
 
-export default function LoginPage() {
-    const params = useParams();
-    const locale = (params.locale as string) || 'vi';
+export default function SignupPage() {
+    const t = useTranslations("signup");
 
-    const t = useTranslations("login");
-    const schema = loginSchema(t);
+    const schema = signupSchema(t);
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<LoginForm>({
+    } = useForm<SignupForm>({
         resolver: zodResolver(schema),
     });
 
-    const onSubmit = (data: LoginForm) => {
-        console.log("Đăng nhập:", data);
+    const onSubmit = (data: SignupForm) => {
+        console.log("Đăng ký:", data);
     };
 
     return (
-        <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#fefcf6]">
+        <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#f7f4ee]">
+            <div className="hidden lg:block my-auto">
+                <Image
+                    src="/images/signup.jpg"
+                    alt="Signup"
+                    width={600}
+                    height={600}
+                    className="w-full h-[100vh] object-cover rounded-r-3xl"
+                />
+            </div>
+
             <div className="flex flex-col justify-center items-center px-6 py-12 lg:px-24">
                 <div className="w-full max-w-md">
                     <h2 className="text-3xl font-bold mb-2">{t("title")}</h2>
@@ -37,14 +44,27 @@ export default function LoginPage() {
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                         <div>
+                            <label className="block text-sm font-medium mb-1">{t("nameLabel")}</label>
+                            <input
+                                {...register("name")}
+                                type="text"
+                                placeholder={t("namePlaceholder")}
+                                className="w-full border border-gray-300 px-4 py-2 rounded"
+                            />
+                            {errors.name?.message && (
+                                <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
+                            )}
+                        </div>
+
+                        <div>
                             <label className="block text-sm font-medium mb-1">{t("emailLabel")}</label>
                             <input
                                 {...register("email")}
                                 type="email"
-                                placeholder="email@gmail.com"
+                                placeholder={t("emailPlaceholder")}
                                 className="w-full border border-gray-300 px-4 py-2 rounded"
                             />
-                            {errors.email && (
+                            {errors.email?.message && (
                                 <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
                             )}
                         </div>
@@ -57,20 +77,16 @@ export default function LoginPage() {
                                 placeholder={t("passwordPlaceholder")}
                                 className="w-full border border-gray-300 px-4 py-2 rounded"
                             />
-                            {errors.password && (
+                            {errors.password?.message && (
                                 <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>
                             )}
                         </div>
 
-                        <div className="text-right text-sm text-blue-600 hover:underline">
-                            <Link href="#">{t("forgotPassword")}</Link>
-                        </div>
-
                         <button
                             type="submit"
-                            className="w-full bg-[#60C3A4] hover:bg-[#2eac84] text-white font-bold py-2 rounded cursor-pointer transition-all duration-150"
+                            className="w-full bg-[#60C3A4] hover:bg-[#2eac84] text-white font-bold py-2 rounded cursor-pointer transition duration-150"
                         >
-                            {t("signIn")}
+                            {t("signUp")}
                         </button>
                     </form>
 
@@ -81,16 +97,16 @@ export default function LoginPage() {
                     </div>
 
                     <div className="space-y-3">
-                        <button className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded hover:bg-gray-100 cursor-pointer">
+                        <button className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded hover:bg-gray-100 cursor-pointer transition duration-150">
                             <FaGoogle />
-                            {t("signInWithGoogle")}
+                            {t("signUpWithGoogle")}
                         </button>
                     </div>
 
                     <div className="text-sm text-center mt-6">
-                        {t("noAccount")} {" "}
-                        <Link href={`/${locale}/signup`} className="text-blue-600 hover:underline">
-                            {t("signUp")}
+                        {t("haveAccount")} {" "}
+                        <Link href="/login" className="text-blue-600 hover:underline">
+                            {t("signIn")}
                         </Link>
                     </div>
 
@@ -102,15 +118,6 @@ export default function LoginPage() {
                 </div>
             </div>
 
-            <div className="hidden lg:block my-auto">
-                <Image
-                    src="/images/login.jpg"
-                    alt="Login"
-                    width={600}
-                    height={600}
-                    className="w-full h-[100vh] object-cover rounded-l-3xl"
-                />
-            </div>
         </div>
     );
 }

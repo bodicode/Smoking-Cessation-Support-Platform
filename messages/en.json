@@ -116,7 +116,7 @@
         "title": "Our Position"
     },
     "login": {
-        "title": "Welcome Back 👋",
+        "title": "Welcome Back",
         "description": "Today is a new day. It’s your day. You shape it. Sign in to start managing your projects.",
         "emailLabel": "Email",
         "passwordLabel": "Password",
@@ -131,7 +131,27 @@
         "schema": {
             "email": "Invalid email address",
             "password": "Password must be at least 6 characters"
+        }
+    },
+    "signup": {
+        "title": "Create a New Account",
+        "description": "Start your journey. Sign up to join the ReAir community.",
+        "nameLabel": "Full Name",
+        "namePlaceholder": "Full name",
+        "emailLabel": "Email",
+        "emailPlaceholder": "email@gmail.com",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "At least 6 characters",
+        "signUp": "Sign up",
+        "or": "Or",
+        "signUpWithGoogle": "Sign up with Google",
+        "haveAccount": "Already have an account?",
+        "signIn": "Sign in",
+        "schema": {
+            "name": "Name must be at least 2 characters",
+            "email": "Invalid email address",
+            "password": "Password must be at least 6 characters"
         },
-        "path": "/login"
+        "back": "Back to home page"
     }
 }
