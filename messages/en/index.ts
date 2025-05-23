@@ -9,6 +9,7 @@ import map from './map.json';
 import login from './login.json';
 import signup from './signup.json';
 import profile from './profile.json';
+import blogDetail from './blogDetail.json';
 
 export default {
     header,
@@ -21,5 +22,6 @@ export default {
     map,
     login,
     signup,
-    profile
+    profile,
+    blogDetail
 };
