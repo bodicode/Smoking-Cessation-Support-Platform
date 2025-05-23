@@ -1,6 +1,6 @@
-{
-    "header": {
+{    "header": {
         "login": "Login",
+        "profile": "Profile",
         "english": "English",
         "vietnamese": "Vietnamese"
     },
@@ -153,5 +153,29 @@
             "password": "Password must be at least 6 characters"
         },
         "back": "Back to home page"
+    },    "profile": {
+        "title": "User Profile",
+        "memberSince": "Member since",
+        "progressHeader": "Your Progress",
+        "daysSmokeFree": "Days Smoke Free",
+        "lastDaySmoked": "Last Day Smoked",
+        "badges": "Your Achievements",
+        "days": "days",
+        "backToHome": "Back to home page",
+        "information": "Personal Information",
+        "edit": "Edit Profile",
+        "save": "Save Changes",
+        "cancel": "Cancel",
+        "changeAvatar": "Change Avatar",
+        "name": "Name",
+        "username": "Username",
+        "password": "Password",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm New Password",
+        "clickToChange": "Click to change avatar",
+        "accountSettings": "Account Settings",
+        "changePassword": "Change Password",
+        "profileSettings": "Profile Settings"
     }
 }
