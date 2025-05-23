@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 
 const Achieveboard = () => {
-    const t = useTranslations('achieve');
+    const t = useTranslations('achieveBoard');
 
     const leaderboard = [
         {

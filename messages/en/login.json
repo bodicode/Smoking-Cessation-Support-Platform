@@ -1,0 +1,18 @@
+{
+    "title": "Welcome Back",
+    "description": "Today is a new day. It’s your day. You shape it. Sign in to start managing your projects.",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "At least 6 characters",
+    "forgotPassword": "Forgot Password?",
+    "signIn": "Sign in",
+    "or": "Or",
+    "signInWithGoogle": "Sign in with Google",
+    "noAccount": "Don’t you have an account?",
+    "signUp": "Sign up",
+    "back": "Back to home page",
+    "schema": {
+        "email": "Invalid email address",
+        "password": "Password must be at least 6 characters"
+    }
+}
