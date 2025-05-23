@@ -55,10 +55,12 @@ const Header = () => {
               </div>
             </Listbox>
           </div>
-        </div>
-
-        <Link href={`/${locale}/login`} className="bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-4 py-2 rounded-full shadow-2xl cursor-pointer">
+        </div>        <Link href={`/${locale}/login`} className="bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-4 py-2 rounded-full shadow-2xl cursor-pointer">
           {t('login')}
+        </Link>
+        
+        <Link href={`/${locale}/profile`} className="bg-[#03256C] hover:bg-[#041E42] text-white font-bold px-4 py-2 rounded-full shadow-2xl cursor-pointer">
+          {t('profile')}
         </Link>
 
         <button className="text-2xl">
