@@ -12,11 +12,11 @@ export default function ProfilePage() {
     const t = useTranslations("profile");
     const params = useParams();
     const locale = (params.locale as string) || 'vi';
-    
+
     // State for edit modes
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
-    
+
     // Mock user data - in a real app, this would come from an API or context
     const [user, setUser] = useState({
         name: "Nguyễn Văn A",
@@ -28,9 +28,9 @@ export default function ProfilePage() {
         avatarUrl: "https://i.pravatar.cc/100?img=1",
         badges: ["🔥 7-Day Streak", "🎯 First Week Complete", "⭐ 30-Day Achievement"]
     });
-      // State for name input
+    // State for name input
     const [nameInput, setNameInput] = useState(user.name);
-    
+
     // State for password inputs
     const [passwordInputs, setPasswordInputs] = useState({
         currentPassword: "",
@@ -46,14 +46,14 @@ export default function ProfilePage() {
         // Close password form if it's open
         if (isChangingPassword) setIsChangingPassword(false);
     };
-    
+
     // Toggle change password mode
     const toggleChangePassword = () => {
         setIsChangingPassword(!isChangingPassword);
         // Close profile editing if it's open
         if (isEditingProfile) setIsEditingProfile(false);
     };
-    
+
     // Handle save profile changes
     const handleSaveProfile = () => {
         // Update user data and exit edit mode
@@ -63,7 +63,7 @@ export default function ProfilePage() {
         });
         setIsEditingProfile(false);
     };
-    
+
     // Handle save password changes
     const handleSavePassword = () => {
         // In a real app, you would validate passwords and send them to an API
@@ -71,7 +71,7 @@ export default function ProfilePage() {
             alert("Passwords don't match");
             return;
         }
-        
+
         // Reset form and exit edit mode
         setPasswordInputs({
             currentPassword: "",
@@ -83,16 +83,15 @@ export default function ProfilePage() {
 
     return (
         <div className="min-h-screen bg-[#fefcf6]">
-            <Header />
-            
+
             <div className="max-w-4xl mx-auto p-6 my-10">
                 <h1 className="text-3xl font-bold mb-8 text-[#03256C]">{t("title")}</h1>
-                
+
                 <div className="bg-white rounded-xl shadow-md overflow-hidden">
                     <div className="md:flex">
                         <div className="md:w-1/3 bg-[#60C3A4] p-6 flex flex-col items-center">
                             <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-200 mb-4 relative group">
-                                <img 
+                                <img
                                     src={user.avatarUrl}
                                     alt="Profile"
                                     width={128}
@@ -100,15 +99,15 @@ export default function ProfilePage() {
                                     className="object-cover"
                                 />
                                 {isEditingProfile && (
-                                    <div 
+                                    <div
                                         className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                                         onClick={() => document.getElementById('avatar-upload')?.click()}
                                     >
                                         <p className="text-xs text-center px-2">{t("clickToChange")}</p>
-                                        <input 
-                                            type="file" 
-                                            id="avatar-upload" 
-                                            className="hidden" 
+                                        <input
+                                            type="file"
+                                            id="avatar-upload"
+                                            className="hidden"
                                             accept="image/*"
                                             onChange={(e) => {
                                                 if (e.target.files && e.target.files[0]) {
@@ -143,7 +142,7 @@ export default function ProfilePage() {
                             <p className="text-sm text-white mt-4">
                                 {t("memberSince")}: {user.joinDate}
                             </p>
-                            
+
                             {!isEditingProfile && !isChangingPassword ? (
                                 <div className="mt-6 flex flex-col gap-2">
                                     <button
@@ -191,13 +190,13 @@ export default function ProfilePage() {
                                 </div>
                             )}
                         </div>
-                            <div className="md:w-2/3 p-6">
+                        <div className="md:w-2/3 p-6">
                             {!isChangingPassword ? (
                                 <>
                                     <h3 className="text-xl font-semibold mb-4 text-[#03256C]">
                                         {t("progressHeader")}
                                     </h3>
-                                    
+
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                         <div className="bg-gray-50 p-4 rounded-lg">
                                             <p className="text-gray-500">{t("daysSmokeFree")}</p>
@@ -205,7 +204,7 @@ export default function ProfilePage() {
                                                 {user.daysSmokeFree} {t("days")}
                                             </p>
                                         </div>
-                                        
+
                                         <div className="bg-gray-50 p-4 rounded-lg">
                                             <p className="text-gray-500">{t("lastDaySmoked")}</p>
                                             <p className="text-2xl font-bold text-[#03256C]">
@@ -213,14 +212,14 @@ export default function ProfilePage() {
                                             </p>
                                         </div>
                                     </div>
-                                    
+
                                     <h3 className="text-xl font-semibold mb-4 text-[#03256C]">
                                         {t("badges")}
                                     </h3>
-                                    
+
                                     <div className="flex flex-wrap gap-2">
                                         {user.badges.map((badge, index) => (
-                                            <span 
+                                            <span
                                                 key={index}
                                                 className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm"
                                             >
@@ -234,7 +233,7 @@ export default function ProfilePage() {
                                     <h3 className="text-xl font-semibold mb-4 text-[#03256C]">
                                         {t("changePassword")}
                                     </h3>
-                                    
+
                                     <div className="space-y-4">
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -243,12 +242,12 @@ export default function ProfilePage() {
                                             <input
                                                 type="password"
                                                 value={passwordInputs.currentPassword}
-                                                onChange={(e) => setPasswordInputs({...passwordInputs, currentPassword: e.target.value})}
+                                                onChange={(e) => setPasswordInputs({ ...passwordInputs, currentPassword: e.target.value })}
                                                 className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#60C3A4]"
                                                 placeholder="••••••"
                                             />
                                         </div>
-                                        
+
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                                 {t("newPassword")}
@@ -256,12 +255,12 @@ export default function ProfilePage() {
                                             <input
                                                 type="password"
                                                 value={passwordInputs.newPassword}
-                                                onChange={(e) => setPasswordInputs({...passwordInputs, newPassword: e.target.value})}
+                                                onChange={(e) => setPasswordInputs({ ...passwordInputs, newPassword: e.target.value })}
                                                 className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#60C3A4]"
                                                 placeholder="••••••"
                                             />
                                         </div>
-                                        
+
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                                 {t("confirmPassword")}
@@ -269,7 +268,7 @@ export default function ProfilePage() {
                                             <input
                                                 type="password"
                                                 value={passwordInputs.confirmPassword}
-                                                onChange={(e) => setPasswordInputs({...passwordInputs, confirmPassword: e.target.value})}
+                                                onChange={(e) => setPasswordInputs({ ...passwordInputs, confirmPassword: e.target.value })}
                                                 className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#60C3A4]"
                                                 placeholder="••••••"
                                             />
@@ -277,9 +276,9 @@ export default function ProfilePage() {
                                     </div>
                                 </>
                             )}
-                            
+
                             <div className="mt-8">
-                                <Link 
+                                <Link
                                     href={`/${locale}`}
                                     className="text-blue-600 hover:underline"
                                 >
@@ -290,8 +289,7 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </div>
-            
-            <Footer />
+
         </div>
     );
 }

@@ -6,6 +6,8 @@ export const blogs = [
         excerpt: 'Tìm hiểu những thay đổi tích cực cho sức khỏe của bạn khi bạn từ bỏ thuốc lá.',
         content: `Khi bạn bỏ thuốc lá, sức khỏe của bạn bắt đầu được cải thiện gần như ngay lập tức. Trong vòng 20 phút, huyết áp và nhịp tim của bạn trở về mức bình thường. Sau 1 ngày, nguy cơ đau tim giảm rõ rệt...`,
         image: '/images/blog1.jpg',
+        author: 'Nguyễn Văn An',
+        date: '2024-01-01'
     },
     {
         id: 2,
@@ -14,6 +16,8 @@ export const blogs = [
         excerpt: 'Những chiến lược hiệu quả giúp bạn đối mặt với những thời điểm khó khăn nhất.',
         content: `Để vượt qua cơn thèm thuốc, bạn có thể thử uống nước, nhai kẹo cao su, đi dạo hoặc nói chuyện với một người bạn thân thiết...`,
         image: '/images/blog2.jpg',
+        author: 'Trần Thị Bình',
+        date: '2024-01-10'
     },
     {
         id: 3,
@@ -22,6 +26,8 @@ export const blogs = [
         excerpt: 'Câu chuyện truyền cảm hứng từ những người đã làm chủ được cuộc sống không thuốc lá.',
         content: `Anh Nam từng hút thuốc 15 năm nhưng đã bỏ thuốc thành công nhờ sự động viên của gia đình và ý chí kiên định...`,
         image: '/images/blog3.jpg',
+        author: 'Phạm Quang Nam',
+        date: '2024-01-15'
     },
     {
         id: 4,
@@ -30,5 +36,7 @@ export const blogs = [
         excerpt: 'Các bước cơ bản giúp bạn lên kế hoạch và bắt đầu hành trình bỏ thuốc.',
         content: `Để bắt đầu, hãy đặt ra ngày bạn sẽ bỏ thuốc. Loại bỏ thuốc lá khỏi nhà và chuẩn bị các phương án thay thế...`,
         image: '/images/blog3.jpg',
+        author: 'Lê Mỹ Linh',
+        date: '2024-02-01'
     }
 ];

@@ -10,13 +10,11 @@ import SupportTips from "@/components/home/SupportTips";
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#fefcf6]">
-      <Header />
       <Hero />
       <Achieveboard />
       <SupportTips />
       <BlogSection />
       <SuccessStories />
-      <Footer />
     </div>
   );
 }
