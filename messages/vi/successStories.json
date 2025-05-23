@@ -1,0 +1,34 @@
+{
+    "sectionTitle": "Những câu chuyện thành công",
+    "readMore": "Xem thêm →",
+    "testimonials": {
+        "1": {
+            "text": "ReAir luôn là chỗ dựa mỗi khi tôi cảm thấy khó khăn trên hành trình cai thuốc.",
+            "name": "Nguyễn Văn A."
+        },
+        "2": {
+            "text": "Họ hoàn toàn không phán xét gì cả, và cách tiếp cận linh hoạt, không rập khuôn chính là chìa khóa giúp tôi thành công.",
+            "name": "Nguyễn Văn B."
+        },
+        "3": {
+            "text": "Nhờ ReAir, tôi luôn có cảm giác có người đang ủng hộ mình..",
+            "name": "Nguyễn Văn C."
+        },
+        "4": {
+            "text": "Chương trình thực sự là một trợ giúp tuyệt vời cho tôi. Những tin nhắn đó nhắc tôi không bỏ cuộc.",
+            "name": "Nguyễn Văn C."
+        },
+        "5": {
+            "text": "Các huấn luyện viên cai thuốc đã giúp tôi thành công và luôn giữ được động lực. Một người từng nói với tôi: “Bạn sẽ làm được mà.”",
+            "name": "Nguyễn Văn D."
+        },
+        "6": {
+            "text": "Tôi không nghĩ mình có thể bỏ thuốc, nhưng sự hỗ trợ tận tình từ đội ngũ đã thay đổi mọi thứ. Họ luôn ở đó khi tôi cần.",
+            "name": "Nguyễn Văn E."
+        },
+        "7": {
+            "text": "Mỗi tin nhắn, mỗi lời động viên khiến tôi cảm thấy mình không đơn độc. Tôi biết mình có thể vượt qua.",
+            "name": "Nguyễn Văn V."
+        }
+    }
+}

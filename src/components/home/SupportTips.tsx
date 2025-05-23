@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const SupportTips = () => {
-    const t = useTranslations('support');
+    const t = useTranslations('supportTips');
 
     return (
         <div className="bg-[#f7f4ee] py-12 px-6 lg:px-36 flex flex-col-reverse lg:flex-row items-center gap-10 mt-8 rounded-t-4xl">

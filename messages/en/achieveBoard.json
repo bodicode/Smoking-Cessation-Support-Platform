@@ -1,0 +1,5 @@
+{
+    "leaderboardTitle": "Leaderboard",
+    "daysSmokeFree": "{days} days smoke-free",
+    "moneySaved": "Money saved: ${amount}"
+}
