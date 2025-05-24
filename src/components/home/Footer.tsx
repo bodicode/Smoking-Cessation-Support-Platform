@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fa6';
 import FixedMap from './FixedMap';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 const Footer = () => {
     const t = useTranslations('footer');
@@ -65,34 +66,34 @@ const Footer = () => {
                     </h4>
                     <ul className="space-y-1">
                         <li>
-                            <a href="#" className="hover:underline">
+                            <Link href="#" className="hover:underline">
                                 {t('aboutUs')}
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="#" className="hover:underline">
+                            <Link href="#" className="hover:underline">
                                 {t('contactUs')}
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="#" className="hover:underline">
+                            <Link href="#" className="hover:underline">
                                 {t('howToQuit')}
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="#" className="hover:underline">
+                            <Link href="/blog" className="hover:underline">
                                 {t('news')}
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="#" className="hover:underline">
+                            <Link href="#" className="hover:underline">
                                 {t('community')}
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="#" className="hover:underline">
+                            <Link href="#" className="hover:underline">
                                 {t('helpOthers')}
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </div>

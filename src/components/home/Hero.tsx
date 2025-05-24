@@ -7,7 +7,7 @@ const Hero = () => {
   const t = useTranslations('hero');
 
   return (
-    <section className="relative bg-[#fefcf6] px-6 md:px-20 py-20 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12">
+    <section className="relative px-6 md:px-20 py-20 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12">
       <div className="max-w-2xl z-10 text-center md:text-left">
         <h1 className="text-4xl lg:text-[58px] font-extrabold text-[#001858] leading-tight">
           {t("title.line1")}{" "}
