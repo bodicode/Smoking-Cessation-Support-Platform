@@ -5,8 +5,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { getMessages } from 'next-intl/server';
 import { Montserrat } from 'next/font/google';
-import Header from '@/components/home/Header';
-import Footer from '@/components/home/Footer';
+import ClientLayout from '../ClientLayout';
 
 const mont = Montserrat({
   subsets: ['latin', 'latin-ext'],
@@ -38,12 +37,11 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={mont.className}>
         <NextIntlClientProvider messages={messages}>
-          <Header />
-          {children}
-          <Footer />
+          <ClientLayout>
+            {children}
+          </ClientLayout>
         </NextIntlClientProvider>
       </body>
     </html>
   );
 }
-

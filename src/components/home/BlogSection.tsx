@@ -7,11 +7,8 @@ import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { blogs } from '../../../data';
 import { Blog } from '@/types/components/blog';
+import { getRandomItems } from '@/utils';
 
-function getRandomBlogs<T>(data: T[], n = 3): T[] {
-    const shuffled = [...data].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, n);
-}
 
 const BlogSection = () => {
     const t = useTranslations('blogSection');
@@ -20,7 +17,7 @@ const BlogSection = () => {
     const locale = (params?.locale as string) || 'vi';
 
     useEffect(() => {
-        setDisplayBlogs(getRandomBlogs(blogs, 3));
+        setDisplayBlogs(getRandomItems(blogs, 6));
     }, []);
 
     return (
@@ -32,11 +29,9 @@ const BlogSection = () => {
                 {displayBlogs.map((blog) => {
                     const title = t(`${blog.slug}.title`, { fallback: blog.title });
                     const excerpt = t(`${blog.slug}.excerpt`, { fallback: blog.excerpt });
-                    const readMore = t('readMore');
-                    const link = `/blog/${blog.slug}`;
 
                     return (
-                        <Link href={`/${locale}/blog/${blog.slug}`} key={blog.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer">
+                        <Link href={`/${locale}/blog/${blog.slug}`} key={blog.id} className="bg-[#ffffff] rounded-xl shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer">
                             <div className="relative h-52 w-full">
                                 <Image
                                     src={blog.image}
@@ -45,7 +40,7 @@ const BlogSection = () => {
                                     className="object-cover"
                                 />
                             </div>
-                            <div className="p-4 flex flex-col h-[220px] justify-between">
+                            <div className="p-4 flex flex-col h-[180px] justify-between">
                                 <div>
                                     <h3 className="text-xl font-semibold text-[#03256C] mb-2 min-h-[60px]">
                                         {title}
@@ -54,16 +49,20 @@ const BlogSection = () => {
                                         {excerpt}
                                     </p>
                                 </div>
-                                <div className="mt-4">
-                                    <span className="text-blue-600 hover:underline font-medium">
-                                        {readMore}
-                                    </span>
-                                </div>
                             </div>
                         </Link>
                     );
                 })}
             </div>
+            <div className="flex justify-center mt-8">
+                <Link
+                    href={`/${locale}/blog`}
+                    className="inline-block bg-[#60C3A4] hover:bg-[#37836a] text-white font-bold px-6 py-3 rounded-full shadow-md transition"
+                >
+                    {t('popularBlogs.readMore', { fallback: t('readMore') })}
+                </Link>
+            </div>
+
         </section>
     );
 };

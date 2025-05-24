@@ -16,7 +16,7 @@ const SuccessStories = () => {
     const sliceKeys = keys.slice(start, start + visible);
 
     return (
-        <section className="bg-orange-400 py-12 px-4">
+        <section className="py-12 px-4">
             <h2 className="text-4xl font-bold text-center text-blue-900 mb-10">
                 {t('sectionTitle')}
             </h2>

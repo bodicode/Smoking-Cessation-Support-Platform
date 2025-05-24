@@ -45,8 +45,8 @@ const Header = () => {
         flex items-center justify-between
         px-6 py-3
         bg-[#60C3A4] backdrop-blur-md text-white
-        rounded-3xl max-w-[85%] min-h-20 mx-auto mt-4 shadow-lg transition-transform duration-300
-        ${showHeader ? 'translate-y-0' : '-translate-y-full'}
+        rounded-3xl max-w-[85%] min-h-20 mx-auto shadow-lg transition-transform duration-300
+        ${showHeader ? 'translate-y-0' : '-translate-y-[100px]'}
       `}
       style={{ willChange: 'transform' }}
     >
