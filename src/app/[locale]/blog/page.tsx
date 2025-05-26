@@ -29,6 +29,12 @@ export default function BlogPage() {
         <div className="bg-[#faf7f4] min-h-screen py-12 px-4">
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10">
                 <div className="lg:col-span-2 flex flex-col gap-12">
+                    <Link
+                        href={`/${locale}/blog/new`}
+                        className="px-5 rounded-full font-semibold transition flex items-center gap-2"
+                    >
+                        <span>{t('createBlogButton', { default: 'Tạo blog mới' })}</span>
+                    </Link>
                     {blogsToShow.map((blog) => (
                         <Link
                             href={`/${locale}/blog/${blog.slug}`}
