@@ -66,7 +66,7 @@ const Footer = () => {
                     </h4>
                     <ul className="space-y-1">
                         <li>
-                            <Link href="#" className="hover:underline">
+                            <Link href="about-us" className="hover:underline">
                                 {t('aboutUs')}
                             </Link>
                         </li>
