@@ -10,6 +10,7 @@ import login from './login.json';
 import signup from './signup.json';
 import profile from './profile.json';
 import blogDetail from './blogDetail.json';
+import forgotPassword from './forgotPassword.json';
 
 export default {
     header,
@@ -23,5 +24,6 @@ export default {
     login,
     signup,
     profile,
-    blogDetail
+    blogDetail,
+    forgotPassword
 };

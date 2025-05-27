@@ -6,7 +6,10 @@ import Footer from '@/components/home/Footer';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const hideLayout = pathname?.includes('/login') || pathname?.includes('/signup');
+    const hideLayout =
+        pathname?.includes('/login') ||
+        pathname?.includes('/signup') ||
+        pathname?.includes('/forgot-password');
 
     return (
         <div className='bg-[#f9f5ec]'>
