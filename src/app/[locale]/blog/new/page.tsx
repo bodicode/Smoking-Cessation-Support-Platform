@@ -2,7 +2,12 @@
 
 import { useState, ChangeEvent, FormEvent, useRef } from 'react';
 import Image from 'next/image';
-import { X } from 'lucide-react';
+import { X, Undo2, Redo2 } from 'lucide-react';
+import { useEditor, EditorContent, Editor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import { MenuBar } from '@/components/editor/MenuBar';
+
 
 
 export default function BlogCreatePage() {
@@ -13,6 +18,19 @@ export default function BlogCreatePage() {
     const [error, setError] = useState('');
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    const editor = useEditor({
+        extensions: [StarterKit, Underline],
+        content: '',
+        onUpdate({ editor }) {
+            setContent(editor.getHTML());
+        },
+        editorProps: {
+            attributes: {
+                class: 'min-h-[140px] bg-white px-4 py-3 rounded-lg outline-none border border-gray-600 focus:border-[#60C3A4]',
+            },
+        },
+    });
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -30,12 +48,19 @@ export default function BlogCreatePage() {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        if (!title || !content || !image) {
+        // Kiểm tra content có phải toàn dấu cách hoặc rỗng không
+        if (!title || !content || !image || content.replace(/<(.|\n)*?>/g, '').trim() === '') {
             setError('Vui lòng nhập đầy đủ thông tin và chọn ảnh!');
             return;
         }
         setError('');
         alert('Gửi blog thành công!');
+        setTitle('');
+        setContent('');
+        setImage(null);
+        setImagePreview(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        editor?.commands.clearContent();
     };
 
     return (
@@ -51,18 +76,10 @@ export default function BlogCreatePage() {
                             placeholder="Tiêu đề"
                         />
                     </div>
-
                     <div>
-                        <textarea
-                            value={content}
-                            onChange={e => setContent(e.target.value)}
-                            className="w-full bg-transparent border border-gray-600 rounded-lg min-h-[140px] px-4 py-3 focus:border-[#60C3A4] focus:ring-0"
-                            placeholder="Nội dung"
-                            rows={8}
-                        />
+                        <MenuBar editor={editor} />
+                        <EditorContent editor={editor} />
                     </div>
-
-
                     <div>
                         <label className="block text-gray-400 font-medium mb-2">Ảnh</label>
                         {!imagePreview ? (
@@ -102,9 +119,7 @@ export default function BlogCreatePage() {
                             </div>
                         )}
                     </div>
-
                     {error && <div className="text-red-400 font-semibold">{error}</div>}
-
                     <button
                         type="submit"
                         className="w-full cursor-pointer bg-[#03256C] hover:bg-[#041E42] text-white font-semibold py-2 rounded-full mt-4 shadow-lg transition"
