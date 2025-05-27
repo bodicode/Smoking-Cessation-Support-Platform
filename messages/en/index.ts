@@ -13,6 +13,7 @@ import blogDetail from './blogDetail.json';
 import forgotPassword from './forgotPassword.json';
 import aboutUs from './aboutUs.json';
 import contact from './contact.json';
+import howto from './howto.json';
 
 export default {
     header,
@@ -29,5 +30,6 @@ export default {
     blogDetail,
     forgotPassword,
     aboutUs,
-    contact
+    contact,
+    howto
 };
