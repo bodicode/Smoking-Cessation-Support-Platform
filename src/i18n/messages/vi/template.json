@@ -1,0 +1,55 @@
+{
+    "title": "Các mẫu hỗ trợ bỏ thuốc",
+    "description": "Tham khảo và áp dụng các mẫu kế hoạch sau để tăng hiệu quả bỏ thuốc. Bạn có thể chọn một hoặc kết hợp nhiều mẫu để phù hợp với mình nhất!",
+    "apply": "Áp dụng mẫu này",
+    "back": "Quay lại kế hoạch cá nhân của bạn",
+    "templateList": [
+        {
+            "icon": "CheckCircle",
+            "title": "Kế hoạch 7 ngày bỏ thuốc",
+            "desc": "Lộ trình bỏ thuốc từng bước trong 1 tuần, mỗi ngày xây dựng một thói quen lành mạnh mới.",
+            "steps": [
+                "Ngày 1: Loại bỏ hết thuốc lá khỏi môi trường sống.",
+                "Ngày 2: Thay thế thói quen hút thuốc bằng hoạt động tốt cho sức khỏe.",
+                "Ngày 3: Nói cho bạn bè, gia đình về kế hoạch của bạn.",
+                "Ngày 4: Ghi lại cảm xúc, tác nhân mỗi lần thèm thuốc.",
+                "Ngày 5: Tự thưởng cho bản thân khi không hút thuốc.",
+                "Ngày 6: Đọc lại động lực bỏ thuốc đã đặt ra.",
+                "Ngày 7: Đánh giá lại quá trình, lên kế hoạch duy trì kết quả."
+            ]
+        },
+        {
+            "icon": "Sparkles",
+            "title": "Bộ kỹ năng vượt qua cơn thèm",
+            "desc": "Các chiến lược thực tiễn giúp bạn vượt qua cơn thèm bất cứ lúc nào.",
+            "steps": [
+                "Uống một cốc nước lạnh hoặc nhai kẹo cao su.",
+                "Đi bộ nhanh 10 phút để phân tán sự chú ý.",
+                "Thực hiện 5 lần hít sâu, thở chậm.",
+                "Nhắn tin hoặc gọi cho người thân/bạn bè.",
+                "Tự nhắc lại lý do lớn nhất bạn muốn bỏ thuốc."
+            ]
+        },
+        {
+            "icon": "Users",
+            "title": "Nhóm hỗ trợ cộng đồng",
+            "desc": "Tham gia nhóm, chia sẻ hành trình để nhận động viên, lời khuyên.",
+            "steps": [
+                "Tham gia các nhóm hỗ trợ bỏ thuốc trên mạng xã hội.",
+                "Chia sẻ tiến trình của bạn mỗi ngày.",
+                "Đặt câu hỏi và học hỏi kinh nghiệm từ người đi trước.",
+                "Tham gia thử thách cộng đồng."
+            ]
+        },
+        {
+            "icon": "Clock",
+            "title": "Nhắc nhở mỗi ngày",
+            "desc": "Duy trì động lực bằng các lời nhắc và động viên tích cực mỗi ngày.",
+            "steps": [
+                "Đặt nhắc nhở trên điện thoại vào sáng, trưa, tối.",
+                "Dán giấy note động viên quanh phòng làm việc, học tập.",
+                "Theo dõi số ngày không hút thuốc trong sổ hoặc ứng dụng."
+            ]
+        }
+    ]
+}
