@@ -6,6 +6,8 @@ import './globals.css';
 import { getMessages } from 'next-intl/server';
 import { Montserrat } from 'next/font/google';
 import ClientLayout from '../ClientLayout';
+import ApolloClientProvider from '../../apollo/apolloProviders';
+import ReduxProvider from '../ReduxProvider';
 
 const mont = Montserrat({
   subsets: ['latin', 'latin-ext'],
@@ -23,9 +25,9 @@ export default async function LocaleLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: { locale: string };
 }) {
-  const { locale } = await params;
+  const { locale } = params;
 
   if (!routing.locales.includes(locale as Locale)) {
     notFound();
@@ -36,11 +38,15 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body className={mont.className}>
-        <NextIntlClientProvider messages={messages}>
-          <ClientLayout>
-            {children}
-          </ClientLayout>
-        </NextIntlClientProvider>
+        <ApolloClientProvider>
+          <ReduxProvider>
+            <NextIntlClientProvider messages={messages}>
+              <ClientLayout>
+                {children}
+              </ClientLayout>
+            </NextIntlClientProvider>
+          </ReduxProvider>
+        </ApolloClientProvider>
       </body>
     </html>
   );

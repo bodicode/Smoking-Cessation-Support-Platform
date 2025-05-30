@@ -1,15 +1,19 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Phone, Globe } from 'lucide-react';
+import { Phone, Globe, ChevronDown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from '@/i18n/navigation';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearUser } from '@/store/userSlice';
 
 const Header = () => {
   const t = useTranslations('header');
+  const user = useSelector((state: any) => state.user);
+  const dispatch = useDispatch();
   const locales = [
     { code: 'en', label: t('english') },
     { code: 'vi', label: t('vietnamese') },
@@ -82,15 +86,44 @@ const Header = () => {
             </Listbox>
           </div>
         </div>
-        <Link href={`/${locale}/login`} className="bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-4 py-2 rounded-full shadow-2xl cursor-pointer">
-          {t('login')}
-        </Link>
-        <Link href={`/${locale}/profile`} className="bg-[#03256C] hover:bg-[#041E42] text-white font-bold px-4 py-2 rounded-full shadow-2xl cursor-pointer">
-          {t('profile')}
-        </Link>
-        <button className="text-2xl">
-          ☰
-        </button>
+        {!user?.accessToken ? (
+          <Link
+            href={`/${locale}/login`}
+            className="bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-4 py-2 rounded-full shadow-2xl cursor-pointer"
+          >
+            {t('login')}
+          </Link>
+        ) : (
+          <div className="relative group">
+            <div
+              className="bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-4 py-2 rounded-full shadow-2xl cursor-pointer flex items-center gap-2 select-none"
+            >
+              {user?.name || user?.email || "User"}
+              <ChevronDown size={18} className="ml-1" />
+            </div>
+            <div className='absolute bg-transparent w-full h-full ' />
+            <div
+              className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-20 py-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all"
+            >
+              <Link
+                href={`/${locale}/profile`}
+                className="block px-4 py-2 text-sm text-gray-900 hover:bg-[#e0f2f1] hover:text-[#03256C]"
+              >
+                {t('profile')}
+              </Link>
+              <button
+                className="cursor-pointer block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                onClick={() => {
+                  dispatch(clearUser());
+                  localStorage.removeItem('access_token');
+                  router.push(`/login`);
+                }}
+              >
+                {t('logout') || 'Đăng xuất'}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
