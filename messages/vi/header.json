@@ -2,5 +2,6 @@
     "login": "Đăng nhập",
     "english": "Tiếng Anh",
     "vietnamese": "Tiếng Việt",
-    "profile": "Hồ sơ"
+    "profile": "Hồ sơ",
+    "logout": "Đăng xuất"
 }

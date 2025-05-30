@@ -7,25 +7,62 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FaGoogle } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 import { LoginForm, loginSchema } from "@/schemas/loginSchema";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useLogin } from "@/graphql/hooks/useLogin";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { jwtDecode } from "jwt-decode";
+import { setUser } from "@/store/userSlice";
+import Loading from "@/components/Loading";
+import { parseGraphqlError } from "@/utils/parseGraphqlError";
 
 export default function LoginPage() {
+    const t = useTranslations("login");
     const params = useParams();
     const locale = (params.locale as string) || 'vi';
+    const router = useRouter();
+    const dispatch = useDispatch();
 
-    const t = useTranslations("login");
+    const [login, { loading, error }] = useLogin();
+    const [customError, setCustomError] = useState<string | null>(null);
+
     const schema = loginSchema(t);
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<LoginForm>({
+    const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
         resolver: zodResolver(schema),
     });
 
-    const onSubmit = (data: LoginForm) => {
-        console.log("Đăng nhập:", data);
+    const onSubmit = async (data: LoginForm) => {
+        setCustomError(null);
+        try {
+            const response = await login({
+                variables: {
+                    loginInput: {
+                        email: data.email,
+                        password: data.password,
+                    },
+                },
+            });
+
+            const accessToken = response.data?.login?.data?.session?.access_token;
+            if (!accessToken) {
+                setCustomError("Không nhận được token!");
+                return;
+            }
+
+            const decoded: any = jwtDecode(accessToken);
+            const userData = {
+                id: decoded.sub,
+                email: decoded.email,
+                role: decoded.user_metadata?.role || decoded.role || "",
+                accessToken,
+            };
+
+            dispatch(setUser(userData));
+            localStorage.setItem("access_token", accessToken);
+            router.push('/');
+        } catch (err: any) {
+            setCustomError(parseGraphqlError(err));
+        }
     };
 
     return (
@@ -42,7 +79,7 @@ export default function LoginPage() {
                                 {...register("email")}
                                 type="email"
                                 placeholder="email@gmail.com"
-                                className="w-full border border-gray-300 px-4 py-2 rounded"
+                                className={`w-full border border-gray-300 px-4 py-2 rounded ${errors.email ? "border-red-500" : ""}`}
                             />
                             {errors.email && (
                                 <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
@@ -55,7 +92,7 @@ export default function LoginPage() {
                                 {...register("password")}
                                 type="password"
                                 placeholder={t("passwordPlaceholder")}
-                                className="w-full border border-gray-300 px-4 py-2 rounded"
+                                className={`w-full border border-gray-300 px-4 py-2 rounded ${errors.password ? "border-red-500" : ""}`}
                             />
                             {errors.password && (
                                 <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>
@@ -68,10 +105,21 @@ export default function LoginPage() {
 
                         <button
                             type="submit"
-                            className="w-full bg-[#60C3A4] hover:bg-[#2eac84] text-white font-bold py-2 rounded cursor-pointer transition-all duration-150"
+                            className="w-full bg-[#60C3A4] hover:bg-[#2eac84] text-white font-bold py-2 rounded cursor-pointer transition-all duration-150 flex items-center justify-center"
+                            disabled={loading}
                         >
-                            {t("signIn")}
+                            {loading ? (
+                                <span className="flex items-center gap-2">
+                                    <Loading size={20} color="white" />
+                                </span>
+                            ) : (
+                                t("signIn")
+                            )}
                         </button>
+
+                        {(customError || error) && (
+                            <div className="text-red-600 text-sm mt-2">{customError || error?.message}</div>
+                        )}
                     </form>
 
                     <div className="flex items-center my-6">
@@ -80,15 +128,16 @@ export default function LoginPage() {
                         <div className="flex-grow h-px bg-gray-300"></div>
                     </div>
 
-                    <div className="space-y-3">
-                        <button className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded hover:bg-gray-100 cursor-pointer">
-                            <FaGoogle />
-                            {t("signInWithGoogle")}
-                        </button>
-                    </div>
+                    <button
+                        type="button"
+                        className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded hover:bg-gray-100 cursor-pointer"
+                    >
+                        <FaGoogle />
+                        {t("signInWithGoogle")}
+                    </button>
 
                     <div className="text-sm text-center mt-6">
-                        {t("noAccount")} {" "}
+                        {t("noAccount")}{" "}
                         <Link href={`/${locale}/signup`} className="text-blue-600 hover:underline">
                             {t("signUp")}
                         </Link>
