@@ -1,0 +1,34 @@
+{
+    "sectionTitle": "Success Stories",
+    "readMore": "Read more →",
+    "testimonials": {
+        "1": {
+            "text": "ReAir has always been my support whenever I faced difficulties on my quitting journey.",
+            "name": "Nguyen Van A."
+        },
+        "2": {
+            "text": "They never judged me, and the flexible, non-formulaic approach was the key to my success.",
+            "name": "Nguyen Van B."
+        },
+        "3": {
+            "text": "Thanks to ReAir, I always feel someone is cheering me on.",
+            "name": "Nguyen Van C."
+        },
+        "4": {
+            "text": "The program has been a tremendous help for me. Those messages reminded me not to give up.",
+            "name": "Nguyen Van C."
+        },
+        "5": {
+            "text": "The smoking cessation coaches helped me succeed and stay motivated. Someone once told me: “You can do it.”",
+            "name": "Nguyen Van D."
+        },
+        "6": {
+            "text": "I never thought I could quit, but the team's dedicated support changed everything. They were always there when I needed them.",
+            "name": "Nguyen Van E."
+        },
+        "7": {
+            "text": "Every message, every encouragement made me feel less alone. I know I can overcome.",
+            "name": "Nguyen Van V."
+        }
+    }
+}

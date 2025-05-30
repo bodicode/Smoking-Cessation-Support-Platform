@@ -1,0 +1,23 @@
+{
+    "title": "Contact Us",
+    "subtitle": "We are always ready to listen and support you. Please contact us using the form below, or through the information provided.",
+    "address": "D1 Street, High-Tech Park, Long Thanh My Ward, Thu Duc City, Ho Chi Minh City",
+    "form": {
+        "name": "Name",
+        "namePlaceholder": "Enter your name",
+        "email": "Email",
+        "emailPlaceholder": "Enter your email",
+        "subject": "Subject",
+        "subjectPlaceholder": "Enter subject",
+        "message": "Message",
+        "messagePlaceholder": "Enter your message",
+        "submit": "Send Message"
+    },
+    "success": "Thank you! Your message has been sent.",
+    "validation": {
+        "name": "Name must be at least 2 characters.",
+        "email": "Please enter a valid email address.",
+        "subject": "Subject must be at least 2 characters.",
+        "message": "Message must be at least 10 characters."
+    }
+}

@@ -1,0 +1,38 @@
+{
+    "title": "Cách bỏ thuốc lá hiệu quả",
+    "intro": "Cai thuốc lá là một hành trình thử thách nhưng hoàn toàn có thể thành công. Dưới đây là các bước khoa học, thực tế giúp bạn vững tin bỏ thuốc vì sức khỏe, vì tương lai!",
+    "steps": [
+        {
+            "title": "1. Hãy xác định lý do bỏ thuốc",
+            "desc": "Ghi ra tất cả lý do cá nhân khiến bạn muốn bỏ thuốc: vì sức khỏe, vì gia đình, tiết kiệm tiền, hay đơn giản là sống tự do hơn.",
+            "img": "/images/quit-why.jpg"
+        },
+        {
+            "title": "2. Lên kế hoạch rõ ràng",
+            "desc": "Chọn một ngày cụ thể để bắt đầu, đánh dấu lên lịch và chuẩn bị tâm lý. Hãy thông báo với người thân, bạn bè để được ủng hộ.",
+            "img": "/images/quit-plan.jpg"
+        },
+        {
+            "title": "3. Nhận diện và tránh các tác nhân kích thích",
+            "desc": "Tránh xa những tình huống, thói quen hoặc người khiến bạn muốn hút thuốc. Đặc biệt là khi uống rượu, cà phê, hay lúc căng thẳng.",
+            "img": "/images/quit-trigger.jpg"
+        },
+        {
+            "title": "4. Thay thế thuốc lá bằng hoạt động lành mạnh",
+            "desc": "Khi thèm thuốc, hãy vận động nhẹ, nhai kẹo cao su, uống nước hoặc trò chuyện với bạn bè. Tập trung vào thói quen tích cực.",
+            "img": "/images/quit-healthy.jpg"
+        },
+        {
+            "title": "5. Đừng ngại nhờ sự hỗ trợ",
+            "desc": "Tham gia cộng đồng, nhắn tin cho chuyên gia, hoặc sử dụng các công cụ hỗ trợ cai thuốc như ứng dụng, hotline, hoặc nhóm cai thuốc.",
+            "img": "/images/quit-support.jpg"
+        },
+        {
+            "title": "6. Khen thưởng bản thân",
+            "desc": "Sau mỗi ngày, mỗi tuần bỏ thuốc, hãy tự thưởng cho mình một điều gì đó ý nghĩa, ghi nhận nỗ lực của bản thân.",
+            "img": "/images/quit-reward.jpg"
+        }
+    ],
+    "ctaTitle": "Bạn đã sẵn sàng bắt đầu hành trình bỏ thuốc lá?",
+    "ctaDesc": "Hãy kiên trì, vững tin và nhớ rằng bạn luôn có sự đồng hành của gia đình, bạn bè và cộng đồng hỗ trợ!"
+}
