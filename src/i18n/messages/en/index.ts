@@ -14,6 +14,8 @@ import forgotPassword from './forgotPassword.json';
 import aboutUs from './aboutUs.json';
 import contact from './contact.json';
 import howto from './howto.json';
+import plan from './plan.json';
+import template from './template.json';
 
 export default {
     header,
@@ -31,5 +33,7 @@ export default {
     forgotPassword,
     aboutUs,
     contact,
-    howto
+    howto,
+    plan,
+    template
 };

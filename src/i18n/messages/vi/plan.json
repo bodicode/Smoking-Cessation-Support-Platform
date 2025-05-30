@@ -1,0 +1,73 @@
+{
+    "title": "Xây dựng kế hoạch bỏ thuốc",
+    "description": "Các câu hỏi này giúp bạn hiểu bản thân và tạo động lực cho hành trình bỏ thuốc.",
+    "personalInfo": "Thông tin cá nhân",
+    "actionPlan": "Kế hoạch hành động",
+    "progress": "{percent}% hoàn thành",
+    "submit": "Xác nhận kế hoạch",
+    "edit": "Chỉnh sửa lại",
+    "summaryTitle": "Kế hoạch bỏ thuốc của bạn",
+    "cigarettesPerDay": {
+        "label": "Bạn hút bao nhiêu điếu mỗi ngày?",
+        "placeholder": "Ví dụ: 10",
+        "sub": "Tính trung bình 1 ngày."
+    },
+    "yearsSmoking": {
+        "label": "Bạn đã hút thuốc bao nhiêu năm?",
+        "placeholder": "Ví dụ: 5",
+        "sub": ""
+    },
+    "startAge": {
+        "label": "Bạn bắt đầu hút thuốc ở tuổi nào?",
+        "placeholder": "Ví dụ: 18",
+        "sub": ""
+    },
+    "quitAttempts": {
+        "label": "Bạn đã từng cố bỏ thuốc chưa?",
+        "options": [
+            "Chưa bao giờ",
+            "1 lần",
+            "2-3 lần",
+            "Nhiều hơn 3 lần"
+        ],
+        "sub": ""
+    },
+    "familySmoker": {
+        "label": "Gia đình bạn có ai hút thuốc?",
+        "options": [
+            "Không ai",
+            "Có 1 người",
+            "Nhiều người"
+        ],
+        "sub": ""
+    },
+    "relatedDisease": {
+        "label": "Bạn có bệnh lý liên quan đến hút thuốc?",
+        "options": [
+            "Không",
+            "Có"
+        ],
+        "sub": "VD: tim mạch, hô hấp..."
+    },
+    "motivation": {
+        "label": "Lý do lớn nhất để bạn muốn bỏ thuốc?",
+        "placeholder": "Nhập lý do...",
+        "sub": "Suy nghĩ thật kỹ để duy trì động lực!"
+    },
+    "trigger": {
+        "label": "Tác nhân hoặc thời điểm nào khiến bạn thèm thuốc nhất?",
+        "placeholder": "Nhập tình huống...",
+        "sub": ""
+    },
+    "strategy": {
+        "label": "Bạn sẽ làm gì khi muốn hút thuốc?",
+        "placeholder": "Kế hoạch đối phó...",
+        "sub": "VD: Uống nước, đi bộ, gọi điện cho bạn bè..."
+    },
+    "quitDate": {
+        "label": "Bạn muốn chọn ngày bỏ thuốc nào?",
+        "placeholder": "",
+        "sub": ""
+    },
+    "notAnswered": "Chưa trả lời"
+}

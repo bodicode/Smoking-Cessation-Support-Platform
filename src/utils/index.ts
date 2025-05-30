@@ -8,3 +8,13 @@ export function getRandomItems(arr: any[], n: number) {
     }
     return result;
 }
+
+export function safeT(t: any, key: string) {
+  try {
+    const val = t(key);
+    if (val === key) return undefined;
+    return val;
+  } catch {
+    return undefined;
+  }
+}
