@@ -10,6 +10,7 @@ import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headless
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/store/userSlice';
 import Logo from '../Logo';
+import Notification from './Notification';
 
 const Header = () => {
   const t = useTranslations('header');
@@ -47,7 +48,7 @@ const Header = () => {
     <header
       className={`
         sticky top-2 z-50
-        flex flex-wrap items-center justify-between mx-2
+        flex flex-wrap items-center justify-between
         px-2 sm:px-4 md:px-6 py-2 md:py-3
         bg-[#60C3A4] backdrop-blur-md text-white
         rounded-xl sm:rounded-3xl max-w-full sm:max-w-[95%] min-h-16 sm:min-h-20 mx-auto shadow-lg transition-transform duration-300
@@ -65,7 +66,7 @@ const Header = () => {
       <div className="flex flex-1 flex-wrap items-center justify-end gap-3 sm:gap-5 text-xs sm:text-sm">
         <div className="flex items-center gap-1 sm:gap-2">
           <Phone className="text-[#B5D8EB]" size={18} />
-          <a href="tel:0123456789" className="underline font-semibold text-xs sm:text-sm">
+          <a href="tel:0123456789" className="underline font-semibold text-xs sm:text-sm ml-2">
             0123456789
           </a>
         </div>
@@ -92,6 +93,11 @@ const Header = () => {
             </Listbox>
           </div>
         </div>
+
+        <div>
+          <Notification />
+        </div>
+
         {!user?.accessToken ? (
           <Link
             href={`/${locale}/login`}
