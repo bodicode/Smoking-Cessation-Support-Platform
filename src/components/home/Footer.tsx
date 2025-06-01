@@ -11,25 +11,17 @@ import {
 import FixedMap from './FixedMap';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import Logo from '../Logo';
 
 const Footer = () => {
     const t = useTranslations('footer');
 
     return (
-        <footer className="bg-[#60C3A4] text-white py-10 px-6 md:px-16">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-                <div>
-                    <div className="mb-4">
-                        <hr />
-                        <h4 className="text-2xl font-bold my-4 text-nowrap text-accent uppercase">
-                            {t('brand')}
-                        </h4>
-                    </div>
-
-                    <p className="text-yellow-400 font-semibold mb-2">
-                        {t('subscribe')}
-                    </p>
-                    <form className="flex bg-white rounded overflow-hidden w-full max-w-xs">
+        <footer className="bg-[#60C3A4] text-white py-10 px-4 sm:px-8 md:px-16">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+                <div className="min-w-0">
+                    <Logo />
+                    <form className="flex bg-white rounded overflow-hidden w-full max-w-xs mt-4">
                         <input
                             type="email"
                             placeholder={t('placeholderEmail')}
@@ -37,13 +29,13 @@ const Footer = () => {
                         />
                         <button
                             type="submit"
-                            className="bg-yellow-400 px-4 text-black font-bold"
+                            className="bg-[#B5D8EB] hover:bg-[#95cce9] text-white px-4 font-bold cursor-pointer"
                         >
                             →
                         </button>
                     </form>
 
-                    <div className="flex space-x-4 mt-4 text-white text-lg">
+                    <div className="flex space-x-2 sm:space-x-4 mt-4 text-white text-lg">
                         <FaFacebookF />
                         <FaXTwitter />
                         <FaInstagram />
@@ -59,24 +51,24 @@ const Footer = () => {
                     </p>
                 </div>
 
-                <div className="mx-auto">
-                    <hr />
-                    <h4 className="text-2xl font-bold my-4 text-nowrap text-accent uppercase">
+                <div className="min-w-0 md:mx-0">
+                    <h4 className="text-2xl font-bold mb-2 text-nowrap text-accent uppercase ">
                         {t('quickLinks')}
                     </h4>
+                    <hr className="mb-4 border-white/30" />
                     <ul className="space-y-1">
                         <li>
-                            <Link href="about-us" className="hover:underline">
+                            <Link href="/about-us" className="hover:underline">
                                 {t('aboutUs')}
                             </Link>
                         </li>
                         <li>
-                            <Link href="contact-us" className="hover:underline">
+                            <Link href="/contact-us" className="hover:underline">
                                 {t('contactUs')}
                             </Link>
                         </li>
                         <li>
-                            <Link href="how-to-quit" className="hover:underline">
+                            <Link href="/how-to-quit" className="hover:underline">
                                 {t('howToQuit')}
                             </Link>
                         </li>
@@ -86,7 +78,7 @@ const Footer = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link href="#" className="hover:underline">
+                            <Link href="/community" className="hover:underline">
                                 {t('community')}
                             </Link>
                         </li>
@@ -98,7 +90,9 @@ const Footer = () => {
                     </ul>
                 </div>
 
-                <FixedMap />
+                <div className="min-w-0">
+                    <FixedMap />
+                </div>
             </div>
 
             <div className="mt-4 text-center py-3 text-sm">

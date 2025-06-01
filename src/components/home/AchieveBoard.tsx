@@ -31,7 +31,7 @@ const Achieveboard = () => {
 
     return (
         <div className="max-w-4xl mx-auto mt-4 p-4 bg-white rounded-xl shadow-md">
-            <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+            <h2 className="text-2xl font-bold text-center mb-6 text-[#03256C]">
                 {t('leaderboardTitle')}
             </h2>
 
@@ -39,16 +39,16 @@ const Achieveboard = () => {
                 {leaderboard.map((user, idx) => (
                     <div
                         key={idx}
-                        className="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow-sm"
+                        className="flex flex-col sm:flex-row items-center justify-between bg-gray-100 p-4 rounded-lg shadow-sm gap-4"
                     >
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-4 w-full sm:w-auto">
                             <img
                                 src={user.avatar}
                                 alt={user.name}
-                                className="w-12 h-12 rounded-full"
+                                className="w-12 h-12 rounded-full object-cover"
                             />
                             <div>
-                                <p className="text-lg font-semibold text-gray-700">
+                                <p className="text-lg font-semibold text-[#03256C]">
                                     {user.name}
                                 </p>
                                 <p className="text-sm text-gray-500">
@@ -62,11 +62,11 @@ const Achieveboard = () => {
                             </div>
                         </div>
 
-                        <div className="text-sm text-right space-y-1">
+                        <div className="flex flex-wrap gap-2 justify-start sm:justify-end w-full sm:w-auto mt-2 sm:mt-0">
                             {user.badges.map((badge, i) => (
                                 <span
                                     key={i}
-                                    className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full inline-block"
+                                    className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium"
                                 >
                                     {badge}
                                 </span>
