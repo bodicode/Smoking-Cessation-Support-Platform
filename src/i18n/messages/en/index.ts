@@ -16,6 +16,7 @@ import contact from './contact.json';
 import howto from './howto.json';
 import plan from './plan.json';
 import template from './template.json';
+import community from './community.json';
 
 export default {
     header,
@@ -35,5 +36,6 @@ export default {
     contact,
     howto,
     plan,
-    template
+    template,
+    community
 };

@@ -7,8 +7,8 @@ import React from "react";
 
 const cards = [
   { titleKey: "buildYourQuitPlan", icon: "/images/quit-plan.jpg", bg: "bg-[#004F7C]", href: "/plan" },
-  { titleKey: "smokefreeTextingPrograms", icon: "/images/membership.jpg", bg: "bg-[#00C2A0]", href: "/membership" },
-  { titleKey: "smokefreeSocialMedia", icon: "/images/social.png", bg: "bg-[#FFC400]", href: "/social" },
+  { titleKey: "membership", icon: "/images/membership.jpg", bg: "bg-[#00C2A0]", href: "/membership" },
+  { titleKey: "reairSocialMedia", icon: "/images/social.png", bg: "bg-[#FFC400]", href: "/community" },
 ];
 
 

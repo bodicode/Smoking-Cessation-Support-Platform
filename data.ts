@@ -220,3 +220,140 @@ export const blogs = [
         category: 'Story'
     }
 ];
+
+export const badgeOptions = [
+    { id: "badge-1", name: "Siêu bền chí", description: "30 ngày liên tục không hút thuốc lá." },
+    { id: "badge-2", name: "Bắt đầu mới", description: "Hoàn thành 3 ngày đầu tiên bỏ thuốc." },
+    { id: "badge-3", name: "Chiến binh tuần đầu", description: "7 ngày đầu không hút thuốc." },
+];
+
+export const initialPosts = [
+    {
+        id: "post-1",
+        caption: "Vui quá, mình vừa nhận được huy hiệu 'Siêu bền chí' sau 30 ngày không hút thuốc!",
+        is_deleted: false,
+        created_at: "2024-05-30T09:30:00Z",
+        user: { id: "user-1", name: "Nguyễn Minh" },
+        badge: badgeOptions[0],
+        likes: 5,
+        liked: false,
+        comments: [
+            { id: "c-1", user: { id: "user-2", name: "Phạm Linh" }, text: "Chúc mừng bạn! Mình cũng đang cố gắng." },
+            { id: "c-2", user: { id: "user-3", name: "Hà Trí" }, text: "Cố lên nhé! Cộng đồng luôn ủng hộ." },
+            { id: "c-3", user: { id: "user-4", name: "Thu Hà" }, text: "Quá siêu, truyền động lực cho mình!" }
+        ]
+    },
+    {
+        id: "post-2",
+        caption: "Mình đã đạt huy hiệu 'Bắt đầu mới'! Cố gắng cùng mọi người nhé.",
+        is_deleted: false,
+        created_at: "2024-05-28T15:15:00Z",
+        user: { id: "user-2", name: "Phạm Linh" },
+        badge: badgeOptions[1],
+        likes: 3,
+        liked: false,
+        comments: []
+    },
+    {
+        id: "post-3",
+        caption: "Ngày thứ 7 không thuốc lá, nhận được badge 'Chiến binh tuần đầu' rồi!",
+        is_deleted: false,
+        created_at: "2024-05-25T17:10:00Z",
+        user: { id: "user-3", name: "Hà Trí" },
+        badge: badgeOptions[2],
+        likes: 4,
+        liked: false,
+        comments: [
+            { id: "c-4", user: { id: "user-1", name: "Nguyễn Minh" }, text: "Chúc mừng bạn, cố lên nhé!" }
+        ]
+    },
+    {
+        id: "post-4",
+        caption: "Sau 10 ngày, cảm thấy khỏe hơn hẳn. Không ngờ mình làm được!",
+        is_deleted: false,
+        created_at: "2024-05-23T09:00:00Z",
+        user: { id: "user-4", name: "Thu Hà" },
+        badge: badgeOptions[2],
+        likes: 2,
+        liked: false,
+        comments: [
+            { id: "c-5", user: { id: "user-2", name: "Phạm Linh" }, text: "Tuyệt vời quá bạn ơi!" }
+        ]
+    },
+    {
+        id: "post-5",
+        caption: "Ngày đầu tiên bỏ thuốc, hy vọng mình sẽ vượt qua được cám dỗ.",
+        is_deleted: false,
+        created_at: "2024-05-21T21:15:00Z",
+        user: { id: "user-5", name: "Lê Hải" },
+        badge: badgeOptions[1],
+        likes: 6,
+        liked: false,
+        comments: [
+            { id: "c-6", user: { id: "user-3", name: "Hà Trí" }, text: "Bạn làm được mà! Quyết tâm nhé." },
+            { id: "c-7", user: { id: "user-1", name: "Nguyễn Minh" }, text: "Bước đầu là quan trọng nhất!" }
+        ]
+    },
+    {
+        id: "post-6",
+        caption: "Nhờ cộng đồng này mà mình không còn cảm giác cô đơn khi bỏ thuốc.",
+        is_deleted: false,
+        created_at: "2024-05-20T15:40:00Z",
+        user: { id: "user-6", name: "Phạm Duy" },
+        badge: badgeOptions[2],
+        likes: 1,
+        liked: false,
+        comments: []
+    },
+    {
+        id: "post-7",
+        caption: "Hôm nay mình không còn ho mỗi sáng, cảm ơn mọi người đã động viên!",
+        is_deleted: false,
+        created_at: "2024-05-18T08:50:00Z",
+        user: { id: "user-7", name: "Mai Ngọc" },
+        badge: badgeOptions[2],
+        likes: 3,
+        liked: false,
+        comments: [
+            { id: "c-8", user: { id: "user-6", name: "Phạm Duy" }, text: "Dấu hiệu tích cực đó bạn!" }
+        ]
+    },
+    {
+        id: "post-8",
+        caption: "Mỗi ngày đều là một thử thách, nhưng mình sẽ không bỏ cuộc.",
+        is_deleted: false,
+        created_at: "2024-05-16T13:25:00Z",
+        user: { id: "user-8", name: "Trần Long" },
+        badge: badgeOptions[2],
+        likes: 2,
+        liked: false,
+        comments: []
+    },
+    {
+        id: "post-9",
+        caption: "Được gia đình ủng hộ, mình cảm thấy tự tin hơn rất nhiều.",
+        is_deleted: false,
+        created_at: "2024-05-14T18:35:00Z",
+        user: { id: "user-9", name: "Ngô Thanh" },
+        badge: badgeOptions[1],
+        likes: 4,
+        liked: false,
+        comments: [
+            { id: "c-9", user: { id: "user-5", name: "Lê Hải" }, text: "Cố lên nhé bạn, mọi người bên bạn!" }
+        ]
+    },
+    {
+        id: "post-10",
+        caption: "Tròn 3 tuần không hút thuốc, cảm giác thật tuyệt vời!",
+        is_deleted: false,
+        created_at: "2024-05-12T10:00:00Z",
+        user: { id: "user-10", name: "Vũ Khôi" },
+        badge: badgeOptions[0],
+        likes: 8,
+        liked: false,
+        comments: [
+            { id: "c-10", user: { id: "user-8", name: "Trần Long" }, text: "Chúc mừng bạn, tiếp tục nhé!" },
+            { id: "c-11", user: { id: "user-4", name: "Thu Hà" }, text: "Quá giỏi, mình cũng sắp được 3 tuần rồi." }
+        ]
+    }
+];
