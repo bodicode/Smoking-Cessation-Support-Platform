@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/store/userSlice';
+import Logo from '../Logo';
 
 const Header = () => {
   const t = useTranslations('header');
@@ -56,9 +57,9 @@ const Header = () => {
     >
       <Link
         href={'/'}
-        className="font-bold text-sm sm:text-lg flex items-center space-x-2 whitespace-nowrap"
+        className='ml-4'
       >
-        Reair
+        <Logo />
       </Link>
 
       <div className="flex flex-1 flex-wrap items-center justify-end gap-3 sm:gap-5 text-xs sm:text-sm">

@@ -357,3 +357,43 @@ export const initialPosts = [
         ]
     }
 ];
+
+export const membershipPlans = [
+    {
+        "id": "yearly",
+        "title": "Gói 1 năm",
+        "price": 499000,
+        "description": "Tiết kiệm tối đa, quyền lợi trọn vẹn suốt năm.",
+        "perks": [
+            "Hỗ trợ ưu tiên 24/7",
+            "Toàn bộ tính năng Premium",
+            "Nhận huy hiệu vàng thành viên",
+            "Miễn phí workshop & sự kiện"
+        ],
+        "icon": "crown"
+    },
+    {
+        "id": "quarterly",
+        "title": "Gói 3 tháng",
+        "price": 159000,
+        "description": "Dễ dàng trải nghiệm quyền lợi thành viên.",
+        "perks": [
+            "Hỗ trợ ưu tiên",
+            "Toàn bộ tính năng Premium",
+            "Nhận huy hiệu bạc thành viên"
+        ],
+        "icon": "calendar"
+    },
+    {
+        "id": "monthly",
+        "title": "Gói 1 tháng",
+        "price": 59000,
+        "description": "Đăng ký linh hoạt, không lo cam kết.",
+        "perks": [
+            "Toàn bộ tính năng Premium",
+            "Nhận huy hiệu đồng thành viên"
+        ],
+        "icon": "gift"
+    }
+]
+

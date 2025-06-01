@@ -17,6 +17,7 @@ import howto from './howto.json';
 import plan from './plan.json';
 import template from './template.json';
 import community from './community.json';
+import membership from './membership.json';
 
 export default {
     header,
@@ -37,5 +38,6 @@ export default {
     howto,
     plan,
     template,
-    community
+    community,
+    membership
 };
