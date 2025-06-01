@@ -19,10 +19,10 @@ const FixedMapComponent = () => {
 
   return (
     <div>
-      <hr />
-      <h4 className="text-2xl font-bold my-4 text-nowrap text-accent uppercase">
+      <h4 className="text-2xl font-bold mb-2 text-nowrap text-accent uppercase">
         {t("title")}
       </h4>
+      <hr className="mb-4 border-white/30" />
       <MapContainer
         center={fixedPosition}
         zoom={12}
