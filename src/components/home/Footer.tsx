@@ -11,6 +11,7 @@ import {
 import FixedMap from './FixedMap';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import Logo from '../Logo';
 
 const Footer = () => {
     const t = useTranslations('footer');
@@ -19,15 +20,8 @@ const Footer = () => {
         <footer className="bg-[#60C3A4] text-white py-10 px-4 sm:px-8 md:px-16">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
                 <div className="min-w-0">
-                    <h4 className="text-2xl font-bold mb-2 text-nowrap text-accent uppercase">
-                        {t('brand')}
-                    </h4>
-                    <hr className="mb-4 border-white/30 md:hidden" />
-
-                    <p className="text-yellow-400 font-semibold mb-2">
-                        {t('subscribe')}
-                    </p>
-                    <form className="flex bg-white rounded overflow-hidden w-full max-w-xs">
+                    <Logo />
+                    <form className="flex bg-white rounded overflow-hidden w-full max-w-xs mt-4">
                         <input
                             type="email"
                             placeholder={t('placeholderEmail')}
@@ -35,7 +29,7 @@ const Footer = () => {
                         />
                         <button
                             type="submit"
-                            className="bg-yellow-400 px-4 text-black font-bold"
+                            className="bg-[#B5D8EB] hover:bg-[#95cce9] text-white px-4 font-bold cursor-pointer"
                         >
                             →
                         </button>

@@ -31,7 +31,7 @@ const Achieveboard = () => {
 
     return (
         <div className="max-w-4xl mx-auto mt-4 p-4 bg-white rounded-xl shadow-md">
-            <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+            <h2 className="text-2xl font-bold text-center mb-6 text-[#03256C]">
                 {t('leaderboardTitle')}
             </h2>
 
@@ -48,7 +48,7 @@ const Achieveboard = () => {
                                 className="w-12 h-12 rounded-full object-cover"
                             />
                             <div>
-                                <p className="text-lg font-semibold text-gray-700">
+                                <p className="text-lg font-semibold text-[#03256C]">
                                     {user.name}
                                 </p>
                                 <p className="text-sm text-gray-500">

@@ -15,10 +15,9 @@ const Hero = () => {
   const t = useTranslations("hero");
 
   return (
-    <section className="relative px-4 sm:px-8 lg:px-20 py-10 sm:py-16 lg:py-20 flex flex-col-reverse lg:flex-row items-center justify-between gap-8 lg:gap-12">
-      {/* Khối text */}
+    <div className="relative px-4 sm:px-8 lg:px-20 py-10 sm:py-16 lg:py-20 flex flex-col-reverse lg:flex-row items-center justify-between gap-8 lg:gap-12">
       <div className="w-full lg:max-w-2xl z-10 text-center lg:text-left">
-        <h1 className="text-3xl sm:text-4xl lg:text-[58px] font-extrabold text-[#001858] leading-tight mb-2">
+        <h1 className="text-3xl sm:text-4xl lg:text-[58px] font-extrabold text-[#001858] leading-tight mb-2 text-nowrap">
           {t("title.line1")}{" "}
           <span className="relative text-[#ff5c00]">
             {t("title.highlight")}
@@ -32,10 +31,9 @@ const Hero = () => {
         </p>
       </div>
 
-      {/* Card menu */}
       <div
         className="
-          w-full flex flex-wrap justify-center lg:justify-end gap-4 sm:gap-6
+          w-full flex flex-nowrap justify-center lg:justify-end gap-4 sm:gap-6
         "
       >
         {cards.map((c, i) => (
@@ -62,7 +60,7 @@ const Hero = () => {
           </Link>
         ))}
       </div>
-    </section>
+    </div>
   );
 };
 
