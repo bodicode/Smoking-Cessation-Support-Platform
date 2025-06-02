@@ -397,3 +397,75 @@ export const membershipPlans = [
     }
 ]
 
+export const notifications = [
+    {
+        id: 1,
+        title: "Chúc mừng bạn nhận được huy hiệu vàng!",
+        description: "Bạn đã đạt 30 ngày không hút thuốc 🎉",
+        read: false,
+        time: "2 giờ trước",
+    },
+    {
+        id: 2,
+        title: "Nhắc nhở: Hôm nay bạn đã ghi nhật ký chưa?",
+        description: "",
+        read: true,
+        time: "Hôm qua",
+    },
+    {
+        id: 3,
+        title: "Cộng đồng có bài chia sẻ mới!",
+        description: "Xem ngay thành tích từ thành viên mới.",
+        read: false,
+        time: "5 giờ trước",
+    },
+    {
+        id: 4,
+        title: "Workshop online sắp diễn ra",
+        description: "Đăng ký tham dự sự kiện 'Sống khỏe không thuốc lá' hôm nay.",
+        read: false,
+        time: "1 ngày trước",
+    },
+    {
+        id: 5,
+        title: "Bạn đã tiết kiệm được 1 triệu đồng",
+        description: "Cố gắng duy trì nhé!",
+        read: true,
+        time: "2 ngày trước",
+    },
+    {
+        id: 6,
+        title: "Tin mới từ chuyên gia",
+        description: "Bí quyết kiểm soát cảm giác thèm thuốc.",
+        read: false,
+        time: "3 ngày trước",
+    },
+    {
+        id: 7,
+        title: "Bạn được tặng code giảm giá workshop",
+        description: "Sử dụng REAIR50 khi đăng ký.",
+        read: true,
+        time: "4 ngày trước",
+    },
+    {
+        id: 8,
+        title: "Cộng đồng đã đạt mốc 5000 thành viên",
+        description: "",
+        read: true,
+        time: "5 ngày trước",
+    },
+    {
+        id: 9,
+        title: "Huy hiệu bạc đã được mở khóa",
+        description: "Bạn đã vượt mốc 7 ngày không hút thuốc!",
+        read: false,
+        time: "6 ngày trước",
+    },
+    {
+        id: 10,
+        title: "Hệ thống bảo trì tối nay",
+        description: "Một số chức năng sẽ tạm thời gián đoạn.",
+        read: true,
+        time: "7 ngày trước",
+    },
+];
