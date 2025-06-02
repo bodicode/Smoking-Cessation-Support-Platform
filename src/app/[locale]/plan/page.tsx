@@ -14,6 +14,7 @@ import {
     Users,
     ListTodo,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const questionKeys = [
     { key: "cigarettesPerDay", type: "number", icon: <User className="w-5 h-5 text-blue-400" /> },
@@ -28,10 +29,26 @@ const questionKeys = [
     { key: "quitDate", type: "date", icon: <CalendarDays className="w-5 h-5 text-emerald-600" /> },
 ];
 
+const cardVariants = {
+    hidden: { opacity: 0, y: 32, scale: 0.97 },
+    visible: (i = 1) => ({
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: { delay: i * 0.09, type: "spring", stiffness: 180, damping: 17 }
+    })
+};
+
+const sectionVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+};
+
 export default function QuitPlanFullForm() {
     const t = useTranslations("plan");
     const router = useRouter();
     const [answers, setAnswers] = useState<any>({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const personal = questionKeys.slice(0, 6);
     const plan = questionKeys.slice(6);
@@ -55,8 +72,11 @@ export default function QuitPlanFullForm() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        localStorage.setItem("quitPlanAnswers", JSON.stringify(answers));
-        router.push("/template");
+        setIsSubmitting(true);
+        setTimeout(() => {
+            localStorage.setItem("quitPlanAnswers", JSON.stringify(answers));
+            router.push("/template");
+        }, 800);
     };
 
     const percent = Math.round(
@@ -64,28 +84,62 @@ export default function QuitPlanFullForm() {
     );
 
     return (
-        <div className="max-w-4xl mx-auto py-10 px-4">
-            <h1 className="text-4xl font-extrabold mb-4 text-center text-gradient bg-gradient-to-r from-sky-600 to-green-400 inline-block text-transparent bg-clip-text">
+        <motion.div
+            className="max-w-4xl mx-auto py-10 px-4"
+            initial="hidden"
+            animate="visible"
+            variants={sectionVariants}
+        >
+            <motion.h1
+                className="text-4xl font-extrabold mb-4 text-center text-gradient bg-gradient-to-r from-sky-600 to-green-400 inline-block text-transparent bg-clip-text"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1, duration: 0.4 }}
+            >
                 {t("title")}
-            </h1>
-            <p className="text-left text-gray-500 mb-8">{t("description")}</p>
-            <div className="w-full h-3 bg-gray-200 rounded-full mb-8 overflow-hidden">
-                <div
+            </motion.h1>
+            <motion.p
+                className="text-left text-gray-500 mb-8"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.18, duration: 0.4 }}
+            >
+                {t("description")}
+            </motion.p>
+            <motion.div
+                className="w-full h-3 bg-gray-200 rounded-full mb-8 overflow-hidden"
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: "100%" }}
+                transition={{ delay: 0.24, duration: 0.5 }}
+            >
+                <motion.div
                     className="h-full bg-gradient-to-r from-green-400 to-blue-500 transition-all"
-                    style={{ width: `${percent}%` }}
+                    animate={{ width: `${percent}%` }}
+                    transition={{ duration: 0.6 }}
                 />
-            </div>
+            </motion.div>
             <form onSubmit={handleSubmit} className="space-y-12">
-                <div>
+                {/* Personal Info */}
+                <motion.div
+                    variants={sectionVariants}
+                    initial="hidden"
+                    animate="visible"
+                    transition={{ delay: 0.17, duration: 0.4 }}
+                >
                     <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                         <User className="w-6 h-6 text-blue-400" />
                         {t("personalInfo")}
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {personal.map((q) => (
-                            <div
+                        {personal.map((q, idx) => (
+                            <motion.div
                                 key={q.key}
+                                custom={idx}
+                                initial="hidden"
+                                animate="visible"
+                                variants={cardVariants}
                                 className="bg-white rounded-2xl shadow-md hover:shadow-lg p-5 transition-all flex flex-col gap-2 border-t-4 border-transparent hover:border-blue-300"
+                                whileHover={{ scale: 1.03, borderTopColor: "#38bdf8" }}
                             >
                                 <label className="font-semibold flex items-center gap-2 mb-1">
                                     {q.icon} {t(`${q.key}.label`)}
@@ -116,21 +170,32 @@ export default function QuitPlanFullForm() {
                                         required
                                     />
                                 )}
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
-                </div>
+                </motion.div>
 
-                <div>
+                {/* Kế hoạch */}
+                <motion.div
+                    variants={sectionVariants}
+                    initial="hidden"
+                    animate="visible"
+                    transition={{ delay: 0.27, duration: 0.4 }}
+                >
                     <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                         <Zap className="w-6 h-6 text-orange-400" />
                         {t("actionPlan")}
                     </h2>
                     <div className="space-y-6">
-                        {plan.map((q) => (
-                            <div
+                        {plan.map((q, idx) => (
+                            <motion.div
                                 key={q.key}
+                                custom={idx}
+                                initial="hidden"
+                                animate="visible"
+                                variants={cardVariants}
                                 className="bg-white rounded-2xl shadow-md hover:shadow-lg p-5 transition-all flex flex-col gap-2 border-t-4 border-transparent hover:border-orange-300"
+                                whileHover={{ scale: 1.03, borderTopColor: "#fb923c" }}
                             >
                                 <label className="font-semibold flex items-center gap-2 mb-1">
                                     {q.icon} {t(`${q.key}.label`)}
@@ -169,20 +234,30 @@ export default function QuitPlanFullForm() {
                                         required
                                     />
                                 )}
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
-                </div>
-                <button
+                </motion.div>
+                <motion.button
                     type="submit"
                     className="cursor-pointer mt-4 w-full bg-gradient-to-r from-sky-600 to-green-500 hover:to-green-600 text-white font-bold py-3 rounded-xl text-lg shadow-lg transition-all"
+                    whileHover={{ scale: 1.035 }}
+                    whileTap={{ scale: 0.98 }}
+                    animate={isSubmitting ? { opacity: 0.7 } : { opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                    disabled={isSubmitting}
                 >
                     {t("submit")}
-                </button>
+                </motion.button>
             </form>
-            <div className="text-center mt-4 text-sm text-gray-400">
+            <motion.div
+                className="text-center mt-4 text-sm text-gray-400"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.38, duration: 0.3 }}
+            >
                 {t("progress", { percent })}
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 }

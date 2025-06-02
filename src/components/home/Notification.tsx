@@ -3,7 +3,7 @@
 import { AlertCircle, Bell, CheckCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { notifications } from '../../../data';
-
+import { motion } from "framer-motion";
 
 export default function Notification() {
     const [open, setOpen] = useState(false);
@@ -22,13 +22,21 @@ export default function Notification() {
     const unreadCount = notifications.filter(n => !n.read).length;
 
     return (
-        <div className="relative" ref={ref}>
+        <div className="relative mt-1.5" ref={ref}>
             <button
                 className="cursor-pointer relative p-2 rounded-full hover:bg-[#B5D8EB]/30 transition"
                 onClick={() => setOpen(o => !o)}
                 aria-label="Thông báo"
             >
-                <Bell className="w-5 h-5" />
+                <motion.span
+                    whileHover={{
+                        rotate: [0, -18, 18, -12, 12, -7, 7, 0],
+                        transition: { duration: 0.6 },
+                    }}
+                    style={{ display: "inline-block" }}
+                >
+                    <Bell className="w-5 h-5" />
+                </motion.span>
                 {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none">
                         {unreadCount}
