@@ -30,7 +30,7 @@ const Achieveboard = () => {
     ];
 
     return (
-        <div className="max-w-4xl mx-auto mt-4 p-4 bg-white rounded-xl shadow-md">
+        <div className="max-w-5xl mx-auto mt-4 p-4">
             <h2 className="text-2xl font-bold text-center mb-6 text-[#03256C]">
                 {t('leaderboardTitle')}
             </h2>
