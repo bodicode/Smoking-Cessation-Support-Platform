@@ -11,9 +11,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/store/userSlice';
 import Logo from '../Logo';
 import Notification from './Notification';
+import { motion } from "framer-motion";
 
 const Header = () => {
   const t = useTranslations('header');
+  const [isPhoneHover, setPhoneIsHover] = useState(false);
+  const [isGlobeHover, setIsGlobeHover] = useState(false);
   const user = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
   const locales = [
@@ -64,15 +67,37 @@ const Header = () => {
       </Link>
 
       <div className="flex flex-1 flex-wrap items-center justify-end gap-3 sm:gap-5 text-xs sm:text-sm">
-        <div className="flex items-center gap-1 sm:gap-2">
-          <Phone className="text-[#B5D8EB]" size={18} />
-          <a href="tel:0123456789" className="underline font-semibold text-xs sm:text-sm ml-2">
+        <motion.div
+          className="flex items-center gap-1 sm:gap-2"
+          onHoverStart={() => setPhoneIsHover(true)}
+          onHoverEnd={() => setPhoneIsHover(false)}
+        >
+          <motion.div 
+            animate={isPhoneHover ? { rotate: [0, -15, 15, -10, 10, -5, 5, 0] } : { rotate: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <Phone className="text-[#B5D8EB]" size={18} />
+          </motion.div>
+          <a
+            href="tel:0123456789"
+            className="underline font-semibold text-xs sm:text-sm ml-2"
+          >
             0123456789
           </a>
-        </div>
+        </motion.div>
         <div className="relative">
-          <div className="flex items-center gap-1 sm:gap-2 px-1 sm:px-3 py-1 text-white">
-            <Globe className="text-[#B5D8EB]" size={16} />
+          <motion.div
+            className="flex items-center gap-1 sm:gap-2 px-1 sm:px-3 py-1 text-white"
+            onHoverStart={() => setIsGlobeHover(true)}
+            onHoverEnd={() => setIsGlobeHover(false)}
+          >
+            <motion.span
+              animate={isGlobeHover ? { rotateZ: 360 } : { rotateZ: 0 }}
+              transition={{ duration: 0.7, ease: "linear" }}
+              style={{ display: "inline-block" }}
+            >
+              <Globe className="text-[#B5D8EB]" size={16} />
+            </motion.span>
             <Listbox value={locale} onChange={(value) => router.replace(pathname, { locale: value })}>
               <div className="relative">
                 <ListboxButton className="bg-[#60C3A4] py-1 px-2 sm:py-2 rounded text-white cursor-pointer text-xs sm:text-sm">
@@ -91,7 +116,7 @@ const Header = () => {
                 </ListboxOptions>
               </div>
             </Listbox>
-          </div>
+          </motion.div>
         </div>
 
         <div>
@@ -99,12 +124,25 @@ const Header = () => {
         </div>
 
         {!user?.accessToken ? (
-          <Link
-            href={`/${locale}/login`}
-            className="bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-3 py-1 sm:px-4 sm:py-2 rounded-full shadow-2xl cursor-pointer text-xs sm:text-sm whitespace-nowrap"
+          <motion.div
+            whileHover={{
+              scale: 1.09,
+              boxShadow: "0px 4px 18px #B5D8EB99"
+            }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 380, damping: 15 }}
+            className="inline-block"
           >
-            {t('login')}
-          </Link>
+            <Link
+              href={`/${locale}/login`}
+              className="
+      bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-3 py-1 sm:px-4 sm:py-2 
+      rounded-full shadow-2xl cursor-pointer text-xs sm:text-sm whitespace-nowrap 
+      transition-all duration-200"
+            >
+              {t('login')}
+            </Link>
+          </motion.div>
         ) : (
           <div className="relative group">
             <div

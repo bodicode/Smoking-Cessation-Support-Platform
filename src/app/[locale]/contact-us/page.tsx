@@ -4,6 +4,7 @@ import { useState, FormEvent } from "react";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
+import { motion, AnimatePresence } from "framer-motion";
 
 const contactSchema = z.object({
     name: z.string().min(2, "validation.name"),
@@ -36,10 +37,36 @@ export default function ContactUs() {
         setForm({ name: "", email: "", subject: "", message: "" });
     };
 
+    // Animation Variants
+    const container = {
+        hidden: { opacity: 0, y: 40 },
+        visible: (i = 1) => ({
+            opacity: 1,
+            y: 0,
+            transition: {
+                delay: i * 0.15,
+                duration: 0.5,
+                type: "spring",
+            }
+        })
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center py-10">
-            <div className="w-full max-w-4xl bg-white rounded-2xl px-8 py-10 flex flex-col md:flex-row gap-8">
-                <div className="flex-1">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="w-full max-w-4xl bg-white rounded-2xl px-8 py-10 flex flex-col md:flex-row gap-8 shadow-xl"
+            >
+                {/* Info block */}
+                <motion.div
+                    variants={container}
+                    initial="hidden"
+                    animate="visible"
+                    custom={1}
+                    className="flex-1"
+                >
                     <h1 className="text-3xl font-bold text-[#60C3A4] mb-3">{t('title')}</h1>
                     <p className="text-gray-500 mb-8">{t('subtitle')}</p>
                     <div className="space-y-8 text-gray-700 text-base mb-8">
@@ -53,9 +80,17 @@ export default function ContactUs() {
                             <MapPin className="text-[#60C3A4]" size={50} /> <span>{t('address')}</span>
                         </div>
                     </div>
-                </div>
-                <form className="flex-1 space-y-5" onSubmit={handleSubmit}>
-                    <div>
+                </motion.div>
+                {/* Form block */}
+                <motion.form
+                    className="flex-1 space-y-5"
+                    onSubmit={handleSubmit}
+                    variants={container}
+                    initial="hidden"
+                    animate="visible"
+                    custom={2}
+                >
+                    <motion.div variants={container} custom={2.1}>
                         <label className="block text-gray-700 mb-1 font-medium">{t('form.name')}</label>
                         <input
                             type="text"
@@ -66,8 +101,8 @@ export default function ContactUs() {
                             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#60C3A4]"
                             required
                         />
-                    </div>
-                    <div>
+                    </motion.div>
+                    <motion.div variants={container} custom={2.2}>
                         <label className="block text-gray-700 mb-1 font-medium">{t('form.email')}</label>
                         <input
                             type="email"
@@ -78,8 +113,8 @@ export default function ContactUs() {
                             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#60C3A4]"
                             required
                         />
-                    </div>
-                    <div>
+                    </motion.div>
+                    <motion.div variants={container} custom={2.3}>
                         <label className="block text-gray-700 mb-1 font-medium">{t('form.subject')}</label>
                         <input
                             type="text"
@@ -90,8 +125,8 @@ export default function ContactUs() {
                             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#60C3A4]"
                             required
                         />
-                    </div>
-                    <div>
+                    </motion.div>
+                    <motion.div variants={container} custom={2.4}>
                         <label className="block text-gray-700 mb-1 font-medium">{t('form.message')}</label>
                         <textarea
                             name="message"
@@ -102,17 +137,43 @@ export default function ContactUs() {
                             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#60C3A4]"
                             required
                         />
-                    </div>
-                    {error && <div className="text-red-500 font-medium">{error}</div>}
-                    {success && <div className="text-green-600 font-medium">{success}</div>}
-                    <button
+                    </motion.div>
+                    <AnimatePresence>
+                        {error && (
+                            <motion.div
+                                key="error"
+                                initial={{ x: -40, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: -40, opacity: 0 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 24 }}
+                                className="text-red-500 font-medium"
+                            >
+                                {error}
+                            </motion.div>
+                        )}
+                        {success && (
+                            <motion.div
+                                key="success"
+                                initial={{ scale: 0.8, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                exit={{ scale: 0.8, opacity: 0 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                className="text-green-600 font-medium"
+                            >
+                                {success}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                    <motion.button
                         type="submit"
+                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.03 }}
                         className="cursor-pointer w-full bg-[#60C3A4] hover:bg-[#2eac84] text-white font-semibold py-2 rounded-lg transition"
                     >
                         {t('form.submit')}
-                    </button>
-                </form>
-            </div>
+                    </motion.button>
+                </motion.form>
+            </motion.div>
         </div>
     );
 }
