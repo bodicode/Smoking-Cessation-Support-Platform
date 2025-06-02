@@ -26,3 +26,7 @@ export function formatDate(iso: string) {
     hour: "2-digit", minute: "2-digit"
   });
 }
+
+export function pad(n: number) {
+  return n.toString().padStart(2, '0');
+}

@@ -8,6 +8,7 @@ import { Montserrat } from 'next/font/google';
 import ClientLayout from '../ClientLayout';
 import ApolloClientProvider from '../../apollo/apolloProviders';
 import ReduxProvider from '../ReduxProvider';
+import ScrollToTop from '@/components/ScrollToTop';
 
 const mont = Montserrat({
   subsets: ['latin', 'latin-ext'],
@@ -46,6 +47,7 @@ export default async function LocaleLayout({
             <NextIntlClientProvider messages={messages}>
               <ClientLayout>
                 {children}
+                <ScrollToTop />
               </ClientLayout>
             </NextIntlClientProvider>
           </ReduxProvider>
