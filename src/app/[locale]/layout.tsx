@@ -9,6 +9,7 @@ import ClientLayout from '../ClientLayout';
 import ApolloClientProvider from '../../apollo/apolloProviders';
 import ReduxProvider from '../ReduxProvider';
 import ScrollToTop from '@/components/ScrollToTop';
+import ProgressBar from '@/components/ProgressBar';
 
 const mont = Montserrat({
   subsets: ['latin', 'latin-ext'],
@@ -48,6 +49,7 @@ export default async function LocaleLayout({
               <ClientLayout>
                 {children}
                 <ScrollToTop />
+                <ProgressBar />
               </ClientLayout>
             </NextIntlClientProvider>
           </ReduxProvider>

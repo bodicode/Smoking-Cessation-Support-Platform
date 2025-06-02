@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FaGoogle } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 import { SignupForm, signupSchema } from "@/schemas/signupSchema";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function SignupPage() {
     const t = useTranslations("signup");
@@ -25,9 +26,25 @@ export default function SignupPage() {
         console.log("Đăng ký:", data);
     };
 
+    // Hiệu ứng cho form và ảnh
+    const fadeLeft = {
+        hidden: { opacity: 0, x: -80 },
+        visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: "easeOut" } }
+    };
+    const fadeUp = {
+        hidden: { opacity: 0, y: 40 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+    };
+
     return (
         <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#f7f4ee]">
-            <div className="hidden lg:block my-auto">
+            {/* Ảnh trái */}
+            <motion.div
+                variants={fadeLeft}
+                initial="hidden"
+                animate="visible"
+                className="hidden lg:block my-auto"
+            >
                 <Image
                     src="/images/signup.jpg"
                     alt="Signup"
@@ -35,14 +52,40 @@ export default function SignupPage() {
                     height={600}
                     className="w-full h-[100vh] object-cover rounded-r-3xl"
                 />
-            </div>
+            </motion.div>
 
-            <div className="flex flex-col justify-center items-center px-6 py-12 lg:px-24">
+            {/* Form phải */}
+            <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                animate="visible"
+                className="flex flex-col justify-center items-center px-6 py-12 lg:px-24"
+            >
                 <div className="w-full max-w-md">
-                    <h2 className="text-3xl font-bold mb-2">{t("title")}</h2>
-                    <p className="text-sm text-gray-600 mb-6">{t("description")}</p>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 24 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.15, duration: 0.4 }}
+                        className="text-3xl font-bold mb-2"
+                    >
+                        {t("title")}
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0, y: 24 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.25, duration: 0.4 }}
+                        className="text-sm text-gray-600 mb-6"
+                    >
+                        {t("description")}
+                    </motion.p>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    <motion.form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className="space-y-4"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3, duration: 0.5 }}
+                    >
                         <div>
                             <label className="block text-sm font-medium mb-1">{t("nameLabel")}</label>
                             <input
@@ -51,9 +94,20 @@ export default function SignupPage() {
                                 placeholder={t("namePlaceholder")}
                                 className="w-full border border-gray-300 px-4 py-2 rounded"
                             />
-                            {errors.name?.message && (
-                                <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
-                            )}
+                            <AnimatePresence>
+                                {errors.name?.message && (
+                                    <motion.p
+                                        key="name-error"
+                                        initial={{ opacity: 0, x: -16 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -16 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="text-sm text-red-600 mt-1"
+                                    >
+                                        {errors.name.message}
+                                    </motion.p>
+                                )}
+                            </AnimatePresence>
                         </div>
 
                         <div>
@@ -64,9 +118,20 @@ export default function SignupPage() {
                                 placeholder={t("emailPlaceholder")}
                                 className="w-full border border-gray-300 px-4 py-2 rounded"
                             />
-                            {errors.email?.message && (
-                                <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
-                            )}
+                            <AnimatePresence>
+                                {errors.email?.message && (
+                                    <motion.p
+                                        key="email-error"
+                                        initial={{ opacity: 0, x: -16 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -16 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="text-sm text-red-600 mt-1"
+                                    >
+                                        {errors.email.message}
+                                    </motion.p>
+                                )}
+                            </AnimatePresence>
                         </div>
 
                         <div>
@@ -77,18 +142,31 @@ export default function SignupPage() {
                                 placeholder={t("passwordPlaceholder")}
                                 className="w-full border border-gray-300 px-4 py-2 rounded"
                             />
-                            {errors.password?.message && (
-                                <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>
-                            )}
+                            <AnimatePresence>
+                                {errors.password?.message && (
+                                    <motion.p
+                                        key="password-error"
+                                        initial={{ opacity: 0, x: -16 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -16 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="text-sm text-red-600 mt-1"
+                                    >
+                                        {errors.password.message}
+                                    </motion.p>
+                                )}
+                            </AnimatePresence>
                         </div>
 
-                        <button
+                        <motion.button
                             type="submit"
+                            whileTap={{ scale: 0.96 }}
+                            whileHover={{ scale: 1.02 }}
                             className="w-full bg-[#60C3A4] hover:bg-[#2eac84] text-white font-bold py-2 rounded cursor-pointer transition duration-150"
                         >
                             {t("signUp")}
-                        </button>
-                    </form>
+                        </motion.button>
+                    </motion.form>
 
                     <div className="flex items-center my-6">
                         <div className="flex-grow h-px bg-gray-300"></div>
@@ -96,12 +174,22 @@ export default function SignupPage() {
                         <div className="flex-grow h-px bg-gray-300"></div>
                     </div>
 
-                    <div className="space-y-3">
-                        <button className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded hover:bg-gray-100 cursor-pointer transition duration-150">
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4, duration: 0.3 }}
+                        className="space-y-3"
+                    >
+                        <motion.button
+                            type="button"
+                            whileTap={{ scale: 0.97 }}
+                            whileHover={{ scale: 1.03 }}
+                            className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded hover:bg-gray-100 cursor-pointer transition duration-150"
+                        >
                             <FaGoogle />
                             {t("signUpWithGoogle")}
-                        </button>
-                    </div>
+                        </motion.button>
+                    </motion.div>
 
                     <div className="text-sm text-center mt-6">
                         {t("haveAccount")} {" "}
@@ -116,8 +204,7 @@ export default function SignupPage() {
                         </Link>
                     </div>
                 </div>
-            </div>
-
+            </motion.div>
         </div>
     );
 }
