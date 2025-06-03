@@ -3,10 +3,14 @@
     "description": "Start your journey. Sign up to join the ReAir community.",
     "nameLabel": "Full Name",
     "namePlaceholder": "Full name",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "Username",
     "emailLabel": "Email",
     "emailPlaceholder": "email@gmail.com",
     "passwordLabel": "Password",
     "passwordPlaceholder": "At least 6 characters",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
     "signUp": "Sign up",
     "or": "Or",
     "signUpWithGoogle": "Sign up with Google",
@@ -15,7 +19,15 @@
     "schema": {
         "name": "Name must be at least 2 characters",
         "email": "Invalid email address",
-        "password": "Password must be at least 6 characters"
+        "username": "Username must be at least 5 characters",
+        "password": "Password must be at least 6 characters",
+        "confirmPassword": "Password is not match"
     },
-    "back": "Back to home page"
+    "back": "Back to home page",
+    "error": {
+        "passwordMismatch": "Password and confirm password must match",
+        "emailTaken": "This email is already registered",
+        "usernameTaken": "Username already exists",
+        "generic": "An error occurred, please try again!"
+    }
 }

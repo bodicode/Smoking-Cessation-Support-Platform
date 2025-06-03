@@ -8,12 +8,23 @@ import { FaGoogle } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 import { SignupForm, signupSchema } from "@/schemas/signupSchema";
 import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { SIGNUP_MUTATION } from "@/graphql/mutations/signupMutation";
+import { parseSignupError } from "@/utils/parseGraphqlError";
+import Loading from "@/components/Loading";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
-    const t = useTranslations("signup");
+    const t = useTranslations('signup');
+    const tError = useTranslations('signup.error');
+
+    const [signup, { loading, error }] = useMutation(SIGNUP_MUTATION);
+    const [successMsg, setSuccessMsg] = useState("");
+    const [fieldError, setFieldError] = useState("");
+    const router = useRouter()
 
     const schema = signupSchema(t);
-
     const {
         register,
         handleSubmit,
@@ -22,11 +33,40 @@ export default function SignupPage() {
         resolver: zodResolver(schema),
     });
 
-    const onSubmit = (data: SignupForm) => {
-        console.log("Đăng ký:", data);
+    const onSubmit = async (data: SignupForm) => {
+        setSuccessMsg("");
+        setFieldError("");
+        try {
+            const res = await signup({
+                variables: {
+                    signupInput: {
+                        email: data.email,
+                        username: data.username,
+                        name: data.name,
+                        password: data.password,
+                        confirmPassword: data.confirmPassword,
+                    }
+                }
+            });
+            if (res?.data?.signup?.message) {
+                setSuccessMsg(res.data.signup.message);
+                setTimeout(() => {
+                    router.push("/login");
+                }, 1000);
+            }
+        } catch (err: any) {
+            const gqlErr = err?.graphQLErrors?.[0];
+            const originalError = gqlErr?.extensions?.originalError;
+            let rawMessage = "";
+            if (originalError?.message && Array.isArray(originalError.message)) {
+                rawMessage = originalError.message.map((m: any) => m.message).join(", ");
+            } else if (gqlErr?.message) {
+                rawMessage = gqlErr.message;
+            }
+            setFieldError(tError(parseSignupError(rawMessage)));
+        }
     };
 
-    // Hiệu ứng cho form và ảnh
     const fadeLeft = {
         hidden: { opacity: 0, x: -80 },
         visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: "easeOut" } }
@@ -38,7 +78,6 @@ export default function SignupPage() {
 
     return (
         <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#f7f4ee]">
-            {/* Ảnh trái */}
             <motion.div
                 variants={fadeLeft}
                 initial="hidden"
@@ -50,11 +89,10 @@ export default function SignupPage() {
                     alt="Signup"
                     width={600}
                     height={600}
-                    className="w-full h-[100vh] object-cover rounded-r-3xl"
+                    className="w-full h-full object-cover rounded-r-3xl"
                 />
             </motion.div>
 
-            {/* Form phải */}
             <motion.div
                 variants={fadeUp}
                 initial="hidden"
@@ -79,6 +117,26 @@ export default function SignupPage() {
                         {t("description")}
                     </motion.p>
 
+                    {/* THÔNG BÁO THÀNH CÔNG/LỖI */}
+                    {successMsg && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-green-600 text-sm mb-2"
+                        >
+                            {successMsg}
+                        </motion.div>
+                    )}
+                    {(fieldError || error) && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-red-600 text-sm mb-2"
+                        >
+                            {fieldError || (error as any)?.message || t("error.generic")}
+                        </motion.div>
+                    )}
+
                     <motion.form
                         onSubmit={handleSubmit(onSubmit)}
                         className="space-y-4"
@@ -93,6 +151,7 @@ export default function SignupPage() {
                                 type="text"
                                 placeholder={t("namePlaceholder")}
                                 className="w-full border border-gray-300 px-4 py-2 rounded"
+                                disabled={loading}
                             />
                             <AnimatePresence>
                                 {errors.name?.message && (
@@ -111,12 +170,38 @@ export default function SignupPage() {
                         </div>
 
                         <div>
+                            <label className="block text-sm font-medium mb-1">{t("usernameLabel")}</label>
+                            <input
+                                {...register("username")}
+                                type="text"
+                                placeholder={t("usernamePlaceholder")}
+                                className="w-full border border-gray-300 px-4 py-2 rounded"
+                                disabled={loading}
+                            />
+                            <AnimatePresence>
+                                {errors.username?.message && (
+                                    <motion.p
+                                        key="username-error"
+                                        initial={{ opacity: 0, x: -16 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -16 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="text-sm text-red-600 mt-1"
+                                    >
+                                        {errors.username.message}
+                                    </motion.p>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
+                        <div>
                             <label className="block text-sm font-medium mb-1">{t("emailLabel")}</label>
                             <input
                                 {...register("email")}
                                 type="email"
                                 placeholder={t("emailPlaceholder")}
                                 className="w-full border border-gray-300 px-4 py-2 rounded"
+                                disabled={loading}
                             />
                             <AnimatePresence>
                                 {errors.email?.message && (
@@ -141,6 +226,7 @@ export default function SignupPage() {
                                 type="password"
                                 placeholder={t("passwordPlaceholder")}
                                 className="w-full border border-gray-300 px-4 py-2 rounded"
+                                disabled={loading}
                             />
                             <AnimatePresence>
                                 {errors.password?.message && (
@@ -158,13 +244,39 @@ export default function SignupPage() {
                             </AnimatePresence>
                         </div>
 
+                        <div>
+                            <label className="block text-sm font-medium mb-1">{t("confirmPasswordLabel")}</label>
+                            <input
+                                {...register("confirmPassword")}
+                                type="password"
+                                placeholder={t("confirmPasswordPlaceholder")}
+                                className="w-full border border-gray-300 px-4 py-2 rounded"
+                                disabled={loading}
+                            />
+                            <AnimatePresence>
+                                {errors.confirmPassword?.message && (
+                                    <motion.p
+                                        key="confirmPassword-error"
+                                        initial={{ opacity: 0, x: -16 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -16 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="text-sm text-red-600 mt-1"
+                                    >
+                                        {errors.confirmPassword.message}
+                                    </motion.p>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
                         <motion.button
                             type="submit"
                             whileTap={{ scale: 0.96 }}
                             whileHover={{ scale: 1.02 }}
                             className="w-full bg-[#60C3A4] hover:bg-[#2eac84] text-white font-bold py-2 rounded cursor-pointer transition duration-150"
+                            disabled={loading}
                         >
-                            {t("signUp")}
+                            {loading ? <Loading /> : t("signUp")}
                         </motion.button>
                     </motion.form>
 
@@ -192,7 +304,7 @@ export default function SignupPage() {
                     </motion.div>
 
                     <div className="text-sm text-center mt-6">
-                        {t("haveAccount")} {" "}
+                        {t("haveAccount")}{" "}
                         <Link href="/login" className="text-blue-600 hover:underline">
                             {t("signIn")}
                         </Link>
