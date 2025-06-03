@@ -7,6 +7,10 @@
     "emailPlaceholder": "email@gmail.com",
     "passwordLabel": "Mật khẩu",
     "passwordPlaceholder": "Ít nhất 6 ký tự",
+    "usernameLabel": "Tên đăng nhập",
+    "usernamePlaceholder": "Tên Đăng nhập",
+    "confirmPasswordLabel": "Xác nhận mật khẩu",
+    "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
     "signUp": "Đăng ký",
     "or": "Hoặc",
     "signUpWithGoogle": "Đăng ký bằng Google",
@@ -15,7 +19,15 @@
     "schema": {
         "name": "Tên ít nhất 2 ký tự",
         "email": "Email không hợp lệ",
-        "password": "Mật khẩu ít nhất 6 ký tự"
+        "username": "Tên đăng nhập ít nhất 5 ký tự",
+        "password": "Mật khẩu ít nhất 6 ký tự",
+        "confirmPassword": "Mật khẩu không khớp"
     },
-    "back": "Quay lại trang chủ"
+    "back": "Quay lại trang chủ",
+    "error": {
+        "passwordMismatch": "Mật khẩu và xác nhận mật khẩu không khớp",
+        "emailTaken": "Email này đã được đăng ký",
+        "usernameTaken": "Tên đăng nhập đã tồn tại",
+        "generic": "Có lỗi xảy ra, vui lòng thử lại!"
+    }
 }

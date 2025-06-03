@@ -14,8 +14,8 @@ import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { setUser } from "@/store/userSlice";
 import Loading from "@/components/Loading";
-import { parseGraphqlError } from "@/utils/parseGraphqlError";
 import { motion, AnimatePresence } from "framer-motion";
+import { parseLoginError } from "@/utils/parseGraphqlError";
 
 export default function LoginPage() {
     const t = useTranslations("login");
@@ -62,7 +62,7 @@ export default function LoginPage() {
             localStorage.setItem("access_token", accessToken);
             router.push('/');
         } catch (err: any) {
-            setCustomError(parseGraphqlError(err));
+            setCustomError(parseLoginError(err));
         }
     };
 
