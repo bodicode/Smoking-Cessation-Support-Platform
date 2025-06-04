@@ -1,66 +1,58 @@
-import { notFound } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+'use client';
+
+import { useParams, notFound } from 'next/navigation';
 import Image from 'next/image';
-import { blogs } from '../../../../../data';
 import { RxAvatar } from 'react-icons/rx';
-import Link from 'next/link';
 import PopularBlogs from '@/components/blog/PopularBlogs';
-import { use } from 'react';
+import { useQuery } from '@apollo/client';
+import { GET_BLOG_BY_SLUG } from '@/graphql/queries/blogs/getBlogBySlug';
+import Loading from '@/components/Loading';
 
-type Props = {
-    params: Promise<{ locale: string; slug: string }>
-};
+export default function BlogDetail() {
+    const params = useParams();
+    const slug = params?.slug as string;
 
-export default function BlogDetail({ params }: Props) {
-    const { locale, slug } = use(params);
-    const t = useTranslations('blogSection');
-    const tDetail = useTranslations('blogDetail');
+    const { data, loading, error } = useQuery(GET_BLOG_BY_SLUG, {
+        variables: { slug }
+    });
 
-    const blog = blogs.find((b) => b.slug === slug);
+    if (loading) return <div className="flex justify-center py-20"><Loading /></div>;
 
-    if (!blog) return notFound();
+    if (error) return <div className="text-center py-10 text-red-500">Lỗi tải dữ liệu blog.</div>;
+    if (!data?.blogBySlug) return notFound();
 
-    const title =
-        locale === 'vi'
-            ? t(`${blog.slug}.title`)
-            : t(`${blog.slug}.title`);
-    const excerpt =
-        locale === 'vi'
-            ? t(`${blog.slug}.excerpt`)
-            : t(`${blog.slug}.excerpt`);
-    const content =
-        locale === 'vi'
-            ? t(`${blog.slug}.content`)
-            : t(`${blog.slug}.content`);
+    const blog = data.blogBySlug;
 
+    console.log(blog)
 
     return (
         <div className="min-h-screen py-12 px-2 sm:px-8 bg-[#f9f5ec]">
             <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div className="md:col-span-2">
                     <h1 className="text-5xl font-extrabold text-[#03256C] mb-8 leading-tight">
-                        {title}
+                        {blog.title}
                     </h1>
                     <div className="flex items-center gap-3 mb-8">
                         <RxAvatar size={45} />
                         <div>
                             <div className="font-semibold text-[#03256C]">
-                                {tDetail('author')}: {blog.author}
+                                Tác giả: {blog.author.name || "Admin"}
                             </div>
                             <div className="text-sm">
-                                {tDetail('publishedAt')}: {blog.date}
+                                Ngày đăng: {blog.created_at?.split('T')[0]?.split('-').reverse().join('.') || ""}
                             </div>
                         </div>
                     </div>
-                    <div className="text-lg mb-6 whitespace-pre-line leading-relaxed">
-                        {content}
-                    </div>
+                    <div
+                        className="text-lg mb-6 whitespace-pre-line leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: blog.content }}
+                    />
                 </div>
                 <div className="flex flex-col gap-8">
                     <div className="w-full aspect-video relative rounded-xl overflow-hidden">
                         <Image
-                            src={blog.image}
-                            alt={title}
+                            src={blog.cover_image || "/images/default-blog.jpg"}
+                            alt={blog.title || slug}
                             fill
                             className="object-cover"
                         />

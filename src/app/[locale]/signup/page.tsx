@@ -9,17 +9,17 @@ import { useTranslations } from "next-intl";
 import { SignupForm, signupSchema } from "@/schemas/signupSchema";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { useMutation } from "@apollo/client";
-import { SIGNUP_MUTATION } from "@/graphql/mutations/signupMutation";
 import { parseSignupError } from "@/utils/parseGraphqlError";
 import Loading from "@/components/Loading";
 import { useRouter } from "next/navigation";
+import { useSignup } from "@/graphql/hooks/useSignup";
+import { signupHandler } from "@/services/signupService";
 
 export default function SignupPage() {
     const t = useTranslations('signup');
     const tError = useTranslations('signup.error');
 
-    const [signup, { loading, error }] = useMutation(SIGNUP_MUTATION);
+    const [signup, { loading, error }] = useSignup()
     const [successMsg, setSuccessMsg] = useState("");
     const [fieldError, setFieldError] = useState("");
     const router = useRouter()
@@ -34,37 +34,15 @@ export default function SignupPage() {
     });
 
     const onSubmit = async (data: SignupForm) => {
-        setSuccessMsg("");
-        setFieldError("");
-        try {
-            const res = await signup({
-                variables: {
-                    signupInput: {
-                        email: data.email,
-                        username: data.username,
-                        name: data.name,
-                        password: data.password,
-                        confirmPassword: data.confirmPassword,
-                    }
-                }
-            });
-            if (res?.data?.signup?.message) {
-                setSuccessMsg(res.data.signup.message);
-                setTimeout(() => {
-                    router.push("/login");
-                }, 1000);
-            }
-        } catch (err: any) {
-            const gqlErr = err?.graphQLErrors?.[0];
-            const originalError = gqlErr?.extensions?.originalError;
-            let rawMessage = "";
-            if (originalError?.message && Array.isArray(originalError.message)) {
-                rawMessage = originalError.message.map((m: any) => m.message).join(", ");
-            } else if (gqlErr?.message) {
-                rawMessage = gqlErr.message;
-            }
-            setFieldError(tError(parseSignupError(rawMessage)));
-        }
+        await signupHandler({
+            data,
+            signup,
+            setSuccessMsg,
+            setFieldError,
+            router,
+            tError,
+            parseSignupError,
+        });
     };
 
     const fadeLeft = {
@@ -117,7 +95,6 @@ export default function SignupPage() {
                         {t("description")}
                     </motion.p>
 
-                    {/* THÔNG BÁO THÀNH CÔNG/LỖI */}
                     {successMsg && (
                         <motion.div
                             initial={{ opacity: 0, y: -12 }}
