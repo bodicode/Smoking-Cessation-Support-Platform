@@ -11,11 +11,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useLogin } from "@/graphql/hooks/useLogin";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { jwtDecode } from "jwt-decode";
-import { setUser } from "@/store/userSlice";
 import Loading from "@/components/Loading";
-import { parseGraphqlError } from "@/utils/parseGraphqlError";
 import { motion, AnimatePresence } from "framer-motion";
+import { loginHandler } from "@/services/loginService";
 
 export default function LoginPage() {
     const t = useTranslations("login");
@@ -33,40 +31,15 @@ export default function LoginPage() {
     });
 
     const onSubmit = async (data: LoginForm) => {
-        setCustomError(null);
-        try {
-            const response = await login({
-                variables: {
-                    loginInput: {
-                        email: data.email,
-                        password: data.password,
-                    },
-                },
-            });
-
-            const accessToken = response.data?.login?.data?.session?.access_token;
-            if (!accessToken) {
-                setCustomError("Không nhận được token!");
-                return;
-            }
-
-            const decoded: any = jwtDecode(accessToken);
-            const userData = {
-                id: decoded.sub,
-                email: decoded.email,
-                role: decoded.user_metadata?.role || decoded.role || "",
-                accessToken,
-            };
-
-            dispatch(setUser(userData));
-            localStorage.setItem("access_token", accessToken);
-            router.push('/');
-        } catch (err: any) {
-            setCustomError(parseGraphqlError(err));
-        }
+        await loginHandler({
+            data,
+            login,
+            dispatch,
+            router,
+            setCustomError,
+        });
     };
 
-    // Hiệu ứng chung cho các khối
     const fadeUp = {
         hidden: { opacity: 0, y: 40 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }

@@ -2,8 +2,8 @@ import React from "react";
 
 const Loading = ({
     size = 24,
-    color = "#fff",
-    className = "",
+    color = "#333",
+    className = "mx-auto",
 }) => (
     <svg
         className={`animate-spin ${className}`}
