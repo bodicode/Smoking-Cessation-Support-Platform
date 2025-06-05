@@ -8,8 +8,8 @@ import { Montserrat } from 'next/font/google';
 import ClientLayout from '../ClientLayout';
 import ApolloClientProvider from '../../apollo/apolloProviders';
 import ReduxProvider from '../ReduxProvider';
-import ScrollToTop from '@/components/ScrollToTop';
-import ProgressBar from '@/components/ProgressBar';
+import ScrollToTop from '@/components/common/ScrollToTop';
+import ProgressBar from '@/components/common/ProgressBar';
 
 const mont = Montserrat({
   subsets: ['latin', 'latin-ext'],
@@ -32,8 +32,8 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  const { locale } = params;
-
+  const { locale } = await params;
+  
   if (!routing.locales.includes(locale as Locale)) {
     notFound();
   }

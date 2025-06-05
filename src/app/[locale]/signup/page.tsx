@@ -10,7 +10,7 @@ import { SignupForm, signupSchema } from "@/schemas/signupSchema";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { parseSignupError } from "@/utils/parseGraphqlError";
-import Loading from "@/components/Loading";
+import Loading from "@/components/common/Loading";
 import { useRouter } from "next/navigation";
 import { useSignup } from "@/graphql/hooks/useSignup";
 import { signupHandler } from "@/services/signupService";

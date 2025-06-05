@@ -10,7 +10,8 @@ import { MenuBar } from "@/components/editor/MenuBar";
 import useRequireRole from "@/hooks/useRequireRole";
 import { createBlog, getBlogBySlug, updateBlog } from "@/services/blogService";
 import { useRouter, useSearchParams } from "next/navigation";
-import Loading from "@/components/Loading";
+import Loading from "@/components/common/Loading";
+import ConfirmModal from "@/components/common/ModalConfirm";
 
 export default function BlogCreatePage() {
   useRequireRole("COACH");
@@ -19,16 +20,16 @@ export default function BlogCreatePage() {
   const editSlug = searchParams.get("edit") || undefined;
 
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState(""); // Dùng lưu nội dung hiện tại
+  const [content, setContent] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [blogId, setBlogId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Khởi tạo editor KHÔNG set content lúc tạo
   const editor = useEditor({
     extensions: [StarterKit, Underline],
     content: "",
@@ -43,23 +44,20 @@ export default function BlogCreatePage() {
     },
   });
 
-  // Lấy blog khi chỉnh sửa
   const { blog, loading: loadingBlog } = getBlogBySlug(editSlug);
 
-  // Đổ data blog lên form khi fetch xong & editor đã mount
   useEffect(() => {
     if (editor && blog) {
       setBlogId(blog.id);
       setTitle(blog.title || "");
       setContent(blog.content || "");
-      editor.commands.setContent(blog.content || ""); // Đúng thời điểm: blog + editor đều đã có
+      editor.commands.setContent(blog.content || "");
       setImagePreview(blog.cover_image || null);
-      setCoverImage(null); // reset file input
+      setCoverImage(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blog, editor]);
 
-  // Chọn ảnh
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -68,15 +66,13 @@ export default function BlogCreatePage() {
     }
   };
 
-  // Xoá ảnh
   const handleRemoveImage = () => {
     setCoverImage(null);
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  // Submit
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (
       !title.trim() ||
@@ -88,6 +84,15 @@ export default function BlogCreatePage() {
       return;
     }
     setError("");
+
+    if (editSlug && blogId) {
+      setShowConfirmModal(true);
+      return;
+    }
+    submitBlog();
+  };
+
+  const submitBlog = async () => {
     setLoading(true);
     try {
       let result;
@@ -117,6 +122,14 @@ export default function BlogCreatePage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleConfirmUpdate = () => {
+    setShowConfirmModal(false);
+    submitBlog();
+  };
+  const handleCancelUpdate = () => {
+    setShowConfirmModal(false);
   };
 
   if (loadingBlog || loading) {
@@ -198,21 +211,29 @@ export default function BlogCreatePage() {
           {error && <div className="text-red-400 font-semibold">{error}</div>}
           <button
             type="submit"
-            className={`w-full cursor-pointer bg-[#03256C] hover:bg-[#041E42] text-white font-semibold py-2 rounded-full mt-4 shadow-lg transition ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`w-full cursor-pointer bg-[#03256C] hover:bg-[#041E42] text-white font-semibold py-2 rounded-full mt-4 shadow-lg transition ${loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             disabled={loading}
           >
             {loading
               ? editSlug
-                ? "Đang cập nhật..."
-                : "Đang đăng..."
+                ? <Loading />
+                : <Loading />
               : editSlug
-              ? "Cập nhật bài viết"
-              : "Đăng bài"}
+                ? "Cập nhật bài viết"
+                : "Đăng bài"}
           </button>
         </form>
       </div>
+
+      <ConfirmModal
+        open={showConfirmModal}
+        title="Xác nhận cập nhật"
+        message="Bạn có chắc chắn muốn cập nhật bài viết này không?"
+        onConfirm={handleConfirmUpdate}
+        onCancel={handleCancelUpdate}
+      />
+
     </div>
   );
 }

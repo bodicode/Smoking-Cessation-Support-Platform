@@ -6,7 +6,7 @@ import { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import Loading from "@/components/Loading";
+import Loading from "@/components/common/Loading";
 import { getBlogs, getBlogsInSidebar } from "@/services/blogService";
 import { useSelector } from "react-redux";
 

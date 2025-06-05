@@ -11,7 +11,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useLogin } from "@/graphql/hooks/useLogin";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import Loading from "@/components/Loading";
+import Loading from "@/components/common/Loading";
 import { motion, AnimatePresence } from "framer-motion";
 import { loginHandler } from "@/services/loginService";
 

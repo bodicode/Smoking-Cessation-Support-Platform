@@ -14,7 +14,7 @@ import {
 } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "@/store/userSlice";
-import Logo from "../Logo";
+import Logo from "../common/Logo";
 import Notification from "./Notification";
 import { motion } from "framer-motion";
 

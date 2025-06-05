@@ -6,15 +6,18 @@ import { RxAvatar } from "react-icons/rx";
 import PopularBlogs from "@/components/blog/PopularBlogs";
 import { useQuery } from "@apollo/client";
 import { GET_BLOG_BY_SLUG } from "@/graphql/queries/blogs/getBlogBySlug";
-import Loading from "@/components/Loading";
+import Loading from "@/components/common/Loading";
 import { useSelector } from "react-redux";
 import { removeBlog } from "@/services/blogService";
 import client from "@/apollo/apolloClient";
+import { useState } from "react";
+import ConfirmModal from "@/components/common/ModalConfirm";
 
 export default function BlogDetail() {
   const params = useParams();
   const slug = params?.slug as string;
   const router = useRouter();
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   const { data, loading, error } = useQuery(GET_BLOG_BY_SLUG, {
     variables: { slug },
@@ -23,18 +26,17 @@ export default function BlogDetail() {
   const user = useSelector((state: any) => state.user);
 
   const handleDelete = async () => {
-    if (confirm("Bạn chắc chắn muốn xóa blog này?")) {
-      try {
-        await removeBlog(blog.id);
-        alert("Xóa thành công!");
-        client.cache.evict({
-          id: client.cache.identify({ __typename: "Blog", id: blog.id }),
-        });
-        client.cache.gc();
-        router.push("/blog");
-      } catch (err: any) {
-        alert(err.message || "Xóa blog thất bại!");
-      }
+    setOpenConfirm(false);
+    try {
+      await removeBlog(blog.id);
+      alert("Xóa thành công!");
+      client.cache.evict({
+        id: client.cache.identify({ __typename: "Blog", id: blog.id }),
+      });
+      client.cache.gc();
+      router.push("/blog");
+    } catch (err: any) {
+      alert(err.message || "Xóa blog thất bại!");
     }
   };
 
@@ -93,27 +95,32 @@ export default function BlogDetail() {
             </div>
           </div>
 
+          <div
+            className="prose prose-blue mb-6"
+            dangerouslySetInnerHTML={{ __html: blog.content }}
+          />
+
           {isOwner && (
-            <div className="flex gap-2 mb-6">
+            <div className="flex gap-2 mb-6 justify-end">
               <button
                 onClick={() => router.push(`/blog/new?edit=${slug}`)}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                className="cursor-pointer px-4 py-2 bg-gradient-to-r from-sky-600 to-green-400 hover:to-green-500 rounded hover:scale-105 active:scale-100 transition-all duration-150"
               >
                 Chỉnh sửa
               </button>
               <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                onClick={() => setOpenConfirm(true)}
+                className="cursor-pointer px-4 py-2 
+                      bg-gradient-to-r from-rose-500 via-red-500 to-pink-500 
+                      text-white rounded
+                      hover:from-red-600 hover:to-pink-600 
+                      hover:scale-105 active:scale-100 
+                      transition-all duration-150"
               >
                 Xóa
               </button>
             </div>
           )}
-
-          <div
-            className="prose prose-blue mb-6"
-            dangerouslySetInnerHTML={{ __html: blog.content }}
-          />
         </div>
         <div className="flex flex-col gap-8">
           <div className="w-full aspect-video relative rounded-xl overflow-hidden">
@@ -131,6 +138,14 @@ export default function BlogDetail() {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        open={openConfirm}
+        title="Xác nhận xóa"
+        message="Bạn chắc chắn muốn xóa blog này?"
+        onConfirm={handleDelete}
+        onCancel={() => setOpenConfirm(false)}
+      />
     </div>
   );
 }
