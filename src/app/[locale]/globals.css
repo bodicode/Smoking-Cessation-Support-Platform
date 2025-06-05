@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap&subset=latin-ext');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap&subset=latin-ext");
 @import "tailwindcss";
 
 html,
@@ -7,6 +7,23 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+.prose ul,
+.prose ol {
+  list-style-position: inside !important;
+  padding-left: 1.5rem !important;
+}
+
+.prose ul {
+  list-style-type: disc !important;
+}
+.prose ol {
+  list-style-type: decimal !important;
+}
+
+.prose li > p {
+  margin: 0 !important;
+  display: inline !important;
+}
 
 @custom-variant dark (&:is(.dark *));
 
