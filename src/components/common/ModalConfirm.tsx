@@ -28,7 +28,7 @@ export default function ConfirmModal({
                     exit={{ opacity: 0 }}
                 >
                     <motion.div
-                        className="bg-white rounded-2xl shadow-xl max-w-xs w-full p-6 text-center"
+                        className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 text-center"
                         initial={{ scale: 0.8, y: 40 }}
                         animate={{ scale: 1, y: 0 }}
                         exit={{ scale: 0.8, y: 40 }}

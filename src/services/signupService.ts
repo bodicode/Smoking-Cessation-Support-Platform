@@ -4,22 +4,16 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 export async function signupHandler({
     data,
     signup,
-    setSuccessMsg,
-    setFieldError,
     router,
     tError,
     parseSignupError,
 }: {
     data: SignupForm,
     signup: (options: { variables: { signupInput: SignupForm } }) => Promise<any>,
-    setSuccessMsg: (msg: string) => void,
-    setFieldError: (msg: string) => void,
     router: AppRouterInstance,
     tError: (msg: string) => string,
     parseSignupError: (msg: string) => string,
 }) {
-    setSuccessMsg("");
-    setFieldError("");
     try {
         const res = await signup({
             variables: {
@@ -33,11 +27,12 @@ export async function signupHandler({
             }
         });
         if (res?.data?.signup?.message) {
-            setSuccessMsg(res.data.signup.message);
             setTimeout(() => {
                 router.push("/login");
-            }, 1000);
+            }, 1200);
+            return res.data.signup.message; // trả message thành công
         }
+        throw new Error("Đăng ký thất bại!");
     } catch (err: any) {
         const gqlErr = err?.graphQLErrors?.[0];
         const originalError = gqlErr?.extensions?.originalError;
@@ -47,6 +42,7 @@ export async function signupHandler({
         } else if (gqlErr?.message) {
             rawMessage = gqlErr.message;
         }
-        setFieldError(tError(parseSignupError(rawMessage)));
+        throw new Error(tError(parseSignupError(rawMessage)));
     }
 }
+

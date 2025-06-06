@@ -14,6 +14,8 @@ import { useDispatch } from "react-redux";
 import Loading from "@/components/common/Loading";
 import { motion, AnimatePresence } from "framer-motion";
 import { loginHandler } from "@/services/loginService";
+import toast from "react-hot-toast";
+import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
 
 export default function LoginPage() {
     const t = useTranslations("login");
@@ -31,13 +33,18 @@ export default function LoginPage() {
     });
 
     const onSubmit = async (data: LoginForm) => {
-        await loginHandler({
-            data,
-            login,
-            dispatch,
-            router,
-            setCustomError,
-        });
+        try {
+            await loginHandler({
+                data,
+                login,
+                dispatch,
+                router,
+                setCustomError,
+            });
+            toast.custom(<SuccessToast message="Đăng nhập thành công!" />);
+        } catch (err: any) {
+            toast.custom(<ErrorToast message={err?.message} />);
+        }
     };
 
     const fadeUp = {
@@ -128,21 +135,6 @@ export default function LoginPage() {
                                 t("signIn")
                             )}
                         </motion.button>
-
-                        <AnimatePresence>
-                            {(customError || error) && (
-                                <motion.div
-                                    key="error"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -20 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="text-red-600 text-sm mt-2"
-                                >
-                                    {customError || error?.message}
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
                     </motion.form>
 
                     <div className="flex items-center my-6">

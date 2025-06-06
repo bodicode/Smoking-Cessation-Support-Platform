@@ -14,6 +14,7 @@ import Loading from "@/components/common/Loading";
 import { useRouter } from "next/navigation";
 import { useSignup } from "@/graphql/hooks/useSignup";
 import { signupHandler } from "@/services/signupService";
+import toast from "react-hot-toast";
 
 export default function SignupPage() {
     const t = useTranslations('signup');
@@ -34,15 +35,18 @@ export default function SignupPage() {
     });
 
     const onSubmit = async (data: SignupForm) => {
-        await signupHandler({
-            data,
-            signup,
-            setSuccessMsg,
-            setFieldError,
-            router,
-            tError,
-            parseSignupError,
-        });
+        try {
+            const msg = await signupHandler({
+                data,
+                signup,
+                router,
+                tError,
+                parseSignupError,
+            });
+            toast.success(msg || t("success"));
+        } catch (err: any) {
+            toast.error(err?.message || t("error.generic"));
+        }
     };
 
     const fadeLeft = {
@@ -94,25 +98,6 @@ export default function SignupPage() {
                     >
                         {t("description")}
                     </motion.p>
-
-                    {successMsg && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="text-green-600 text-sm mb-2"
-                        >
-                            {successMsg}
-                        </motion.div>
-                    )}
-                    {(fieldError || error) && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="text-red-600 text-sm mb-2"
-                        >
-                            {fieldError || (error as any)?.message || t("error.generic")}
-                        </motion.div>
-                    )}
 
                     <motion.form
                         onSubmit={handleSubmit(onSubmit)}

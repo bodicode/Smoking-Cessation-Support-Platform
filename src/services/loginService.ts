@@ -34,7 +34,7 @@ export async function loginHandler({
     const accessToken = response.data?.login?.data?.session?.access_token;
     if (!accessToken) {
       setCustomError("Không nhận được token!");
-      return;
+      throw new Error("Không nhận được token!");
     }
 
     const decoded: any = jwtDecode(accessToken);
@@ -51,6 +51,8 @@ export async function loginHandler({
     localStorage.setItem("access_token", accessToken);
     router.push("/");
   } catch (err: any) {
-    setCustomError(parseLoginError(err));
+    const msg = parseLoginError(err);
+    setCustomError(msg);
+    throw new Error(msg)
   }
 }
