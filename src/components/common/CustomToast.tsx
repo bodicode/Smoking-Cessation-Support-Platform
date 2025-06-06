@@ -1,4 +1,28 @@
+'use client'
+
+import { ToastBar, Toaster } from "react-hot-toast";
 import { FiCheckCircle, FiAlertTriangle } from "react-icons/fi";
+
+export default function ToasterClient() {
+    return (
+        <Toaster
+            position="top-center"
+            toastOptions={{ duration: 3000 }}
+        >
+            {(t) => (
+                <ToastBar
+                    toast={t}
+                    style={{
+                        ...t.style,
+                        animation: t.visible
+                            ? 'custom-in 0.7s cubic-bezier(.4,0,.2,1)'
+                            : 'custom-out 0.5s cubic-bezier(.4,0,.2,1) forwards',
+                    }}
+                />
+            )}
+        </Toaster>
+    );
+}
 
 export function SuccessToast({ message }: { message: string }) {
     return (
