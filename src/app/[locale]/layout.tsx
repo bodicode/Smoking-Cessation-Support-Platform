@@ -10,6 +10,7 @@ import ApolloClientProvider from '../../apollo/apolloProviders';
 import ReduxProvider from '../ReduxProvider';
 import ScrollToTop from '@/components/common/ScrollToTop';
 import ProgressBar from '@/components/common/ProgressBar';
+import { Toaster } from 'react-hot-toast';
 
 const mont = Montserrat({
   subsets: ['latin', 'latin-ext'],
@@ -33,7 +34,7 @@ export default async function LocaleLayout({
   params: { locale: string };
 }) {
   const { locale } = await params;
-  
+
   if (!routing.locales.includes(locale as Locale)) {
     notFound();
   }
@@ -43,6 +44,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body className={mont.className}>
+        <Toaster position="bottom-right" />
         <ApolloClientProvider>
           <ReduxProvider>
             <NextIntlClientProvider messages={messages}>

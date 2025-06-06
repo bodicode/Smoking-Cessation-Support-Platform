@@ -12,6 +12,8 @@ import { createBlog, getBlogBySlug, updateBlog } from "@/services/blogService";
 import { useRouter, useSearchParams } from "next/navigation";
 import Loading from "@/components/common/Loading";
 import ConfirmModal from "@/components/common/ModalConfirm";
+import toast from "react-hot-toast";
+import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
 
 export default function BlogCreatePage() {
   useRequireRole("COACH");
@@ -107,10 +109,10 @@ export default function BlogCreatePage() {
         result = await createBlog({ title, content, coverImage });
       }
       if (result?.slug) {
+        toast.custom(<SuccessToast message={editSlug ? "Cập nhật thành công!" : "Đăng blog thành công!"} />);
         router.push(`/blog/${result.slug}`);
         return;
       }
-      alert(editSlug ? "Cập nhật thành công!" : "Đăng blog thành công!");
       setTitle("");
       setContent("");
       setCoverImage(null);
@@ -118,7 +120,7 @@ export default function BlogCreatePage() {
       if (fileInputRef.current) fileInputRef.current.value = "";
       editor?.commands.clearContent();
     } catch (err: any) {
-      setError(err.message || "Có lỗi xảy ra!");
+      toast.custom(<ErrorToast message={err?.message} />);
     } finally {
       setLoading(false);
     }
@@ -128,6 +130,7 @@ export default function BlogCreatePage() {
     setShowConfirmModal(false);
     submitBlog();
   };
+
   const handleCancelUpdate = () => {
     setShowConfirmModal(false);
   };

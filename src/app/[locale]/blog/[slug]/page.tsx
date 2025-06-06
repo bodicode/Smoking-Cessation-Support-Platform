@@ -12,6 +12,8 @@ import { removeBlog } from "@/services/blogService";
 import client from "@/apollo/apolloClient";
 import { useState } from "react";
 import ConfirmModal from "@/components/common/ModalConfirm";
+import toast from "react-hot-toast";
+import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
 
 export default function BlogDetail() {
   const params = useParams();
@@ -29,14 +31,14 @@ export default function BlogDetail() {
     setOpenConfirm(false);
     try {
       await removeBlog(blog.id);
-      alert("Xóa thành công!");
+      toast.custom(<SuccessToast message="Xóa thành công!" />);
       client.cache.evict({
         id: client.cache.identify({ __typename: "Blog", id: blog.id }),
       });
       client.cache.gc();
       router.push("/blog");
     } catch (err: any) {
-      alert(err.message || "Xóa blog thất bại!");
+      toast.custom(<ErrorToast message={err?.message} />);
     }
   };
 
