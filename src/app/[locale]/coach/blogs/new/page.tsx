@@ -110,7 +110,7 @@ export default function BlogCreatePage() {
       }
       if (result?.slug) {
         toast.custom(<SuccessToast message={editSlug ? "Cập nhật thành công!" : "Đăng blog thành công!"} />);
-        router.push(`/blog/${result.slug}`);
+        router.push(`/coach/blogs/${result.slug}`);
         return;
       }
       setTitle("");

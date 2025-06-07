@@ -12,7 +12,7 @@ import { useLogin } from "@/graphql/hooks/useLogin";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import Loading from "@/components/common/Loading";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { loginHandler } from "@/services/loginService";
 import toast from "react-hot-toast";
 import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
