@@ -49,7 +49,12 @@ export async function loginHandler({
 
     dispatch(setUser(userData));
     localStorage.setItem("access_token", accessToken);
-    router.push("/");
+
+    if (userData.role === 'COACH') {
+      return router.push("/coach");
+    } else {
+      router.push("/");
+    }
   } catch (err: any) {
     const msg = parseLoginError(err);
     setCustomError(msg);

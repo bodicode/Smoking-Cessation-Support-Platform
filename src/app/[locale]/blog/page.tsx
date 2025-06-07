@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import Loading from "@/components/common/Loading";
 import { getBlogs, getBlogsInSidebar } from "@/services/blogService";
 import { useSelector } from "react-redux";
+import Pagination from "@/components/common/Pagination";
 
 const BLOGS_PER_PAGE = 6;
 
@@ -17,8 +18,6 @@ export default function BlogPage() {
   const t = useTranslations("blogSection");
   const params = useParams();
   const locale = (params?.locale as string) || "vi";
-  const user = useSelector((state: any) => state.user);
-  const isCoach = user?.role === "COACH";
 
   const { blogs, totalPages, loading, error } = getBlogs({
     page,
@@ -40,14 +39,6 @@ export default function BlogPage() {
     <div className="bg-[#faf7f4] min-h-screen py-12 px-4">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 flex flex-col gap-12">
-          {isCoach && (
-            <Link
-              href={`/${locale}/blog/new`}
-              className="px-5 rounded-full font-semibold transition flex items-center gap-2"
-            >
-              <span>{t("createBlogButton", { default: "Tạo blog mới" })}</span>
-            </Link>
-          )}
 
           {loading ? (
             <div className="text-center py-12">
@@ -102,43 +93,12 @@ export default function BlogPage() {
           )}
 
           {/* PAGINATION */}
-          <div className="flex justify-center gap-2 mt-4">
-            <button
-              disabled={page === 1}
-              onClick={() => setPage(page - 1)}
-              className={`px-4 py-2 rounded-full font-bold ${
-                page === 1
-                  ? "bg-gray-200 text-gray-400"
-                  : "bg-[#60C3A4] text-white hover:bg-[#e3efe7] cursor-pointer"
-              }`}
-            >
-              <ChevronLeft />
-            </button>
-            {[...Array(totalPages)].map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setPage(idx + 1)}
-                className={`px-4 py-2 rounded-full font-bold ${
-                  page === idx + 1
-                    ? "bg-[#60C3A4] text-white"
-                    : "bg-gray-200 text-gray-700 hover:bg-[#e3efe7] cursor-pointer"
-                }`}
-              >
-                {idx + 1}
-              </button>
-            ))}
-            <button
-              disabled={page === totalPages}
-              onClick={() => setPage(page + 1)}
-              className={`px-4 py-2 rounded-full font-bold ${
-                page === totalPages
-                  ? "bg-gray-200 text-gray-400"
-                  : "bg-[#60C3A4] text-white hover:bg-[#e3efe7] cursor-pointer"
-              }`}
-            >
-              <ChevronRight />
-            </button>
-          </div>
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            hasNext={blogs.length === BLOGS_PER_PAGE && page < totalPages}
+          />
         </div>
 
         {/* POPULAR BLOGS SIDEBAR */}

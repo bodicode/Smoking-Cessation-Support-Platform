@@ -17,6 +17,7 @@ export default function ClientLayout({
   const hideLayout =
     pathname?.includes("/login") ||
     pathname?.includes("/signup") ||
+    pathname?.includes("/coach") ||
     pathname?.includes("/forgot-password");
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.user);
