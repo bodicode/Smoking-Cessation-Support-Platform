@@ -12,8 +12,7 @@ import {
   ListboxOption,
   ListboxOptions,
 } from "@headlessui/react";
-import { useDispatch, useSelector } from "react-redux";
-import { clearUser } from "@/store/userSlice";
+import { useAuth } from "@/hooks/useAuth";
 import Logo from "../common/Logo";
 import Notification from "./Notification";
 import { motion } from "framer-motion";
@@ -22,8 +21,10 @@ const Header = () => {
   const t = useTranslations("header");
   const [isPhoneHover, setPhoneIsHover] = useState(false);
   const [isGlobeHover, setIsGlobeHover] = useState(false);
-  const user = useSelector((state: any) => state.user);
-  const dispatch = useDispatch();
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+
+  const { user, logout } = useAuth();
+
   const locales = [
     { code: "en", label: t("english") },
     { code: "vi", label: t("vietnamese") },
@@ -51,6 +52,14 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = () => setShowUserDropdown(false);
+    if (showUserDropdown) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [showUserDropdown]);
 
   return (
     <header
@@ -145,38 +154,47 @@ const Header = () => {
             <Link
               href={`/${locale}/login`}
               className="
-      bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-3 py-1 sm:px-4 sm:py-2 
-      rounded-full shadow-2xl cursor-pointer text-xs sm:text-sm whitespace-nowrap 
-      transition-all duration-200"
+                bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-3 py-1 sm:px-4 sm:py-2 
+                rounded-full shadow-2xl cursor-pointer text-xs sm:text-sm whitespace-nowrap 
+                transition-all duration-200"
             >
               {t("login")}
             </Link>
           </motion.div>
         ) : (
-          <div className="relative group">
-            <div className="bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-3 py-1 sm:px-4 sm:py-2 rounded-full shadow-2xl cursor-pointer flex items-center gap-1 sm:gap-2 select-none text-xs sm:text-sm">
+          <div className="relative">
+            <div
+              className="bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-3 py-1 sm:px-4 sm:py-2 rounded-full shadow-2xl cursor-pointer flex items-center gap-1 sm:gap-2 select-none text-xs sm:text-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowUserDropdown((show) => !show);
+              }}
+            >
               {user?.name}
               <ChevronDown size={16} className="ml-1" />
             </div>
-            <div className="absolute bg-transparent w-full h-full" />
-            <div className="absolute right-0 mt-2 w-44 sm:w-48 bg-white rounded-lg shadow-lg z-20 py-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all">
-              <Link
-                href={`/${locale}/profile`}
-                className="block px-4 py-2 text-xs sm:text-sm text-gray-900 hover:bg-[#e0f2f1] hover:text-[#03256C]"
-              >
-                {t("profile")}
-              </Link>
-              <button
-                className="cursor-pointer block w-full text-left px-4 py-2 text-xs sm:text-sm text-red-600 hover:bg-red-50"
-                onClick={() => {
-                  dispatch(clearUser());
-                  localStorage.removeItem("access_token");
-                  router.push(`/login`);
-                }}
-              >
-                {t("logout") || "Đăng xuất"}
-              </button>
-            </div>
+
+            {showUserDropdown && (
+              <div className="absolute right-0 mt-2 w-44 sm:w-48 bg-white rounded-lg shadow-lg z-20 py-2 transition-all">
+                <Link
+                  href={`/${locale}/profile`}
+                  className="block px-4 py-2 text-xs sm:text-sm text-gray-900 hover:bg-[#e0f2f1] hover:text-[#03256C]"
+                  onClick={() => setShowUserDropdown(false)}
+                >
+                  {t("profile")}
+                </Link>
+                <button
+                  className="cursor-pointer block w-full text-left px-4 py-2 text-xs sm:text-sm text-red-600 hover:bg-red-50"
+                  onClick={() => {
+                    logout();
+                    setShowUserDropdown(false);
+                    router.push(`/${locale}/login`);
+                  }}
+                >
+                  {t("logout") || "Đăng xuất"}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
