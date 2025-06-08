@@ -1,26 +1,31 @@
 import client from "@/apollo/apolloClient";
-import { CREATE_BLOG_MUTATION } from "@/graphql/mutations/createBlogMutation";
-import { REMOVE_BLOG } from "@/graphql/mutations/deleteBlogMutation";
-import { UPDATE_BLOG } from "@/graphql/mutations/updateBlogMutation";
+import { CREATE_BLOG_MUTATION } from "@/graphql/mutations/blog/createBlogMutation";
+import { REMOVE_BLOG } from "@/graphql/mutations/blog/deleteBlogMutation";
+import { UPDATE_BLOG } from "@/graphql/mutations/blog/updateBlogMutation";
 import { GET_BLOG_BY_SLUG } from "@/graphql/queries/blogs/getBlogBySlug";
 import { GET_BLOGS } from "@/graphql/queries/blogs/getBlogs";
-import { BlogInput } from "@/types/api/blog";
+import {
+  BlogInput,
+  BlogUpdateInput,
+  Blog,
+  BlogList
+} from "@/types/api/blog";
 import { useQuery } from "@apollo/client";
 
-export async function createBlog({ title, content, coverImage }: BlogInput) {
+export async function createBlog({ title, content, coverImage }: BlogInput): Promise<Blog> {
   const variables = {
     input: { title, content },
     coverImage: coverImage || null,
   };
 
-  const { data, errors } = await client.mutate({
+  const { data, errors } = await client.mutate<{ createBlog: Blog }>({
     mutation: CREATE_BLOG_MUTATION,
     variables,
   });
 
   if (errors && errors.length > 0)
     throw new Error(errors[0].message || "Đăng blog thất bại");
-  return data.createBlog;
+  return data!.createBlog;
 }
 
 export function getBlogs({
@@ -29,8 +34,8 @@ export function getBlogs({
   search = "",
   orderBy = "created_at",
   sortOrder = "asc",
-}) {
-  const { data, loading, error } = useQuery(GET_BLOGS, {
+} = {}) {
+  const { data, loading, error } = useQuery<{ blogs: BlogList }>(GET_BLOGS, {
     variables: { page, limit, search, orderBy, sortOrder },
   });
 
@@ -42,7 +47,7 @@ export function getBlogs({
 }
 
 export function getBlogBySlug(slug?: string) {
-  const { data, loading, error } = useQuery(GET_BLOG_BY_SLUG, {
+  const { data, loading, error } = useQuery<{ blogBySlug: Blog }>(GET_BLOG_BY_SLUG, {
     variables: { slug },
     skip: !slug,
   });
@@ -57,7 +62,7 @@ export function getBlogBySlug(slug?: string) {
 }
 
 export function getBlogsInSidebar() {
-  const { data, loading, error } = useQuery(GET_BLOGS, {
+  const { data, loading, error } = useQuery<{ blogs: BlogList }>(GET_BLOGS, {
     variables: {
       page: 1,
       limit: 8,
@@ -76,29 +81,24 @@ export async function updateBlog({
   title,
   content,
   coverImage,
-}: {
-  id: string;
-  title: string;
-  content: string;
-  coverImage?: File | null;
-}) {
+}: BlogUpdateInput): Promise<Blog> {
   const variables: any = { input: { id, title, content } };
   if (coverImage) variables.coverImage = coverImage;
-  const { data } = await client.mutate({
+  const { data } = await client.mutate<{ updateBlog: Blog }>({
     mutation: UPDATE_BLOG,
     variables,
     context: { fetchOptions: { useMultipart: true } },
   });
-  return data?.updateBlog;
+  return data!.updateBlog;
 }
 
-export async function removeBlog(blogId: string) {
+export async function removeBlog(blogId: string): Promise<Blog> {
   const variables = { removeBlogId: blogId };
-  const { data, errors } = await client.mutate({
+  const { data, errors } = await client.mutate<{ removeBlog: Blog }>({
     mutation: REMOVE_BLOG,
     variables,
   });
   if (errors && errors.length > 0)
     throw new Error(errors[0].message || "Xóa blog thất bại");
-  return data?.removeBlog;
+  return data!.removeBlog;
 }

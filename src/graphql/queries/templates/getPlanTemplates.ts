@@ -1,13 +1,13 @@
 import { gql } from "@apollo/client";
 
 export const GET_PLAN_TEMPLATES = gql`
-  query getPlanTemplates {
+  query getPlanTemplates($page: Int!, $limit: Int!) {
     cessationPlanTemplates(params: {
-      page: 1
-      limit: 5
+      page: $page
+      limit: $limit
       search: ""
       orderBy: "created_at"
-      sortOrder: "asc"
+      sortOrder: "desc"
     }) {
       data {
         id
@@ -20,6 +20,8 @@ export const GET_PLAN_TEMPLATES = gql`
         average_rating
         created_at
       }
+      total
+      hasNext
     }
   }
 `;

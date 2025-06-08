@@ -66,7 +66,7 @@ export default function CoachBlogDetailPage() {
             />
             <div className="mt-8 flex gap-4">
                 <Link
-                    href={`/coach/blogs/new?edit=${blog.slug}`}
+                    href={`/coach/blogs/new?edit=${slug}`}
                     className="bg-gradient-to-r from-sky-500 to-green-400 hover:to-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow transition"
                 >
                     Sửa
