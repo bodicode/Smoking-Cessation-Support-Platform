@@ -33,6 +33,8 @@ const BlogSection = () => {
 
     const blogs = data?.blogs?.data || [];
 
+    console.log(blogs)
+
     return (
         <section className="py-12 bg-[#f7f4ee] px-6 lg:px-36">
             <motion.h2
@@ -59,6 +61,7 @@ const BlogSection = () => {
                     {blogs.map((blog: any) => {
                         const title = blog.title;
                         const excerpt = blog.content?.replace(/<[^>]+>/g, '').slice(0, 100) + "...";
+                        const author = blog.author.name
                         return (
                             <motion.div
                                 key={blog.id}
@@ -66,7 +69,10 @@ const BlogSection = () => {
                                 whileHover={{ scale: 1.04, boxShadow: "0px 4px 24px rgba(96,195,164,0.12)" }}
                                 transition={{ type: "spring", stiffness: 220, damping: 18 }}
                             >
-                                <Link href={`/${locale}/blog/${blog.slug}`} className="bg-[#ffffff] rounded-xl shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer h-full flex flex-col">
+                                <Link
+                                    href={`/${locale}/blog/${blog.slug}`}
+                                    className="bg-[#ffffff] rounded-xl shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer h-full flex flex-col"
+                                >
                                     <div className="relative h-52 w-full">
                                         <Image
                                             src={blog.cover_image || "/images/blog1.jpg"}
@@ -75,21 +81,20 @@ const BlogSection = () => {
                                             className="object-cover"
                                         />
                                     </div>
-                                    <div className="p-4 flex flex-col h-[180px] justify-between flex-1">
-                                        <div>
-                                            <h3 className="text-xl font-semibold text-[#03256C] mb-2 min-h-[60px]">
-                                                {title}
-                                            </h3>
-                                            <p className="text-gray-600 text-sm line-clamp-3">
-                                                {excerpt}
-                                            </p>
-                                        </div>
+                                    <div className="p-4 grid grid-rows-[auto,auto,1fr] h-[180px]">
+                                        <h3 className="text-xl font-bold text-[#03256C] min-h-[45px]">
+                                            {title}
+                                        </h3>
+                                        <p className="text-gray-500 text-xs italic min-h-[20px]">
+                                            {t("author")} {author}
+                                        </p>
+                                        <p className="text-gray-700 text-sm line-clamp-3 mt-1">{excerpt}</p>
                                     </div>
                                 </Link>
                             </motion.div>
                         );
                     })}
-                </motion.div>
+                </motion.div >
             )}
 
             <motion.div
@@ -108,7 +113,7 @@ const BlogSection = () => {
                     </Link>
                 </motion.div>
             </motion.div>
-        </section>
+        </section >
     );
 };
 

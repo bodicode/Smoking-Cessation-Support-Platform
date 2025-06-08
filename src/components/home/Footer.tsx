@@ -9,7 +9,7 @@ import {
 import FixedMap from './FixedMap';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import Logo from '../Logo';
+import Logo from '../common/Logo';
 import { motion } from 'framer-motion';
 
 const socialIcons = [

@@ -9,7 +9,7 @@ import {
     PiggyBank,
     Clock,
 } from 'lucide-react';
-import Loading from '../Loading';
+import Loading from '../common/Loading';
 import { motion } from 'framer-motion';
 
 const containerVariant = {

@@ -5,7 +5,7 @@ import { GET_BLOGS } from "@/graphql/queries/blogs/getBlogs";
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import Loading from "../Loading";
+import Loading from "../common/Loading";
 
 const BLOGS_PER_FETCH = 6;
 
