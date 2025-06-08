@@ -3,12 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Loading from "@/components/common/Loading";
 import { getBlogs, getBlogsInSidebar } from "@/services/blogService";
-import { useSelector } from "react-redux";
 import Pagination from "@/components/common/Pagination";
 
 const BLOGS_PER_PAGE = 6;

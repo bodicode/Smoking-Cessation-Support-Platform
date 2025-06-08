@@ -3,10 +3,11 @@
 import { usePathname } from "next/navigation";
 import Header from "@/components/home/Header";
 import Footer from "@/components/home/Footer";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { setUser } from "@/store/userSlice";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function ClientLayout({
   children,
@@ -20,7 +21,7 @@ export default function ClientLayout({
     pathname?.includes("/coach") ||
     pathname?.includes("/forgot-password");
   const dispatch = useDispatch();
-  const user = useSelector((state: any) => state.user);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!user?.accessToken) {
