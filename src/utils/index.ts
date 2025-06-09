@@ -30,3 +30,16 @@ export function formatDate(iso: string) {
 export function pad(n: number) {
   return n.toString().padStart(2, '0');
 }
+
+export function translateDifficulty(level: string) {
+  switch (level) {
+    case "EASY":
+      return "Dễ";
+    case "MEDIUM":
+      return "Trung bình";
+    case "HARD":
+      return "Khó";
+    default:
+      return "Không xác định";
+  }
+}
