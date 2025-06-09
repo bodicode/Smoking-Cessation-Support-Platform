@@ -10,6 +10,7 @@ import { GET_PLAN_STAGE_TEMPLATES_BY_TEMPLATE } from "@/graphql/queries/template
 import { StageModal } from "@/components/template/StageModal";
 import { BsStarFill, BsStarHalf, BsStar } from "react-icons/bs";
 import Loading from "@/components/common/Loading";
+import Breadcrumbs from "@/components/common/BreadCrumb";
 
 const cardVariants = {
     hidden: { opacity: 0, y: 32, scale: 0.97 },
@@ -53,6 +54,12 @@ export default function PlanTemplatesPage() {
 
     return (
         <div className="max-w-5xl mx-auto py-12 px-4">
+            <Breadcrumbs
+                items={[
+                    { label: "Trang chủ", href: "/" },
+                    { label: "Mẫu kế hoạch bỏ thuốc", active: true }
+                ]}
+            />
             <motion.h1
                 className="text-4xl font-extrabold text-center mb-7 bg-gradient-to-r from-sky-600 to-green-400 text-transparent bg-clip-text"
                 initial={{ opacity: 0, y: 24 }}

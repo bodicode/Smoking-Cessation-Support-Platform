@@ -7,6 +7,7 @@ import PopularBlogs from "@/components/blog/PopularBlogs";
 import { useQuery } from "@apollo/client";
 import { GET_BLOG_BY_SLUG } from "@/graphql/queries/blogs/getBlogBySlug";
 import Loading from "@/components/common/Loading";
+import Breadcrumbs from "@/components/common/BreadCrumb";
 
 export default function BlogDetail() {
   const params = useParams();
@@ -43,6 +44,15 @@ export default function BlogDetail() {
 
   return (
     <div className="min-h-screen py-12 px-2 sm:px-8 bg-[#f9f5ec]">
+
+      <Breadcrumbs
+        items={[
+          { label: "Trang chủ", href: "/" },
+          { label: "Blogs", href: "/blog" },
+          { label: `${slug}`, active: true }
+        ]}
+      />
+
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
         <div className="md:col-span-2">
           <h1 className="text-5xl font-extrabold text-[#03256C] mb-8 leading-tight">

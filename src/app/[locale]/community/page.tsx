@@ -6,6 +6,7 @@ import { badgeOptions, initialPosts } from "../../../../data";
 import { formatDate } from "@/utils";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
+import Breadcrumbs from "@/components/common/BreadCrumb";
 
 export default function Community() {
     const t = useTranslations("community");
@@ -72,7 +73,6 @@ export default function Community() {
         setNewCaption("");
     };
 
-    // Motion variants
     const postVariants = {
         hidden: { opacity: 0, y: 30, scale: 0.97 },
         visible: (i: number) => ({
@@ -83,6 +83,12 @@ export default function Community() {
 
     return (
         <div className="max-w-5xl mx-auto py-6 px-2 sm:px-4 md:py-10">
+            <Breadcrumbs
+                items={[
+                    { label: "Trang chủ", href: "/" },
+                    { label: "Mạng xã hội", active: true }
+                ]}
+            />
             <h1 className="text-2xl md:text-3xl font-extrabold text-center mb-4 md:mb-6 text-gradient bg-gradient-to-r from-sky-600 to-green-400 inline-block text-transparent bg-clip-text">
                 {t("title")}
             </h1>
@@ -90,7 +96,6 @@ export default function Community() {
                 {t("description")}
             </p>
 
-            {/* Nút chia sẻ */}
             <AnimatePresence>
                 {!showAddForm && (
                     <motion.button

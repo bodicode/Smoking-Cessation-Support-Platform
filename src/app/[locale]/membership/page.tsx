@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { JSX } from "react";
 import { membershipPlans } from "../../../../data";
 import { motion } from "framer-motion";
+import Breadcrumbs from "@/components/common/BreadCrumb";
 
 const iconMap: Record<string, JSX.Element> = {
     crown: <Crown className="w-8 h-8 text-yellow-400" />,
@@ -27,6 +28,13 @@ export default function MembershipPage() {
 
     return (
         <div className="max-w-5xl mx-auto py-10 px-4">
+            <Breadcrumbs
+                items={[
+                    { label: "Trang chủ", href: "/" },
+                    { label: "Gói thành viên", active: true }
+                ]}
+            />
+
             <motion.h1
                 className="w-full text-4xl font-extrabold text-center mb-6 text-gradient bg-gradient-to-r from-sky-600 to-green-400 inline-block text-transparent bg-clip-text"
                 initial={{ opacity: 0, y: 24 }}
