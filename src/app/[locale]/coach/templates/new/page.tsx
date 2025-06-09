@@ -8,6 +8,7 @@ import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
 import Loading from "@/components/common/Loading";
 import ConfirmModal from "@/components/common/ModalConfirm";
 import { PlanTemplateUpdateInput } from "@/types/api/cessationPlanTemplate";
+import PlanStageManage from "@/components/template/PlanStageManage";
 
 const defaultForm = {
     name: "",
@@ -93,7 +94,7 @@ export default function PlanTemplateFormPage() {
     }
 
     return (
-        <div className="max-w-3xl mx-auto mt-12">
+        <div className="max-w-3xl mx-auto mt-4">
             <div className="bg-white rounded-2xl p-8">
                 <h2 className="text-2xl font-bold text-center mb-6 text-[#03256C] tracking-tight">
                     {editId ? "Chỉnh sửa mẫu kế hoạch" : "Tạo mẫu kế hoạch bỏ thuốc mới"}
@@ -176,6 +177,12 @@ export default function PlanTemplateFormPage() {
                     handleConfirmSubmit();
                 }}
             />
+
+            {editId && (
+                <div className="mt-8">
+                    <PlanStageManage templateId={editId} />
+                </div>
+            )}
         </div>
     );
 }
