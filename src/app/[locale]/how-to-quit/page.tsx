@@ -1,5 +1,6 @@
 'use client';
 
+import Breadcrumbs from "@/components/common/BreadCrumb";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
@@ -13,6 +14,14 @@ export default function HowToQuit() {
 
     return (
         <div className="min-h-screen py-10">
+            <div className="flex justify-center">
+                <Breadcrumbs
+                    items={[
+                        { label: "Trang chủ", href: "/" },
+                        { label: "Cách bỏ thuốc", active: true }
+                    ]}
+                />
+            </div>
             <div className="w-full max-w-5xl mx-auto bg-white rounded-2xl px-4 md:px-12 py-10">
                 <h1 className="text-4xl font-bold text-[#60C3A4] mb-4 text-center">{t("title")}</h1>
                 <p className="text-lg text-center text-gray-600 mb-10">{t("intro")}</p>

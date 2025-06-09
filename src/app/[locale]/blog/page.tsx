@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import Loading from "@/components/common/Loading";
 import { getBlogs, getBlogsInSidebar } from "@/services/blogService";
 import Pagination from "@/components/common/Pagination";
+import Breadcrumbs from "@/components/common/BreadCrumb";
 
 const BLOGS_PER_PAGE = 6;
 
@@ -34,7 +35,15 @@ export default function BlogPage() {
   }, [allBlogs]);
 
   return (
-    <div className="bg-[#faf7f4] min-h-screen py-12 px-4">
+    <div className="bg-[#faf7f4] min-h-screen py-12 px-8">
+
+      <Breadcrumbs
+        items={[
+          { label: "Trang chủ", href: "/" },
+          { label: "Blogs", active: true }
+        ]}
+      />
+
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 flex flex-col gap-12">
 
