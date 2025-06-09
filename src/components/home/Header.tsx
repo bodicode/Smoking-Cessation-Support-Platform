@@ -188,7 +188,7 @@ const Header = () => {
                   onClick={() => {
                     logout();
                     setShowUserDropdown(false);
-                    router.push(`/${locale}/login`);
+                    router.push(`/login`);
                   }}
                 >
                   {t("logout") || "Đăng xuất"}

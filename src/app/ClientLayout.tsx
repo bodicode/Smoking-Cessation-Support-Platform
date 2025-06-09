@@ -4,10 +4,12 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/home/Header";
 import Footer from "@/components/home/Footer";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { setUser } from "@/store/userSlice";
 import { useAuth } from "@/hooks/useAuth";
+import { useHydrateUser } from "@/hooks/useHydarate";
+import Loading from "@/components/common/Loading";
 
 export default function ClientLayout({
   children,
@@ -22,6 +24,7 @@ export default function ClientLayout({
     pathname?.includes("/forgot-password");
   const dispatch = useDispatch();
   const { user } = useAuth();
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     if (!user?.accessToken) {
@@ -42,7 +45,12 @@ export default function ClientLayout({
         }
       }
     }
+    setTimeout(() => setHydrated(true), 0);
   }, [user?.accessToken, dispatch]);
+
+  if (!hydrated) {
+    return <Loading />;
+  }
 
   return (
     <div className="bg-[#f9f5ec]">
