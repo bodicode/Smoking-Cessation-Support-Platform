@@ -1,15 +1,31 @@
 "use client";
-
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { getCessationPlans } from "@/services/cessationPlanService";
 
 const cards = [
-  { titleKey: "buildYourQuitPlan", icon: "/images/quit-plan.jpg", bg: "bg-[#004F7C]", href: "/plan" },
-  { titleKey: "membership", icon: "/images/membership.jpg", bg: "bg-[#00C2A0]", href: "/membership" },
-  { titleKey: "reairSocialMedia", icon: "/images/social.png", bg: "bg-[#FFC400]", href: "/community" },
+  {
+    titleKey: "buildYourQuitPlan",
+    icon: "/images/quit-plan.jpg",
+    bg: "bg-[#004F7C]",
+    href: "/plan"
+  },
+  {
+    titleKey: "membership",
+    icon: "/images/membership.jpg",
+    bg: "bg-[#00C2A0]",
+    href: "/membership"
+  },
+  {
+    titleKey: "reairSocialMedia",
+    icon: "/images/social.png",
+    bg: "bg-[#FFC400]",
+    href: "/community"
+  },
 ];
 
 const container = {
@@ -33,6 +49,34 @@ const cardVariant = {
 
 const Hero = () => {
   const t = useTranslations("hero");
+  const router = useRouter();
+  const [hasPlan, setHasPlan] = useState<boolean | null>(null);
+  const [checkingPlan, setCheckingPlan] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      setCheckingPlan(true);
+      try {
+        const plans = await getCessationPlans();
+        if (!isMounted) return;
+        setHasPlan(!!plans?.length);
+      } catch {
+        if (isMounted) setHasPlan(false);
+      } finally {
+        if (isMounted) setCheckingPlan(false);
+      }
+    })();
+    return () => { isMounted = false };
+  }, []);
+
+  const handleFirstCardClick = () => {
+    if (hasPlan) {
+      router.push("/plan/my-plan");
+    } else {
+      router.push("/template");
+    }
+  };
 
   return (
     <motion.div
@@ -76,26 +120,60 @@ const Hero = () => {
             }}
             transition={{ type: "spring", stiffness: 350, damping: 20 }}
           >
-            <Link
-              href={c.href}
-              className={`
-                ${c.bg} text-white rounded-2xl p-4 sm:p-6 w-40 sm:w-44 md:w-48 flex flex-col items-center
-                transition hover:scale-105 hover:shadow-lg
-              `}
-            >
-              <div className="relative bg-white w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden flex items-center justify-center mb-3 sm:mb-4">
-                <Image
-                  src={c.icon}
-                  alt={t(`cards.${c.titleKey}`)}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 64px, (max-width: 1024px) 80px, 96px"
-                />
-              </div>
-              <p className="text-center font-medium text-xs sm:text-sm md:text-base">
-                {t(`cards.${c.titleKey}`)}
-              </p>
-            </Link>
+            {i === 0 ? (
+              <button
+                onClick={handleFirstCardClick}
+                disabled={checkingPlan || hasPlan === null}
+                className={`
+                  ${c.bg} text-white rounded-2xl p-4 sm:p-6 w-40 sm:w-44 md:w-48 flex flex-col items-center
+                  transition hover:scale-105 hover:shadow-lg cursor-pointer border-none outline-none relative
+                  ${checkingPlan || hasPlan === null ? "opacity-60 pointer-events-none" : ""}
+                `}
+                type="button"
+                style={{ appearance: "none" }}
+              >
+                <div className="relative bg-white w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden flex items-center justify-center mb-3 sm:mb-4">
+                  <Image
+                    src={c.icon}
+                    alt={t(`cards.${c.titleKey}`)}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 64px, (max-width: 1024px) 80px, 96px"
+                  />
+                </div>
+                <p className="text-center font-semibold text-xs sm:text-sm md:text-base">
+                  {hasPlan
+                    ? "Bản kế hoạch của bạn"
+                    : t(`cards.${c.titleKey}`)}
+                </p>
+                {checkingPlan && (
+                  <span className="absolute top-1 right-2 text-xs text-white animate-pulse">
+                    ...
+                  </span>
+                )}
+              </button>
+            ) : (
+              <Link
+                href={c.href}
+                className={`
+                  ${c.bg} text-white rounded-2xl p-4 sm:p-6 w-40 sm:w-44 md:w-48 flex flex-col items-center
+                  transition hover:scale-105 hover:shadow-lg
+                `}
+              >
+                <div className="relative bg-white w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden flex items-center justify-center mb-3 sm:mb-4">
+                  <Image
+                    src={c.icon}
+                    alt={t(`cards.${c.titleKey}`)}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 64px, (max-width: 1024px) 80px, 96px"
+                  />
+                </div>
+                <p className="text-center font-medium text-xs sm:text-sm md:text-base">
+                  {t(`cards.${c.titleKey}`)}
+                </p>
+              </Link>
+            )}
           </motion.div>
         ))}
       </motion.div>

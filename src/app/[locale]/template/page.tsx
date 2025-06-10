@@ -12,6 +12,9 @@ import { useLazyPlanStages } from "@/services/planStageTemplate";
 import { StageModal } from "@/components/template/StageModal";
 import { translateDifficulty } from "@/utils";
 import ConfirmModal from "@/components/common/ModalConfirm";
+import { CreateCessationPlanInput } from "@/types/api/cessationPlan";
+import toast from "react-hot-toast";
+import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
 import { createCessationPlan } from "@/services/cessationPlanService";
 
 const cardVariants = {
@@ -43,11 +46,11 @@ export default function PlanTemplatesPage() {
     const { fetchStages, stages, loading: stageLoading } = useLazyPlanStages();
 
     const [openStageModal, setOpenStageModal] = useState(false);
-
     const [showConfirm, setShowConfirm] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<any | null>(null);
     const [loadingCreate, setLoadingCreate] = useState(false);
-    const [reason, setReason] = useState("Tôi muốn bỏ thuốc");
+    const [reason, setReason] = useState("");
+    const [isCustom, setIsCustom] = useState(false);
 
     const router = useRouter();
 
@@ -56,17 +59,17 @@ export default function PlanTemplatesPage() {
         fetchStages({ variables: { templateId } });
     };
 
-    // Khi click "Sử dụng mẫu này"
     const handleUseTemplate = (tpl: any) => {
         setSelectedTemplate(tpl);
-        setReason("Tôi muốn bỏ thuốc");
+        setReason("");
+        setIsCustom(false);
         setShowConfirm(true);
     };
 
     const handleConfirmCreate = async () => {
         if (!selectedTemplate) return;
         if (!reason || !reason.trim()) {
-            alert("Vui lòng nhập lý do bạn muốn bỏ thuốc.");
+            toast.custom(<ErrorToast message="Vui lòng nhập lý do bạn muốn bỏ thuốc." />);
             return;
         }
         setLoadingCreate(true);
@@ -74,18 +77,20 @@ export default function PlanTemplatesPage() {
             const today = new Date();
             const target = new Date();
             target.setDate(today.getDate() + (selectedTemplate.estimated_duration_days || 30));
-
-            const plan = await createCessationPlan({
+            const input: CreateCessationPlanInput = {
                 template_id: selectedTemplate.id,
-                is_custom: false,
+                is_custom: isCustom,
                 start_date: today.toISOString().slice(0, 10),
                 target_date: target.toISOString().slice(0, 10),
                 reason: reason.trim(),
-            });
+            };
+
+            await createCessationPlan(input);
 
             setShowConfirm(false);
             setSelectedTemplate(null);
-            router.push(`/plan/my-plan/${plan.id}`);
+            router.push(`/plan/my-plan`);
+            toast.custom(<SuccessToast message="Tạo kế hoạch thành công!" />);
         } catch (err: any) {
             alert(err.message || "Có lỗi khi tạo kế hoạch");
         } finally {
@@ -141,7 +146,7 @@ export default function PlanTemplatesPage() {
                                 <LayoutTemplate className="text-green-400 drop-shadow-glow" />
                                 <span className="font-bold text-xl text-sky-800">{tpl.name}</span>
                             </div>
-                            <p className="text-gray-600 mb-2">Mô tả: {tpl.description}</p>
+                            <p className="text-gray-600 mb-2 h-14">Mô tả: {tpl.description}</p>
                             <ul className="list-none pl-0 text-gray-700 text-base space-y-1">
                                 <li>
                                     <span className="font-semibold text-gray-600">Mức độ:</span>{" "}
@@ -174,10 +179,10 @@ export default function PlanTemplatesPage() {
                                         : "?"}
                                 </li>
                             </ul>
-                            <div className="flex flex-wrap gap-3 mt-3">
+                            <div className="flex justify-center gap-3 mt-3">
                                 <motion.button
                                     type="button"
-                                    className="bg-gradient-to-r from-green-500 to-sky-400 hover:from-green-600 hover:to-sky-600 text-white font-semibold py-2 px-5 rounded-xl shadow-md transition-all"
+                                    className="bg-gradient-to-r from-green-500 to-sky-400 hover:from-green-600 hover:to-sky-600 text-white font-semibold py-2 px-5 rounded-xl shadow-md transition-all text-nowrap cursor-pointer"
                                     whileHover={{ scale: 1.055, y: -2 }}
                                     whileTap={{ scale: 0.97 }}
                                     onClick={() => handleUseTemplate(tpl)}
@@ -186,7 +191,7 @@ export default function PlanTemplatesPage() {
                                 </motion.button>
                                 <motion.button
                                     type="button"
-                                    className="bg-white border border-sky-300 text-sky-600 hover:bg-sky-50 py-2 px-5 rounded-xl font-semibold transition-all shadow-sm"
+                                    className="bg-white border border-sky-300 text-sky-600 hover:bg-sky-50 py-2 px-5 rounded-xl font-semibold transition-all shadow-sm text-nowrap cursor-pointer"
                                     whileHover={{ scale: 1.035 }}
                                     onClick={() => handleViewStages(tpl.id)}
                                 >
@@ -211,35 +216,41 @@ export default function PlanTemplatesPage() {
                 stages={stages}
                 loading={stageLoading}
             />
-            {/* Modal xác nhận sử dụng template */}
+
             <ConfirmModal
                 open={showConfirm}
                 title="Xác nhận sử dụng mẫu"
                 message={
-                    <div>
+                    loadingCreate ? <Loading /> :
                         <div>
-                            Bạn có chắc chắn muốn tạo kế hoạch mới từ mẫu <b>{selectedTemplate?.name}</b>?
+                            <div>
+                                Bạn có chắc chắn muốn tạo kế hoạch mới từ mẫu <b>{selectedTemplate?.name}</b>?
+                            </div>
+                            <div className="mt-4">
+                                <label className="block font-semibold mb-1 text-left" htmlFor="plan-reason">Lý do bỏ thuốc:</label>
+                                <input
+                                    id="plan-reason"
+                                    type="text"
+                                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
+                                    value={reason}
+                                    onChange={e => setReason(e.target.value)}
+                                    placeholder="Nhập lý do cá nhân..."
+                                />
+                            </div>
+                            <label className="flex items-center gap-2 cursor-pointer select-none mt-4">
+                                <input
+                                    type="checkbox"
+                                    className="accent-sky-600 w-4 h-4"
+                                    checked={isCustom}
+                                    onChange={e => setIsCustom(e.target.checked)}
+                                />
+                                <span className="text-sky-700">Tùy chỉnh kế hoạch</span>
+                            </label>
                         </div>
-                        <div className="text-sm text-gray-500 mt-2">
-                            Sau khi xác nhận bạn sẽ được chuyển đến trang chi tiết để tùy chỉnh các giai đoạn.
-                        </div>
-                        <div className="mt-4">
-                            <label className="block font-semibold mb-1" htmlFor="plan-reason">Lý do bỏ thuốc:</label>
-                            <input
-                                id="plan-reason"
-                                type="text"
-                                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
-                                value={reason}
-                                onChange={e => setReason(e.target.value)}
-                                placeholder="Nhập lý do cá nhân..."
-                            />
-                        </div>
-                    </div>
                 }
                 onCancel={() => setShowConfirm(false)}
                 onConfirm={handleConfirmCreate}
             >
-                {loadingCreate && <Loading />}
             </ConfirmModal>
         </div>
     );

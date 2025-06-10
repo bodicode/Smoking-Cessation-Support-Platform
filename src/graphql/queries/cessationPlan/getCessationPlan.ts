@@ -13,6 +13,9 @@ export const GET_CESSATION_PLANS = gql`
     ) {
       data {
         id
+        template { 
+          name
+        }
         reason
         status
         start_date
