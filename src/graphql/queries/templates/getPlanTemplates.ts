@@ -19,6 +19,10 @@ export const GET_PLAN_TEMPLATES = gql`
         success_rate
         average_rating
         created_at
+        coach {
+          id
+          name
+        }
       }
       total
       hasNext
