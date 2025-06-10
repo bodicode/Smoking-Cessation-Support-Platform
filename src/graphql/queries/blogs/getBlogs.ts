@@ -1,14 +1,24 @@
 import { gql } from "@apollo/client";
 
 export const GET_BLOGS = gql`
-  query GetBlogs($page: Int!, $limit: Int!, $search: String, $orderBy: String, $sortOrder: String) {
-    blogs(params: {
-      page: $page
-      limit: $limit
-      search: $search
-      orderBy: $orderBy
-      sortOrder: $sortOrder
-    }) {
+  query GetBlogs(
+    $page: Int!
+    $limit: Int!
+    $search: String
+    $orderBy: String
+    $sortOrder: String
+    $filters: BlogFilterInput
+  ) {
+    blogs(
+      params: {
+        page: $page
+        limit: $limit
+        search: $search
+        orderBy: $orderBy
+        sortOrder: $sortOrder
+      }
+      filters: $filters
+    ) {
       data {
         id
         title
@@ -18,8 +28,7 @@ export const GET_BLOGS = gql`
         author {
           name
         }
-        cover_image
-        }
+      }
       total
       page
       limit
