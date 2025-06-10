@@ -4,7 +4,7 @@ import { DELETE_PLAN_STAGE_TEMPLATE } from "@/graphql/mutations/planStageTemplat
 import { UPDATE_PLAN_STAGE_TEMPLATE } from "@/graphql/mutations/planStageTemplate/updatePlanStageTemplate";
 import { GET_PLAN_STAGE_TEMPLATES_BY_TEMPLATE } from "@/graphql/queries/templates/getPlanStageTemplateByTemplate";
 import { PlanStage, PlanStageInput } from "@/types/api/planStageTemplate";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 
 export async function createPlanStage(input: PlanStageInput): Promise<PlanStage> {
     const inputWithSnakeCase = {
@@ -50,4 +50,10 @@ export async function deletePlanStage(id: string) {
     if (errors && errors.length > 0)
         throw new Error(errors[0].message || "Xóa thất bại");
     return data.removePlanStageTemplate;
+}
+
+export function useLazyPlanStages() {
+    const [fetchStages, { data, loading, error }] = useLazyQuery(GET_PLAN_STAGE_TEMPLATES_BY_TEMPLATE);
+    const stages = data?.planStageTemplates?.data ?? [];
+    return { fetchStages, stages, loading, error };
 }

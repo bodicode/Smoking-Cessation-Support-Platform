@@ -1,14 +1,7 @@
 "use client";
 
+import { ConfirmModalProps } from "@/types/components/confirmModal";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface ConfirmModalProps {
-    open: boolean;
-    title?: string;
-    message?: string;
-    onConfirm: () => void;
-    onCancel: () => void;
-}
 
 export default function ConfirmModal({
     open,
@@ -16,6 +9,7 @@ export default function ConfirmModal({
     message = "Bạn có chắc chắn muốn thực hiện hành động này?",
     onConfirm,
     onCancel,
+    children
 }: ConfirmModalProps) {
     return (
         <AnimatePresence>
@@ -36,6 +30,7 @@ export default function ConfirmModal({
                     >
                         <div className="font-bold text-lg mb-2">{title}</div>
                         <div className="mb-6 text-gray-700">{message}</div>
+                        {children}
                         <div className="flex gap-3 justify-center">
                             <button
                                 className="cursor-pointer px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition"

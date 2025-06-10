@@ -1,16 +1,21 @@
 "use client";
-
 import { useState } from "react";
-import { useQuery, useLazyQuery } from "@apollo/client";
-import { CheckCircle, Sparkles, Users, Clock, X, TrendingUp, LayoutTemplate } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { LayoutTemplate } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { GET_PLAN_TEMPLATES } from "@/graphql/queries/templates/getPlanTemplates";
-import { GET_PLAN_STAGE_TEMPLATES_BY_TEMPLATE } from "@/graphql/queries/templates/getPlanStageTemplateByTemplate";
-import { StageModal } from "@/components/template/StageModal";
 import { BsStarFill, BsStarHalf, BsStar } from "react-icons/bs";
 import Loading from "@/components/common/Loading";
 import Breadcrumbs from "@/components/common/BreadCrumb";
+import { getPlanTemplates } from "@/services/templateService";
+import { useLazyPlanStages } from "@/services/planStageTemplate";
+import { StageModal } from "@/components/template/StageModal";
+import { translateDifficulty } from "@/utils";
+import ConfirmModal from "@/components/common/ModalConfirm";
+import { CreateCessationPlanInput } from "@/types/api/cessationPlan";
+import toast from "react-hot-toast";
+import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
+import { createCessationPlan } from "@/services/cessationPlanService";
 
 const cardVariants = {
     hidden: { opacity: 0, y: 32, scale: 0.97 },
@@ -36,20 +41,61 @@ function renderStars(rating: number, max = 5) {
     return stars;
 }
 
-
 export default function PlanTemplatesPage() {
-    const { data, loading, error } = useQuery(GET_PLAN_TEMPLATES);
-    const templates = data?.cessationPlanTemplates?.data || [];
+    const { templates, loading, error } = getPlanTemplates();
+    const { fetchStages, stages, loading: stageLoading } = useLazyPlanStages();
 
     const [openStageModal, setOpenStageModal] = useState(false);
-    const [selectedStages, setSelectedStages] = useState<any[]>([]);
-    const [getStages, { loading: stageLoading }] = useLazyQuery(GET_PLAN_STAGE_TEMPLATES_BY_TEMPLATE);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [selectedTemplate, setSelectedTemplate] = useState<any | null>(null);
+    const [loadingCreate, setLoadingCreate] = useState(false);
+    const [reason, setReason] = useState("");
+    const [isCustom, setIsCustom] = useState(false);
 
-    const handleViewStages = async (templateId: string) => {
+    const router = useRouter();
+
+    const handleViewStages = (templateId: string) => {
         setOpenStageModal(true);
-        setSelectedStages([]);
-        const { data } = await getStages({ variables: { templateId } });
-        setSelectedStages(data?.planStageTemplates?.data || []);
+        fetchStages({ variables: { templateId } });
+    };
+
+    const handleUseTemplate = (tpl: any) => {
+        setSelectedTemplate(tpl);
+        setReason("");
+        setIsCustom(false);
+        setShowConfirm(true);
+    };
+
+    const handleConfirmCreate = async () => {
+        if (!selectedTemplate) return;
+        if (!reason || !reason.trim()) {
+            toast.custom(<ErrorToast message="Vui lòng nhập lý do bạn muốn bỏ thuốc." />);
+            return;
+        }
+        setLoadingCreate(true);
+        try {
+            const today = new Date();
+            const target = new Date();
+            target.setDate(today.getDate() + (selectedTemplate.estimated_duration_days || 30));
+            const input: CreateCessationPlanInput = {
+                template_id: selectedTemplate.id,
+                is_custom: isCustom,
+                start_date: today.toISOString().slice(0, 10),
+                target_date: target.toISOString().slice(0, 10),
+                reason: reason.trim(),
+            };
+
+            await createCessationPlan(input);
+
+            setShowConfirm(false);
+            setSelectedTemplate(null);
+            router.push(`/plan/my-plan`);
+            toast.custom(<SuccessToast message="Tạo kế hoạch thành công!" />);
+        } catch (err: any) {
+            alert(err.message || "Có lỗi khi tạo kế hoạch");
+        } finally {
+            setLoadingCreate(false);
+        }
     };
 
     return (
@@ -100,8 +146,12 @@ export default function PlanTemplatesPage() {
                                 <LayoutTemplate className="text-green-400 drop-shadow-glow" />
                                 <span className="font-bold text-xl text-sky-800">{tpl.name}</span>
                             </div>
-                            <p className="text-gray-600 mb-2">{tpl.description}</p>
+                            <p className="text-gray-600 mb-2 h-14">Mô tả: {tpl.description}</p>
                             <ul className="list-none pl-0 text-gray-700 text-base space-y-1">
+                                <li>
+                                    <span className="font-semibold text-gray-600">Mức độ:</span>{" "}
+                                    <span>{translateDifficulty(tpl.difficulty_level)}</span>
+                                </li>
                                 <li>
                                     <span className="font-semibold text-gray-600">Đánh giá trung bình:</span>{" "}
                                     {tpl.average_rating
@@ -129,21 +179,29 @@ export default function PlanTemplatesPage() {
                                         : "?"}
                                 </li>
                             </ul>
-
-                            <motion.button
-                                type="button"
-                                className="cursor-pointer mt-2 bg-gradient-to-r from-sky-500 to-green-400 hover:to-green-600 text-white font-semibold py-2 px-6 rounded-xl shadow-md transition-all"
-                                whileHover={{ scale: 1.055, y: -2 }}
-                                whileTap={{ scale: 0.97 }}
-                                onClick={() => handleViewStages(tpl.id)}
-                            >
-                                Xem các giai đoạn
-                            </motion.button>
+                            <div className="flex justify-center gap-3 mt-3">
+                                <motion.button
+                                    type="button"
+                                    className="bg-gradient-to-r from-green-500 to-sky-400 hover:from-green-600 hover:to-sky-600 text-white font-semibold py-2 px-5 rounded-xl shadow-md transition-all text-nowrap cursor-pointer"
+                                    whileHover={{ scale: 1.055, y: -2 }}
+                                    whileTap={{ scale: 0.97 }}
+                                    onClick={() => handleUseTemplate(tpl)}
+                                >
+                                    Sử dụng mẫu này
+                                </motion.button>
+                                <motion.button
+                                    type="button"
+                                    className="bg-white border border-sky-300 text-sky-600 hover:bg-sky-50 py-2 px-5 rounded-xl font-semibold transition-all shadow-sm text-nowrap cursor-pointer"
+                                    whileHover={{ scale: 1.035 }}
+                                    onClick={() => handleViewStages(tpl.id)}
+                                >
+                                    Xem các giai đoạn mẫu
+                                </motion.button>
+                            </div>
                         </motion.div>
                     ))}
                 </div>
             )}
-
             <div className="text-center mt-10">
                 <Link
                     href="/plan"
@@ -155,9 +213,45 @@ export default function PlanTemplatesPage() {
             <StageModal
                 open={openStageModal}
                 onClose={() => setOpenStageModal(false)}
-                stages={selectedStages}
+                stages={stages}
                 loading={stageLoading}
             />
+
+            <ConfirmModal
+                open={showConfirm}
+                title="Xác nhận sử dụng mẫu"
+                message={
+                    loadingCreate ? <Loading /> :
+                        <div>
+                            <div>
+                                Bạn có chắc chắn muốn tạo kế hoạch mới từ mẫu <b>{selectedTemplate?.name}</b>?
+                            </div>
+                            <div className="mt-4">
+                                <label className="block font-semibold mb-1 text-left" htmlFor="plan-reason">Lý do bỏ thuốc:</label>
+                                <input
+                                    id="plan-reason"
+                                    type="text"
+                                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
+                                    value={reason}
+                                    onChange={e => setReason(e.target.value)}
+                                    placeholder="Nhập lý do cá nhân..."
+                                />
+                            </div>
+                            <label className="flex items-center gap-2 cursor-pointer select-none mt-4">
+                                <input
+                                    type="checkbox"
+                                    className="accent-sky-600 w-4 h-4"
+                                    checked={isCustom}
+                                    onChange={e => setIsCustom(e.target.checked)}
+                                />
+                                <span className="text-sky-700">Tùy chỉnh kế hoạch</span>
+                            </label>
+                        </div>
+                }
+                onCancel={() => setShowConfirm(false)}
+                onConfirm={handleConfirmCreate}
+            >
+            </ConfirmModal>
         </div>
     );
 }
