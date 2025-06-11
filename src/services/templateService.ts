@@ -25,9 +25,17 @@ export function getPlanTemplates({
     search = "",
     orderBy = "created_at",
     sortOrder = "desc",
+    filters = {},
+}: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    orderBy?: string;
+    sortOrder?: string;
+    filters?: { coachId?: string };
 } = {}) {
     const { data, loading, error, refetch } = useQuery(GET_PLAN_TEMPLATES, {
-        variables: { page, limit, search, orderBy, sortOrder },
+        variables: { page, limit, search, orderBy, sortOrder, filters },
         fetchPolicy: "cache-and-network",
     });
 

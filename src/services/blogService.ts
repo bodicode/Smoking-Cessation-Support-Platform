@@ -34,17 +34,18 @@ export function getBlogs({
   search = "",
   orderBy = "created_at",
   sortOrder = "asc",
-  filters = undefined, 
+  filters = undefined,
 }: {
   page?: number;
   limit?: number;
   search?: string;
   orderBy?: string;
   sortOrder?: string;
-  filters?: { authorId?: string }; // định nghĩa filter phù hợp với backend
+  filters?: { authorId?: string };
 } = {}) {
   const { data, loading, error } = useQuery<{ blogs: BlogList }>(GET_BLOGS, {
-    variables: { page, limit, search, orderBy, sortOrder, filters }, // truyền filters nếu có
+    variables: { page, limit, search, orderBy, sortOrder, filters },
+    fetchPolicy: "cache-and-network",
   });
 
   const blogs = data?.blogs?.data || [];
