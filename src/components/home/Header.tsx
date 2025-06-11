@@ -183,6 +183,15 @@ const Header = () => {
                 >
                   {t("profile")}
                 </Link>
+                {user.role === "COACH" &&
+                  <Link
+                    href={`/${locale}/coach`}
+                    className="block px-4 py-2 text-xs sm:text-sm text-gray-900 hover:bg-[#e0f2f1] hover:text-[#03256C]"
+                    onClick={() => setShowUserDropdown(false)}
+                  >
+                    Coach Dashboard
+                  </Link>
+                }
                 <button
                   className="cursor-pointer block w-full text-left px-4 py-2 text-xs sm:text-sm text-red-600 hover:bg-red-50"
                   onClick={() => {

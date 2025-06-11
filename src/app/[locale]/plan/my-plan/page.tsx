@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Loading from "@/components/common/Loading";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { getCessationPlans } from "@/services/cessationPlanService";
 import {
     PlanStage,
@@ -10,9 +10,12 @@ import {
     UpdatePlanStageInput,
 } from "@/types/api/cessationPlanStage";
 import { Plan } from "@/types/api/cessationPlan";
-import { createPlanStage, updatePlanStage } from "@/services/cessationPlanStageService";
+import { createPlanStage, removePlanStage, updatePlanStage } from "@/services/cessationPlanStageService";
 import { formatDate } from "@/utils";
 import Breadcrumbs from "@/components/common/BreadCrumb";
+import toast from "react-hot-toast";
+import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
+import ConfirmModal from "@/components/common/ModalConfirm";
 
 export default function CustomStages() {
     const [plans, setPlans] = useState<Plan[]>([]);
@@ -23,6 +26,7 @@ export default function CustomStages() {
     const [creating, setCreating] = useState<{ [planId: string]: boolean }>({});
     const [newStage, setNewStage] = useState<{ [planId: string]: CreatePlanStageInput }>({});
     const [loadingAction, setLoadingAction] = useState(false);
+    const [deleteStageId, setDeleteStageId] = useState<string | null>(null);
 
     const fetchPlans = async () => {
         setLoading(true);
@@ -37,8 +41,6 @@ export default function CustomStages() {
     useEffect(() => {
         fetchPlans();
     }, []);
-
-    console.log(plans)
 
     const handleEdit = (planId: string, stage: PlanStage) => {
         setEditingStage(prev => ({ ...prev, [planId]: stage.id }));
@@ -68,7 +70,12 @@ export default function CustomStages() {
         } else {
             setNewStage(prev => ({
                 ...prev,
-                [planId]: { ...prev[planId], [name]: value }
+                [planId]: {
+                    ...prev[planId],
+                    [name]: (name === "stage_order" || name === "duration_days")
+                        ? Number(value)
+                        : value
+                }
             }));
         }
     };
@@ -100,11 +107,46 @@ export default function CustomStages() {
 
     const handleCreate = async (planId: string, e: React.FormEvent) => {
         e.preventDefault();
+
+        const plan = plans.find(plan => plan.id === planId);
+        const stageOrders = plan?.stages.map(s => s.stage_order) || [];
+
+        if (stageOrders.includes(Number(newStage[planId]?.stage_order))) {
+            toast.custom(<ErrorToast message="Thứ tự giai đoạn này đã tồn tại, hãy chọn số khác!" />);
+            return;
+        }
+
         setLoadingAction(true);
-        await createPlanStage(newStage[planId]);
-        setCreating(prev => ({ ...prev, [planId]: false }));
-        setLoadingAction(false);
-        fetchPlans();
+        try {
+            await createPlanStage(newStage[planId]);
+            setCreating(prev => ({ ...prev, [planId]: false }));
+            fetchPlans();
+            toast.custom(<SuccessToast message="Tạo giai đoạn thành công!" />);
+        } catch (err: any) {
+            if (err?.message?.includes("already exists")) {
+                toast.custom(<ErrorToast message="Thứ tự giai đoạn này đã tồn tại trên hệ thống, hãy chọn số khác!" />);
+            } else {
+                toast.custom(<ErrorToast message={err?.message || "Có lỗi xảy ra!"} />);
+            }
+        } finally {
+            setLoadingAction(false);
+        }
+    };
+
+
+    const handleDeleteStage = async () => {
+        if (!deleteStageId) return;
+        setLoadingAction(true);
+        try {
+            await removePlanStage(deleteStageId);
+            toast.custom(<SuccessToast message="Xoá giai đoạn thành công!" />);
+            fetchPlans();
+        } catch (err: any) {
+            toast.custom(<ErrorToast message={err?.message || "Xoá thất bại"} />);
+        } finally {
+            setLoadingAction(false);
+            setDeleteStageId(null);
+        }
     };
 
     if (loading) return <Loading />;
@@ -190,6 +232,16 @@ export default function CustomStages() {
                                         className="border rounded-xl px-4 py-2 text-base"
                                     />
                                     <input
+                                        type="number"
+                                        name="stage_order"
+                                        placeholder="Thứ tự giai đoạn"
+                                        min={1}
+                                        value={newStage[plan.id]?.stage_order || 1}
+                                        onChange={e => handleChange(plan.id, e)}
+                                        className="border rounded-xl px-4 py-2 text-base"
+                                        required
+                                    />
+                                    <input
                                         name="actions"
                                         value={newStage[plan.id]?.actions || ""}
                                         onChange={e => handleChange(plan.id, e)}
@@ -244,7 +296,7 @@ export default function CustomStages() {
                                                 type="submit"
                                                 className="bg-green-600 hover:bg-green-700 text-white rounded px-4 py-1 font-semibold cursor-pointer transition"
                                             >
-                                                {loadingAction ? "Đang lưu..." : "Lưu"}
+                                                {loadingAction ? <Loading /> : "Lưu"}
                                             </button>
                                             <button
                                                 type="button"
@@ -263,7 +315,7 @@ export default function CustomStages() {
                                     className="bg-gradient-to-br from-blue-50 to-blue-100 px-6 py-4 rounded-2xl shadow flex justify-between items-center border border-blue-100 hover:shadow-lg transition"
                                 >
                                     <div>
-                                        <b className="text-sky-700 text-lg">{stage.title}</b>
+                                        <b className="text-sky-700 text-lg"> Giai đoạn {stage.stage_order}: {stage.title}</b>
                                         <div className="text-gray-700 text-base">{stage.description}</div>
                                         {stage.actions && (
                                             <div className="text-sm text-blue-600 mt-1 font-medium">
@@ -272,14 +324,25 @@ export default function CustomStages() {
                                         )}
                                     </div>
                                     {plan.is_custom && (
-                                        <button
-                                            onClick={() => handleEdit(plan.id, stage)}
-                                            className="text-sky-600 hover:text-sky-800 p-2 rounded-full transition cursor-pointer"
-                                            title="Chỉnh sửa giai đoạn"
-                                            type="button"
-                                        >
-                                            <Pencil size={20} />
-                                        </button>
+                                        <div className="flex gap-2">
+
+                                            <button
+                                                onClick={() => handleEdit(plan.id, stage)}
+                                                className="text-sky-600 hover:text-sky-800 p-2 rounded-full transition cursor-pointer"
+                                                title="Chỉnh sửa giai đoạn"
+                                                type="button"
+                                            >
+                                                <Pencil size={20} />
+                                            </button>
+                                            <button
+                                                onClick={() => setDeleteStageId(stage.id)}
+                                                className="text-red-600 hover:text-red-800 p-2 rounded-full transition cursor-pointer"
+                                                title="Xoá giai đoạn"
+                                                type="button"
+                                            >
+                                                <Trash2 size={20} />
+                                            </button>
+                                        </div>
                                     )}
                                 </li>
                             )
@@ -292,6 +355,13 @@ export default function CustomStages() {
                     )}
                 </div>
             ))}
+            <ConfirmModal
+                open={!!deleteStageId}
+                title="Xác nhận xoá"
+                message="Bạn có chắc chắn muốn xoá giai đoạn này không?"
+                onCancel={() => setDeleteStageId(null)}
+                onConfirm={handleDeleteStage}
+            />
         </div>
     );
 }

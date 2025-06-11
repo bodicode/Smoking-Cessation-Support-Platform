@@ -33,8 +33,6 @@ const BlogSection = () => {
 
     const blogs = data?.blogs?.data || [];
 
-    console.log(blogs)
-
     return (
         <section className="py-12 bg-[#f7f4ee] px-6 lg:px-36">
             <motion.h2
