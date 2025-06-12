@@ -1,153 +1,45 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Loading from "@/components/common/Loading";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import { getCessationPlans } from "@/services/cessationPlanService";
-import {
-    PlanStage,
-    CreatePlanStageInput,
-    UpdatePlanStageInput,
-} from "@/types/api/cessationPlanStage";
-import { Plan } from "@/types/api/cessationPlan";
-import { createPlanStage, removePlanStage, updatePlanStage } from "@/services/cessationPlanStageService";
-import { formatDate } from "@/utils";
 import Breadcrumbs from "@/components/common/BreadCrumb";
-import toast from "react-hot-toast";
-import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
 import ConfirmModal from "@/components/common/ModalConfirm";
+import toast from "react-hot-toast";
+import { useCustomStages } from "@/hooks/useCustomStage";
 
 export default function CustomStages() {
-    const [plans, setPlans] = useState<Plan[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    const [editingStage, setEditingStage] = useState<{ [planId: string]: string | null }>({});
-    const [customForm, setCustomForm] = useState<{ [planId: string]: UpdatePlanStageInput | null }>({});
-    const [creating, setCreating] = useState<{ [planId: string]: boolean }>({});
-    const [newStage, setNewStage] = useState<{ [planId: string]: CreatePlanStageInput }>({});
-    const [loadingAction, setLoadingAction] = useState(false);
-    const [deleteStageId, setDeleteStageId] = useState<string | null>(null);
-
-    const fetchPlans = async () => {
-        setLoading(true);
-        try {
-            const plans = await getCessationPlans();
-            setPlans(plans);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const {
+        plans,
+        loading,
+        loadingAction,
+        editingStage,
+        customForm,
+        creating,
+        newStage,
+        deleteStageId,
+        toastMsg,
+        toastType,
+        handleEdit,
+        handleChange,
+        handleCustomSave,
+        handleStartCreate,
+        handleCreate,
+        handleDeleteStage,
+        setCreating,
+        setDeleteStageId,
+        setToastMsg,
+        setToastType,
+    } = useCustomStages();
 
     useEffect(() => {
-        fetchPlans();
-    }, []);
-
-    const handleEdit = (planId: string, stage: PlanStage) => {
-        setEditingStage(prev => ({ ...prev, [planId]: stage.id }));
-        setCustomForm(prev => ({
-            ...prev,
-            [planId]: {
-                id: stage.id,
-                plan_id: planId,
-                title: stage.title || "",
-                description: stage.description || "",
-                actions: stage.actions || "",
-                stage_order: stage.stage_order,
-            }
-        }));
-    };
-
-    const handleChange = (
-        planId: string,
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const { name, value } = e.target;
-        if (editingStage[planId] && customForm[planId]) {
-            setCustomForm(prev => ({
-                ...prev,
-                [planId]: prev[planId] ? { ...prev[planId]!, [name]: value } : null
-            }));
-        } else {
-            setNewStage(prev => ({
-                ...prev,
-                [planId]: {
-                    ...prev[planId],
-                    [name]: (name === "stage_order" || name === "duration_days")
-                        ? Number(value)
-                        : value
-                }
-            }));
+        if (toastMsg) {
+            if (toastType === "success") toast.success(toastMsg);
+            else if (toastType === "error") toast.error(toastMsg);
+            setToastMsg(null);
+            setToastType(null);
         }
-    };
-
-    const handleCustomSave = async (planId: string, e: React.FormEvent) => {
-        e.preventDefault();
-        if (!customForm[planId]) return;
-        setLoadingAction(true);
-        await updatePlanStage(customForm[planId]!);
-        setEditingStage(prev => ({ ...prev, [planId]: null }));
-        setCustomForm(prev => ({ ...prev, [planId]: null }));
-        setLoadingAction(false);
-        fetchPlans();
-    };
-
-    const handleStartCreate = (planId: string, stages: PlanStage[]) => {
-        setCreating(prev => ({ ...prev, [planId]: true }));
-        setNewStage(prev => ({
-            ...prev,
-            [planId]: {
-                plan_id: planId,
-                title: "",
-                description: "",
-                actions: "",
-                stage_order: stages?.length + 1 || 1,
-            }
-        }));
-    };
-
-    const handleCreate = async (planId: string, e: React.FormEvent) => {
-        e.preventDefault();
-
-        const plan = plans.find(plan => plan.id === planId);
-        const stageOrders = plan?.stages.map(s => s.stage_order) || [];
-
-        if (stageOrders.includes(Number(newStage[planId]?.stage_order))) {
-            toast.custom(<ErrorToast message="Thứ tự giai đoạn này đã tồn tại, hãy chọn số khác!" />);
-            return;
-        }
-
-        setLoadingAction(true);
-        try {
-            await createPlanStage(newStage[planId]);
-            setCreating(prev => ({ ...prev, [planId]: false }));
-            fetchPlans();
-            toast.custom(<SuccessToast message="Tạo giai đoạn thành công!" />);
-        } catch (err: any) {
-            if (err?.message?.includes("already exists")) {
-                toast.custom(<ErrorToast message="Thứ tự giai đoạn này đã tồn tại trên hệ thống, hãy chọn số khác!" />);
-            } else {
-                toast.custom(<ErrorToast message={err?.message || "Có lỗi xảy ra!"} />);
-            }
-        } finally {
-            setLoadingAction(false);
-        }
-    };
-
-
-    const handleDeleteStage = async () => {
-        if (!deleteStageId) return;
-        setLoadingAction(true);
-        try {
-            await removePlanStage(deleteStageId);
-            toast.custom(<SuccessToast message="Xoá giai đoạn thành công!" />);
-            fetchPlans();
-        } catch (err: any) {
-            toast.custom(<ErrorToast message={err?.message || "Xoá thất bại"} />);
-        } finally {
-            setLoadingAction(false);
-            setDeleteStageId(null);
-        }
-    };
+    }, [toastMsg, toastType, setToastMsg, setToastType]);
 
     if (loading) return <Loading />;
     if (!plans.length) {
@@ -159,9 +51,11 @@ export default function CustomStages() {
             <Breadcrumbs
                 items={[
                     { label: "Trang chủ", href: "/" },
-                    { label: "Kế hoạch của bạn", active: true }
+                    { label: "Kế hoạch của bạn", active: true },
                 ]}
-            />            {plans.map(plan => (
+            />
+
+            {plans.map((plan) => (
                 <div
                     key={plan.id}
                     className="bg-white rounded-2xl shadow-xl p-6 mb-8 border border-gray-100"
@@ -176,11 +70,11 @@ export default function CustomStages() {
                     </div>
 
                     <div className="text-gray-800 mb-1">
-                        <b>Ngày bắt đầu:</b> {formatDate(plan.start_date)}
+                        <b>Ngày bắt đầu:</b> {new Date(plan.start_date).toLocaleDateString()}
                     </div>
 
                     <div className="text-gray-800 mb-1">
-                        <b>Ngày mục tiêu:</b> {formatDate(plan.target_date)}
+                        <b>Ngày mục tiêu:</b> {new Date(plan.target_date).toLocaleDateString()}
                     </div>
 
                     <div className="mb-4">
@@ -215,11 +109,11 @@ export default function CustomStages() {
                     <ul className="space-y-4">
                         {plan.is_custom && creating[plan.id] && (
                             <li className="bg-white border rounded-xl p-6 flex-col gap-2">
-                                <form onSubmit={e => handleCreate(plan.id, e)} className="flex flex-col gap-2">
+                                <form onSubmit={(e) => handleCreate(plan.id, e)} className="flex flex-col gap-2">
                                     <input
                                         name="title"
                                         value={newStage[plan.id]?.title || ""}
-                                        onChange={e => handleChange(plan.id, e)}
+                                        onChange={(e) => handleChange(plan.id, e)}
                                         placeholder="Tên giai đoạn"
                                         className="border rounded-xl px-4 py-2 text-base"
                                         required
@@ -227,7 +121,7 @@ export default function CustomStages() {
                                     <textarea
                                         name="description"
                                         value={newStage[plan.id]?.description || ""}
-                                        onChange={e => handleChange(plan.id, e)}
+                                        onChange={(e) => handleChange(plan.id, e)}
                                         placeholder="Mô tả"
                                         className="border rounded-xl px-4 py-2 text-base"
                                     />
@@ -237,14 +131,14 @@ export default function CustomStages() {
                                         placeholder="Thứ tự giai đoạn"
                                         min={1}
                                         value={newStage[plan.id]?.stage_order || 1}
-                                        onChange={e => handleChange(plan.id, e)}
+                                        onChange={(e) => handleChange(plan.id, e)}
                                         className="border rounded-xl px-4 py-2 text-base"
                                         required
                                     />
                                     <input
                                         name="actions"
                                         value={newStage[plan.id]?.actions || ""}
-                                        onChange={e => handleChange(plan.id, e)}
+                                        onChange={(e) => handleChange(plan.id, e)}
                                         placeholder="Hành động"
                                         className="border rounded-xl px-4 py-2 text-base"
                                     />
@@ -258,7 +152,7 @@ export default function CustomStages() {
                                         <button
                                             type="button"
                                             className="text-gray-500 underline cursor-pointer"
-                                            onClick={() => setCreating(prev => ({ ...prev, [plan.id]: false }))}
+                                            onClick={() => setCreating((prev) => ({ ...prev, [plan.id]: false }))}
                                             disabled={loadingAction}
                                         >
                                             Huỷ
@@ -268,27 +162,27 @@ export default function CustomStages() {
                             </li>
                         )}
 
-                        {plan.stages.map(stage =>
+                        {plan.stages.map((stage) =>
                             plan.is_custom && editingStage[plan.id] === stage.id && customForm[plan.id] ? (
                                 <li key={stage.id} className="bg-white border rounded-xl p-4 shadow flex flex-col gap-2">
-                                    <form onSubmit={e => handleCustomSave(plan.id, e)} className="flex flex-col gap-2">
+                                    <form onSubmit={(e) => handleCustomSave(plan.id, e)} className="flex flex-col gap-2">
                                         <input
                                             name="title"
                                             value={customForm[plan.id]?.title || ""}
-                                            onChange={e => handleChange(plan.id, e)}
+                                            onChange={(e) => handleChange(plan.id, e)}
                                             className="border rounded px-2 py-2 text-base"
                                             required
                                         />
                                         <textarea
                                             name="description"
                                             value={customForm[plan.id]?.description || ""}
-                                            onChange={e => handleChange(plan.id, e)}
+                                            onChange={(e) => handleChange(plan.id, e)}
                                             className="border rounded px-2 py-2 text-base"
                                         />
                                         <input
                                             name="actions"
                                             value={customForm[plan.id]?.actions || ""}
-                                            onChange={e => handleChange(plan.id, e)}
+                                            onChange={(e) => handleChange(plan.id, e)}
                                             className="border rounded px-2 py-2 text-base"
                                         />
                                         <div className="flex gap-3 mt-1">
@@ -301,7 +195,7 @@ export default function CustomStages() {
                                             <button
                                                 type="button"
                                                 className="text-gray-500 underline cursor-pointer"
-                                                onClick={() => setEditingStage(prev => ({ ...prev, [plan.id]: null }))}
+                                                onClick={() => handleEdit(plan.id, stage)}
                                                 disabled={loadingAction}
                                             >
                                                 Huỷ
@@ -315,7 +209,9 @@ export default function CustomStages() {
                                     className="bg-gradient-to-br from-blue-50 to-blue-100 px-6 py-4 rounded-2xl shadow flex justify-between items-center border border-blue-100 hover:shadow-lg transition"
                                 >
                                     <div>
-                                        <b className="text-sky-700 text-lg"> Giai đoạn {stage.stage_order}: {stage.title}</b>
+                                        <b className="text-sky-700 text-lg">
+                                            Giai đoạn {stage.stage_order}: {stage.title}
+                                        </b>
                                         <div className="text-gray-700 text-base">{stage.description}</div>
                                         {stage.actions && (
                                             <div className="text-sm text-blue-600 mt-1 font-medium">
@@ -325,7 +221,6 @@ export default function CustomStages() {
                                     </div>
                                     {plan.is_custom && (
                                         <div className="flex gap-2">
-
                                             <button
                                                 onClick={() => handleEdit(plan.id, stage)}
                                                 className="text-sky-600 hover:text-sky-800 p-2 rounded-full transition cursor-pointer"
@@ -348,6 +243,7 @@ export default function CustomStages() {
                             )
                         )}
                     </ul>
+
                     {plan.is_custom && (
                         <div className="mt-6 text-gray-500 text-base italic">
                             Bạn có thể thêm hoặc chỉnh sửa các giai đoạn cho phù hợp với bản thân.
@@ -355,6 +251,7 @@ export default function CustomStages() {
                     )}
                 </div>
             ))}
+
             <ConfirmModal
                 open={!!deleteStageId}
                 title="Xác nhận xoá"

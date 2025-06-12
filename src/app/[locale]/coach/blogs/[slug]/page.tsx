@@ -25,7 +25,7 @@ export default function CoachBlogDetailPage() {
     const handleDelete = async () => {
         setOpenConfirm(false);
         try {
-            await removeBlog(blog.id); // Gọi service xoá
+            await removeBlog(blog.id);
             toast.custom(<SuccessToast message="Xoá thành công!" />);
             client.cache.evict({ id: client.cache.identify({ __typename: "Blog", id: blog.id }) });
             client.cache.gc();
