@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LayoutTemplate } from "lucide-react";
 import { motion } from "framer-motion";
@@ -12,10 +13,9 @@ import { useLazyPlanStages } from "@/services/planStageTemplate";
 import { StageModal } from "@/components/template/StageModal";
 import { translateDifficulty } from "@/utils";
 import ConfirmModal from "@/components/common/ModalConfirm";
-import { CreateCessationPlanInput } from "@/types/api/cessationPlan";
 import toast from "react-hot-toast";
 import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
-import { createCessationPlan } from "@/services/cessationPlanService";
+import useTemplateSelection from "@/hooks/useTemplateSelection";
 
 const cardVariants = {
     hidden: { opacity: 0, y: 32, scale: 0.97 },
@@ -23,79 +23,56 @@ const cardVariants = {
         opacity: 1,
         y: 0,
         scale: 1,
-        transition: { delay: i * 0.13, type: "spring", stiffness: 170, damping: 17 }
-    })
+        transition: { delay: i * 0.13, type: "spring", stiffness: 170, damping: 17 },
+    }),
 };
 
 function renderStars(rating: number, max = 5) {
-    const stars = [];
-    for (let i = 1; i <= max; i++) {
-        if (rating >= i) {
-            stars.push(<BsStarFill key={i} className="inline text-yellow-400 w-5 h-5" />);
-        } else if (rating >= i - 0.5) {
-            stars.push(<BsStarHalf key={i} className="inline text-yellow-400 w-5 h-5" />);
-        } else {
-            stars.push(<BsStar key={i} className="inline text-gray-300 w-5 h-5" />);
-        }
-    }
-    return stars;
+    return Array.from({ length: max }, (_, i) => {
+        const index = i + 1;
+        if (rating >= index) return <BsStarFill key={index} className="text-yellow-400 w-5 h-5" />;
+        if (rating >= index - 0.5) return <BsStarHalf key={index} className="text-yellow-400 w-5 h-5" />;
+        return <BsStar key={index} className="text-gray-300 w-5 h-5" />;
+    });
 }
 
 export default function PlanTemplatesPage() {
     const { templates, loading, error } = getPlanTemplates();
     const { fetchStages, stages, loading: stageLoading } = useLazyPlanStages();
 
-    const [openStageModal, setOpenStageModal] = useState(false);
-    const [showConfirm, setShowConfirm] = useState(false);
-    const [selectedTemplate, setSelectedTemplate] = useState<any | null>(null);
-    const [loadingCreate, setLoadingCreate] = useState(false);
-    const [reason, setReason] = useState("");
-    const [isCustom, setIsCustom] = useState(false);
+    const {
+        openStageModal,
+        setOpenStageModal,
+        showConfirm,
+        setShowConfirm,
+        selectedTemplate,
+        handleUseTemplate,
+        handleConfirmCreate,
+        loadingCreate,
+        reason,
+        setReason,
+        isCustom,
+        setIsCustom,
+        successMsg,
+        errorMsg,
+        setSuccessMsg,
+        setErrorMsg,
+    } = useTemplateSelection();
 
-    const router = useRouter();
+    useEffect(() => {
+        if (successMsg) {
+            toast.custom(<SuccessToast message={successMsg} />);
+            setSuccessMsg(null);
+        }
+        if (errorMsg) {
+            toast.custom(<ErrorToast message={errorMsg} />);
+            setErrorMsg(null);
+        }
+    }, [successMsg, errorMsg, setSuccessMsg, setErrorMsg]);
 
     const handleViewStages = (templateId: string) => {
         setOpenStageModal(true);
         fetchStages({ variables: { templateId } });
-    };
-
-    const handleUseTemplate = (tpl: any) => {
-        setSelectedTemplate(tpl);
-        setReason("");
-        setIsCustom(false);
-        setShowConfirm(true);
-    };
-
-    const handleConfirmCreate = async () => {
-        if (!selectedTemplate) return;
-        if (!reason || !reason.trim()) {
-            toast.custom(<ErrorToast message="Vui lòng nhập lý do bạn muốn bỏ thuốc." />);
-            return;
-        }
-        setLoadingCreate(true);
-        try {
-            const today = new Date();
-            const target = new Date();
-            target.setDate(today.getDate() + (selectedTemplate.estimated_duration_days || 30));
-            const input: CreateCessationPlanInput = {
-                template_id: selectedTemplate.id,
-                is_custom: isCustom,
-                start_date: today.toISOString().slice(0, 10),
-                target_date: target.toISOString().slice(0, 10),
-                reason: reason.trim(),
-            };
-
-            await createCessationPlan(input);
-
-            setShowConfirm(false);
-            setSelectedTemplate(null);
-            router.push(`/plan/my-plan`);
-            toast.custom(<SuccessToast message="Tạo kế hoạch thành công!" />);
-        } catch (err: any) {
-            alert(err.message || "Có lỗi khi tạo kế hoạch");
-        } finally {
-            setLoadingCreate(false);
-        }
     };
 
     return (
@@ -103,7 +80,7 @@ export default function PlanTemplatesPage() {
             <Breadcrumbs
                 items={[
                     { label: "Trang chủ", href: "/" },
-                    { label: "Mẫu kế hoạch bỏ thuốc", active: true }
+                    { label: "Mẫu kế hoạch bỏ thuốc", active: true },
                 ]}
             />
             <motion.h1
@@ -122,6 +99,7 @@ export default function PlanTemplatesPage() {
             >
                 Chọn một kế hoạch bên dưới để xem chi tiết các giai đoạn và bắt đầu hành trình bỏ thuốc của bạn!
             </motion.p>
+
             {loading ? (
                 <Loading />
             ) : error ? (
@@ -147,42 +125,25 @@ export default function PlanTemplatesPage() {
                                 <span className="font-bold text-xl text-sky-800">{tpl.name}</span>
                             </div>
                             <p className="text-gray-600 mb-2 h-14">Mô tả: {tpl.description}</p>
-                            <ul className="list-none pl-0 text-gray-700 text-base space-y-1">
-                                <li>
-                                    <span className="font-semibold text-gray-600">Mức độ:</span>{" "}
-                                    <span>{translateDifficulty(tpl.difficulty_level)}</span>
-                                </li>
-                                <li>
-                                    <span className="font-semibold text-gray-600">Đánh giá trung bình:</span>{" "}
-                                    {tpl.average_rating
-                                        ? (
-                                            <span className="inline-flex items-center gap-1">
-                                                {renderStars(Number(tpl.average_rating))}
-                                                <span className="ml-1 text-gray-600 font-semibold">{tpl.average_rating}</span>
-                                            </span>
-                                        )
-                                        : "Chưa có"}
-                                </li>
-                                <li>
-                                    <span className="font-semibold text-gray-600">Số lượt đánh giá:</span>{" "}
-                                    <span className="text-sky-600 font-bold">{tpl.total_reviews}</span>
-                                </li>
-                                <li className="flex items-center gap-x-1.5">
-                                    <span className="font-semibold text-gray-600">Tỉ lệ thành công:</span>{" "}
-                                    {tpl.success_rate !== null && tpl.success_rate !== undefined
-                                        ? (
-                                            <span className="inline-flex items-center gap-1">
-                                                {renderStars(Number(tpl.success_rate) / 20)}
-                                                <span className="ml-1 text-blue-600 font-semibold">{tpl.success_rate}%</span>
-                                            </span>
-                                        )
-                                        : "?"}
-                                </li>
+                            <ul className="text-gray-700 space-y-1">
+                                <li><b>Mức độ:</b> {translateDifficulty(tpl.difficulty_level)}</li>
+                                <li><b>Đánh giá trung bình:</b> {tpl.average_rating ? (
+                                    <span className="inline-flex items-center gap-1">
+                                        {renderStars(Number(tpl.average_rating))}
+                                        <span className="ml-1 font-semibold">{tpl.average_rating}</span>
+                                    </span>
+                                ) : "Chưa có"}</li>
+                                <li><b>Số lượt đánh giá:</b> <span className="text-sky-600 font-bold">{tpl.total_reviews}</span></li>
+                                <li><b>Tỉ lệ thành công:</b> {tpl.success_rate != null ? (
+                                    <span className="inline-flex items-center gap-1">
+                                        {renderStars(tpl.success_rate / 20)}
+                                        <span className="ml-1 text-blue-600 font-semibold">{tpl.success_rate}%</span>
+                                    </span>
+                                ) : "?"}</li>
                             </ul>
                             <div className="flex justify-center gap-3 mt-3">
                                 <motion.button
-                                    type="button"
-                                    className="bg-gradient-to-r from-green-500 to-sky-400 hover:from-green-600 hover:to-sky-600 text-white font-semibold py-2 px-5 rounded-xl shadow-md transition-all text-nowrap cursor-pointer"
+                                    className="bg-gradient-to-r from-green-500 to-sky-400 hover:from-green-600 hover:to-sky-600 text-white font-semibold py-2 px-5 rounded-xl shadow-md"
                                     whileHover={{ scale: 1.055, y: -2 }}
                                     whileTap={{ scale: 0.97 }}
                                     onClick={() => handleUseTemplate(tpl)}
@@ -190,8 +151,7 @@ export default function PlanTemplatesPage() {
                                     Sử dụng mẫu này
                                 </motion.button>
                                 <motion.button
-                                    type="button"
-                                    className="bg-white border border-sky-300 text-sky-600 hover:bg-sky-50 py-2 px-5 rounded-xl font-semibold transition-all shadow-sm text-nowrap cursor-pointer"
+                                    className="bg-white border border-sky-300 text-sky-600 hover:bg-sky-50 py-2 px-5 rounded-xl font-semibold shadow-sm"
                                     whileHover={{ scale: 1.035 }}
                                     onClick={() => handleViewStages(tpl.id)}
                                 >
@@ -202,14 +162,13 @@ export default function PlanTemplatesPage() {
                     ))}
                 </div>
             )}
+
             <div className="text-center mt-10">
-                <Link
-                    href="/plan"
-                    className="text-blue-600 underline hover:text-blue-800 font-medium text-lg"
-                >
+                <Link href="/plan" className="text-blue-600 underline hover:text-blue-800 font-medium text-lg">
                     &larr; Quay lại trang kế hoạch
                 </Link>
             </div>
+
             <StageModal
                 open={openStageModal}
                 onClose={() => setOpenStageModal(false)}
@@ -220,38 +179,40 @@ export default function PlanTemplatesPage() {
             <ConfirmModal
                 open={showConfirm}
                 title="Xác nhận sử dụng mẫu"
-                message={
-                    loadingCreate ? <Loading /> :
-                        <div>
-                            <div>
-                                Bạn có chắc chắn muốn tạo kế hoạch mới từ mẫu <b>{selectedTemplate?.name}</b>?
-                            </div>
-                            <div className="mt-4">
-                                <label className="block font-semibold mb-1 text-left" htmlFor="plan-reason">Lý do bỏ thuốc:</label>
-                                <input
-                                    id="plan-reason"
-                                    type="text"
-                                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
-                                    value={reason}
-                                    onChange={e => setReason(e.target.value)}
-                                    placeholder="Nhập lý do cá nhân..."
-                                />
-                            </div>
-                            <label className="flex items-center gap-2 cursor-pointer select-none mt-4">
-                                <input
-                                    type="checkbox"
-                                    className="accent-sky-600 w-4 h-4"
-                                    checked={isCustom}
-                                    onChange={e => setIsCustom(e.target.checked)}
-                                />
-                                <span className="text-sky-700">Tùy chỉnh kế hoạch</span>
+                message={loadingCreate ? (
+                    <Loading />
+                ) : (
+                    <div>
+                        <p>
+                            Bạn có chắc chắn muốn tạo kế hoạch mới từ mẫu <b>{selectedTemplate?.name}</b>?
+                        </p>
+                        <div className="mt-4">
+                            <label className="block font-semibold mb-1 text-left" htmlFor="plan-reason">
+                                Lý do bỏ thuốc:
                             </label>
+                            <input
+                                id="plan-reason"
+                                type="text"
+                                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
+                                value={reason}
+                                onChange={(e) => setReason(e.target.value)}
+                                placeholder="Nhập lý do cá nhân..."
+                            />
                         </div>
-                }
+                        <label className="flex items-center gap-2 cursor-pointer mt-4">
+                            <input
+                                type="checkbox"
+                                className="accent-sky-600 w-4 h-4"
+                                checked={isCustom}
+                                onChange={(e) => setIsCustom(e.target.checked)}
+                            />
+                            <span className="text-sky-700">Tùy chỉnh kế hoạch</span>
+                        </label>
+                    </div>
+                )}
                 onCancel={() => setShowConfirm(false)}
                 onConfirm={handleConfirmCreate}
-            >
-            </ConfirmModal>
+            />
         </div>
     );
 }
