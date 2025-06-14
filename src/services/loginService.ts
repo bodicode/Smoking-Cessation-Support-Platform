@@ -1,5 +1,5 @@
 import { jwtDecode } from "jwt-decode";
-import { LoginForm } from "@/schemas/loginSchema";
+import { LoginForm } from "@/validations/loginSchema";
 import { setUser } from "@/store/userSlice";
 import { parseLoginError } from "@/utils/parseGraphqlError";
 import { Dispatch } from "@reduxjs/toolkit";

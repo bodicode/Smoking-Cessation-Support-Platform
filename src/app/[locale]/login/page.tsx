@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FaGoogle } from "react-icons/fa";
 import { useTranslations } from "next-intl";
-import { LoginForm, loginSchema } from "@/schemas/loginSchema";
+import { LoginForm, loginSchema } from "@/validations/loginSchema";
 import { useParams, useRouter } from "next/navigation";
 import { useLogin } from "@/graphql/hooks/useLogin";
 import { useState } from "react";

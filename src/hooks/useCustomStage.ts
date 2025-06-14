@@ -8,6 +8,22 @@ import {
 import { Plan } from "@/types/api/cessationPlan";
 import { CreatePlanStageInput, PlanStage, UpdatePlanStageInput } from "@/types/api/cessationPlanStage";
 
+const PLAN_STATUS_OPTIONS = [
+    "PLANNING",
+    "ACTIVE",
+    "PAUSED",
+    "COMPLETED",
+    "ABANDONED",
+    "CANCELLED",
+];
+
+const STAGE_STATUS_OPTIONS = [
+    "PENDING",
+    "ACTIVE",
+    "COMPLETED",
+    "SKIPPED",
+];
+
 export function useCustomStages() {
     const [plans, setPlans] = useState<Plan[]>([]);
     const [loading, setLoading] = useState(true);
@@ -46,11 +62,17 @@ export function useCustomStages() {
                 description: stage.description || "",
                 actions: stage.actions || "",
                 stage_order: stage.stage_order,
+                start_date: stage.start_date || "",
+                end_date: stage.end_date || "",
+                status: stage.status || "PENDING",
             },
         }));
     };
 
-    const handleChange = (planId: string, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (
+        planId: string,
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
         const { name, value } = e.target;
         if (editingStage[planId] && customForm[planId]) {
             setCustomForm((prev) => ({
@@ -62,11 +84,15 @@ export function useCustomStages() {
                 ...prev,
                 [planId]: {
                     ...prev[planId],
-                    [name]: name === "stage_order" || name === "duration_days" ? Number(value) : value,
+                    [name]:
+                        name === "stage_order" || name === "duration_days"
+                            ? Number(value)
+                            : value,
                 },
             }));
         }
     };
+
 
     const handleCustomSave = async (planId: string, e: React.FormEvent) => {
         e.preventDefault();
@@ -91,6 +117,8 @@ export function useCustomStages() {
                 description: "",
                 actions: "",
                 stage_order: stages.length + 1,
+                start_date: "",
+                end_date: "",
             },
         }));
     };
@@ -142,6 +170,7 @@ export function useCustomStages() {
     return {
         plans,
         loading,
+        fetchPlans,
         loadingAction,
         editingStage,
         customForm,
@@ -160,5 +189,7 @@ export function useCustomStages() {
         setDeleteStageId,
         setToastMsg,
         setToastType,
+        PLAN_STATUS_OPTIONS,
+        STAGE_STATUS_OPTIONS
     };
 }

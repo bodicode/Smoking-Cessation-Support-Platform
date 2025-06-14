@@ -1,4 +1,4 @@
-import { SignupForm } from "@/schemas/signupSchema";
+import { SignupForm } from "@/validations/signupSchema";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export async function signupHandler({

@@ -1,7 +1,8 @@
 import { PlanStage } from "./cessationPlanStage";
 export interface Plan {
     id: string;
-    template?: {
+    template: {
+        id: string;
         name: string
     };
     reason?: string;
@@ -35,4 +36,21 @@ export interface CreateCessationPlanInput {
     start_date: string;
     target_date: string;
     reason: string;
+}
+
+export interface GetCessationPlansOptions {
+    page?: number;
+    limit?: number;
+    search?: string;
+    orderBy?: string;
+    sortOrder?: string;
+    userId?: string;
+    templateId?: string;
+}
+
+export type CessationPlanStatus = "PLANNING" | "ACTIVE" | "PAUSED" | "COMPLETED" | "ABANDONED" | "CANCELLED";
+
+export interface UpdateCessationPlanInput {
+    id: string;
+    status: CessationPlanStatus;
 }

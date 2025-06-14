@@ -1,19 +1,15 @@
 import { gql } from "@apollo/client";
 
 export const GET_CESSATION_PLANS = gql`
-  query getCessationPlans {
+  query getCessationPlans($params: PaginationParamsInput, $filters: CessationPlanFiltersInput) {
     cessationPlans(
-      params: {
-        page: 1
-        limit: 10
-        search: ""
-        orderBy: "created_at"
-        sortOrder: "desc"
-      }
+      params: $params,
+      filters: $filters
     ) {
       data {
         id
         template { 
+          id
           name
         }
         reason
@@ -29,6 +25,9 @@ export const GET_CESSATION_PLANS = gql`
         }
         stages {
           id
+          start_date
+          end_date
+          status
           description
           stage_order
           actions

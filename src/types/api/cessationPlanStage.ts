@@ -12,6 +12,8 @@ export interface PlanStage {
     is_overdue?: boolean;
     status?: string;
     template_stage_id?: string;
+    start_date?: string;
+    end_date?: string;
 }
 
 export interface CreatePlanStageInput {
@@ -20,6 +22,8 @@ export interface CreatePlanStageInput {
     description?: string;
     actions?: string;
     stage_order?: number;
+    start_date?: string;
+    end_date?: string;
 }
 
 export interface UpdatePlanStageInput {
@@ -29,4 +33,6 @@ export interface UpdatePlanStageInput {
     description?: string;
     actions?: string;
     stage_order?: number;
+    start_date?: string;
+    end_date?: string;
 }
