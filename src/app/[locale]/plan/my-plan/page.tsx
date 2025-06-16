@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Loading from "@/components/common/Loading";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import Breadcrumbs from "@/components/common/BreadCrumb";
@@ -12,6 +12,7 @@ import { CessationPlanStatus } from "@/types/api/cessationPlan";
 import { updatePlanStage } from "@/services/cessationPlanStageService";
 import { motion } from "framer-motion";
 import TemplateMyFeedbackBox from "@/components/feedback/myFeedbackTemplate";
+import ProgressRecordTable from "@/components/processRecord/ProcessRecordTable";
 
 function statusBadge(status: string) {
     const colors: any = {
@@ -400,6 +401,8 @@ export default function CustomStages() {
                         </ul>
 
                         <TemplateMyFeedbackBox templateId={plan.template?.id} />
+
+                        <ProgressRecordTable planId={plan.id} />
                     </motion.div>
                 );
             })}

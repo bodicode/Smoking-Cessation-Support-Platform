@@ -7,8 +7,6 @@ export const UPDATE_PLAN_STAGE = gql`
       title
       description
       actions
-      can_complete
-      can_start
       days_since_start
       days_to_end
       stage_order

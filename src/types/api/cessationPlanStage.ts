@@ -4,8 +4,6 @@ export interface PlanStage {
     title: string;
     description?: string;
     actions?: string;
-    can_complete?: boolean;
-    can_start?: boolean;
     days_since_start?: number;
     days_to_end?: number;
     stage_order?: number;
