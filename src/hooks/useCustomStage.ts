@@ -42,6 +42,17 @@ export function useCustomStages() {
         try {
             const data = await getCessationPlans();
             setPlans(data);
+            setToastMsg(null);
+        } catch (err: any) {
+            if (
+                err?.message &&
+                err.message.includes("Missing or invalid Authorization header")
+            ) {
+                setPlans([]);
+                setToastMsg(null);
+            } else {
+                setToastMsg(err);
+            }
         } finally {
             setLoading(false);
         }
