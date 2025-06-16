@@ -18,6 +18,12 @@ import plan from './plan.json';
 import template from './template.json';
 import community from './community.json';
 import membership from './membership.json';
+import adminDashboard from './adminDashboard.json';
+import adminUsers from './adminUsers.json';
+import adminReports from './adminReports.json';
+import adminTemplates from './adminTemplates.json';
+import adminSettings from './adminSettings.json';
+import adminSidebar from './adminSidebar.json';
 
 export default {
     header,
@@ -39,5 +45,11 @@ export default {
     plan,
     template,
     community,
-    membership
+    membership,
+    adminDashboard,
+    adminUsers,
+    adminReports,
+    adminTemplates,
+    adminSettings,
+    adminSidebar
 };

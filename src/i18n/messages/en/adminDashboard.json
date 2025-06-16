@@ -1,0 +1,18 @@
+{
+  "dashboard": "Dashboard",
+  "recentActivity": "Recent Activity",
+  "quickActions": "Quick Actions",
+  "addUser": "Add User",
+  "createTemplate": "Create Template",
+  "generateReport": "Generate Report",
+  "viewAnalytics": "View Analytics",
+  "manageMembershipPlans": "Manage Membership Plans",
+  "sendMotivationalMessage": "Send Motivational Message",
+  "viewCommunityActivity": "View Community Activity",
+  "totalUsers": "Total Users",
+  "revenue": "Revenue",
+  "totalTemplates": "Total Templates",
+  "activeCoaches": "Active Coaches",
+  "feedbackRatings": "Feedback & Ratings",
+  "revenueByMonth": "Revenue by Month"
+} 
