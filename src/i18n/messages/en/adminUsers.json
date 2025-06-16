@@ -1,0 +1,17 @@
+{
+  "users": "Users",
+  "userManagement": "User Management",
+  "addNewUser": "Add New User",
+  "editUser": "Edit User",
+  "deleteUser": "Delete User",
+  "userList": "User List",
+  "role": "Role",
+  "membership": "Membership",
+  "smokeFreeDays": "Smoke-Free Days",
+  "badges": "Badges",
+  "actions": "Actions",
+  "manageUsers": "Manage all users in the system. You can edit or delete users as needed.",
+  "searchPlaceholder": "Search by name or email...",
+  "allRoles": "All Roles",
+  "allMemberships": "All Memberships"
+} 

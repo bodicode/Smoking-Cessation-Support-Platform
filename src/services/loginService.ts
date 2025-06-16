@@ -47,8 +47,13 @@ export async function loginHandler({
     dispatch(setUser(userData));
     localStorage.setItem("access_token", accessToken);
 
-    if (userData.role === 'COACH') router.push("/coach");
-    else router.push("/");
+    if (userData.role === 'ADMIN') {
+      router.push("/admin");
+    } else if (userData.role === 'COACH') {
+      router.push("/coach");
+    } else {
+      router.push("/");
+    }
   } catch (err: any) {
     const msg = parseLoginError(err);
     setCustomError(msg);
