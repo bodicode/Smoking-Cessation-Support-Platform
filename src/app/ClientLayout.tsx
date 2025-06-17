@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { setUser } from "@/store/userSlice";
 import { useAuth } from "@/hooks/useAuth";
-import { useHydrateUser } from "@/hooks/useHydarate";
 import Loading from "@/components/common/Loading";
 
 export default function ClientLayout({
@@ -21,6 +20,7 @@ export default function ClientLayout({
     pathname?.includes("/login") ||
     pathname?.includes("/signup") ||
     pathname?.includes("/coach") ||
+    pathname?.includes("/admin") ||
     pathname?.includes("/forgot-password");
   const dispatch = useDispatch();
   const { user } = useAuth();

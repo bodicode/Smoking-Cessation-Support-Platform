@@ -3,15 +3,14 @@
 import useRequireRole from '@/hooks/useRequireRole';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { 
-    Users, 
-    Settings, 
-    BarChart3, 
-    FileText, 
-    LogOut,
+import {
+    Users,
+    Settings,
+    BarChart3,
+    FileText,
     LayoutDashboard,
-    Medal
+    Medal,
+    LogOut
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -26,13 +25,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const tUsers = useTranslations('adminUsers');
     const tReports = useTranslations('adminReports');
     const tTemplates = useTranslations('adminTemplates');
-    const tSettings = useTranslations('adminSettings');
     const tSidebar = useTranslations('adminSidebar');
     const params = useParams();
     const locale = (params.locale as string) || 'vi';
     const pathname = usePathname();
-    const dispatch = useDispatch();
-    const router = useRouter();
+
+    const dispatch = useDispatch()
+    const router = useRouter()
 
     const menu = [
         { href: '/admin', label: t('dashboard'), icon: LayoutDashboard },
@@ -40,7 +39,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { href: '/admin/reports', label: tReports('reports'), icon: BarChart3 },
         { href: '/admin/templates', label: tTemplates('templates'), icon: FileText },
         { href: '/admin/badges', label: tSidebar('badges'), icon: Medal },
-        { href: '/admin/settings', label: tSettings('settings'), icon: Settings },
     ];
 
     return (
@@ -65,11 +63,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         </Link>
                     ))}
                 </nav>
+                <button
+                    onClick={() => {
+                        dispatch(clearUser());
+                        localStorage.removeItem("access_token");
+                        router.push(`/login`);
+                    }}
+                    className="cursor-pointer flex items-center gap-2 px-4 py-2 mt-6 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-800 font-semibold transition shadow"
+                >
+                    <LogOut className="w-4 h-4" />
+                    Đăng xuất
+                </button>
             </aside>
 
-            <main className="flex-1 p-5 md:p-8 flex flex-col">
+            <main className="flex-1 min-h-screen p-5 md:p-8 w-[700px]">
                 {children}
             </main>
         </div>
     );
-} 
+}
