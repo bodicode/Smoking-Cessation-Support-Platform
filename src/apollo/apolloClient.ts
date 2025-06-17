@@ -10,7 +10,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
         for (let err of graphQLErrors) {
             if (
-                err.message?.toLowerCase().includes('token expired') ||
+                err.message?.toLowerCase().includes('expired token') ||
                 err.message?.toLowerCase().includes('unauthorized')
             ) {
                 toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!');

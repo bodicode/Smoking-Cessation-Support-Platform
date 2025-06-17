@@ -12,5 +12,6 @@
   "allStatuses": "Tất cả trạng thái",
   "completed": "Hoàn thành",
   "pending": "Đang xử lý",
-  "failed": "Thất bại"
+  "failed": "Thất bại",
+  "download": "Tải xuống"
 } 

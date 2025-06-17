@@ -75,7 +75,7 @@ export default function AdminReports() {
                   <td className="px-6 py-3 whitespace-nowrap">{t(report.status)}</td>
                   <td className="px-6 py-3 whitespace-nowrap space-x-2">
                     <button className="inline-flex items-center gap-1 border border-blue-500 text-blue-600 px-3 py-1 rounded-lg hover:bg-blue-50 transition text-sm font-medium">
-                      {t('view')}
+                      {t('viewReports')}
                     </button>
                     <button className="inline-flex items-center gap-1 border border-green-500 text-green-600 px-3 py-1 rounded-lg hover:bg-green-50 transition text-sm font-medium">
                       {t('download')}

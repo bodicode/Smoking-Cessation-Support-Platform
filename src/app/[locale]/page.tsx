@@ -2,13 +2,10 @@
 
 import Achieveboard from "@/components/home/AchieveBoard";
 import BlogSection from "@/components/home/BlogSection";
-import Footer from "@/components/home/Footer";
-import Header from "@/components/home/Header";
 import Hero from "@/components/home/Hero";
 import SmokeFreeStats from "@/components/home/smokeStats";
 import SuccessStories from "@/components/home/SuccessStories";
 import SupportTips from "@/components/home/SupportTips";
-import ClockCountUp from "@/components/smokeStats/ClockCountingUp";
 import { useCustomStages } from "@/hooks/useCustomStage";
 import { useProgressRecords } from "@/hooks/useProcessRecord";
 import Link from "next/link";
