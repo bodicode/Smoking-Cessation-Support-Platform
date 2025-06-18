@@ -25,6 +25,7 @@ export const GET_BLOGS = gql`
         content
         slug
         created_at
+        cover_image
         author {
           name
         }
