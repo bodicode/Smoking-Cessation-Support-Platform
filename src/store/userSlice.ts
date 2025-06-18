@@ -8,18 +8,10 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action: PayloadAction<UserState>) {
-      state.id = action.payload.id;
-      state.email = action.payload.email;
-      state.role = action.payload.role;
-      state.name = action.payload.name;
-      state.accessToken = action.payload.accessToken;
+      Object.assign(state, action.payload);
     },
     clearUser(state) {
-      state.id = undefined;
-      state.email = undefined;
-      state.role = undefined;
-      state.name = undefined;
-      state.accessToken = undefined;
+      Object.assign(state, initialState);
     },
   },
 });

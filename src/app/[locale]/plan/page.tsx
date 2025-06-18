@@ -15,6 +15,7 @@ import {
     ListTodo,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Breadcrumbs from "@/components/common/BreadCrumb";
 
 const questionKeys = [
     { key: "cigarettesPerDay", type: "number", icon: <User className="w-5 h-5 text-blue-400" /> },
@@ -90,6 +91,13 @@ export default function QuitPlanFullForm() {
             animate="visible"
             variants={sectionVariants}
         >
+            <Breadcrumbs
+                items={[
+                    { label: "Trang chủ", href: "/" },
+                    { label: "Kế hoạch bỏ thuốc", active: true }
+                ]}
+            />
+
             <motion.h1
                 className="text-4xl font-extrabold mb-4 text-center text-gradient bg-gradient-to-r from-sky-600 to-green-400 inline-block text-transparent bg-clip-text"
                 initial={{ opacity: 0, y: 16 }}

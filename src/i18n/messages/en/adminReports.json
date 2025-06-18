@@ -1,0 +1,18 @@
+{
+  "reports": "Reports",
+  "reportManagement": "Report Management",
+  "generateNewReport": "Generate New Report",
+  "viewReports": "View Reports",
+  "reportHistory": "Report History",
+  "reportList": "Report List",
+  "date": "Date",
+  "status": "Status",
+  "actions": "Actions",
+  "manageReports": "Manage system reports. You can view or download reports as needed.",
+  "allStatuses": "All Statuses",
+  "completed": "Completed",
+  "pending": "Pending",
+  "failed": "Failed",
+  "view": "View",
+  "download": "Download"
+} 

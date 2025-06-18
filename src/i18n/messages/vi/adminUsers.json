@@ -1,0 +1,17 @@
+{
+  "users": "Người Dùng",
+  "userManagement": "Quản Lý Người Dùng",
+  "addNewUser": "Thêm Người Dùng Mới",
+  "editUser": "Chỉnh Sửa Người Dùng",
+  "deleteUser": "Xóa Người Dùng",
+  "userList": "Danh Sách Người Dùng",
+  "role": "Vai trò",
+  "membership": "Gói thành viên",
+  "smokeFreeDays": "Số ngày không hút thuốc",
+  "badges": "Huy hiệu",
+  "actions": "Thao tác",
+  "manageUsers": "Quản lý tất cả người dùng trong hệ thống. Bạn có thể chỉnh sửa hoặc xóa người dùng nếu cần.",
+  "searchPlaceholder": "Tìm kiếm theo tên hoặc email...",
+  "allRoles": "Tất cả vai trò",
+  "allMemberships": "Tất cả gói thành viên"
+} 

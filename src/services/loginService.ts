@@ -1,5 +1,5 @@
 import { jwtDecode } from "jwt-decode";
-import { LoginForm } from "@/schemas/loginSchema";
+import { LoginForm } from "@/validations/loginSchema";
 import { setUser } from "@/store/userSlice";
 import { parseLoginError } from "@/utils/parseGraphqlError";
 import { Dispatch } from "@reduxjs/toolkit";
@@ -32,10 +32,7 @@ export async function loginHandler({
     });
 
     const accessToken = response.data?.login?.data?.session?.access_token;
-    if (!accessToken) {
-      setCustomError("Không nhận được token!");
-      throw new Error("Không nhận được token!");
-    }
+    if (!accessToken) throw new Error("Không nhận được token!");
 
     const decoded: any = jwtDecode(accessToken);
 
@@ -50,14 +47,16 @@ export async function loginHandler({
     dispatch(setUser(userData));
     localStorage.setItem("access_token", accessToken);
 
-    if (userData.role === 'COACH') {
-      return router.push("/coach");
+    if (userData.role === 'ADMIN') {
+      router.push("/admin");
+    } else if (userData.role === 'COACH') {
+      router.push("/coach");
     } else {
       router.push("/");
     }
   } catch (err: any) {
     const msg = parseLoginError(err);
     setCustomError(msg);
-    throw new Error(msg)
+    throw new Error(msg);
   }
 }

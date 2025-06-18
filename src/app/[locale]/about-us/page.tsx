@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { HeartHandshake, Users, Target, Eye, LockKeyhole, BrainCircuit, MessageCircle, ShieldCheck } from 'lucide-react';
 import { motion } from "framer-motion";
+import Breadcrumbs from "@/components/common/BreadCrumb";
 
 export default function AboutUs() {
     const t = useTranslations('aboutUs');
@@ -62,7 +63,6 @@ export default function AboutUs() {
         }
     ];
 
-    // Animation variants
     const fadeUp = {
         hidden: { opacity: 0, y: 40 },
         visible: (i = 1) => ({
@@ -74,6 +74,14 @@ export default function AboutUs() {
 
     return (
         <div className="min-h-screen py-10 flex flex-col items-center">
+            
+            <Breadcrumbs
+                items={[
+                    { label: "Trang chủ", href: "/" },
+                    { label: "Về chúng tôi", active: true }
+                ]}
+            />
+            
             <motion.div
                 className="w-full max-w-4xl bg-white rounded-2xl px-8 py-10"
                 initial="hidden"

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FaGoogle } from "react-icons/fa";
 import { useTranslations } from "next-intl";
-import { SignupForm, signupSchema } from "@/schemas/signupSchema";
+import { SignupForm, signupSchema } from "@/validations/signupSchema";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { parseSignupError } from "@/utils/parseGraphqlError";

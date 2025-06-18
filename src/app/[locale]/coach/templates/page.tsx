@@ -12,11 +12,15 @@ import { getPlanTemplates, removePlanTemplate } from "@/services/templateService
 import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
 import ConfirmModal from "@/components/common/ModalConfirm";
 import { StageList } from "@/components/coach/StageList";
+import { useAuth } from "@/hooks/useAuth";
 
 const TEMPLATES_PER_PAGE = 4;
 
 export default function CoachTemplatesPage() {
     const [page, setPage] = useState(1);
+    const { user } = useAuth();
+
+    const authorId = user?.id;
 
     const {
         templates,
@@ -26,7 +30,9 @@ export default function CoachTemplatesPage() {
         loading,
         error,
         refetch
-    } = getPlanTemplates({ page, limit: TEMPLATES_PER_PAGE, orderBy: "created_at", sortOrder: "desc" });
+    } = getPlanTemplates({
+        page, limit: TEMPLATES_PER_PAGE, orderBy: "created_at", sortOrder: "desc", filters: user.id ? { coachId: authorId } : undefined,
+    });
 
     const [openTemplateIds, setOpenTemplateIds] = useState<string[]>([]);
     const [deleteId, setDeleteId] = useState<string | null>(null);

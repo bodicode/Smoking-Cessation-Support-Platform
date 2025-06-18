@@ -1,0 +1,8 @@
+{
+  "settings": "Settings",
+  "generalSettings": "General Settings",
+  "systemSettings": "System Settings",
+  "securitySettings": "Security Settings",
+  "saveChanges": "Save Changes",
+  "resetSettings": "Reset Settings"
+} 

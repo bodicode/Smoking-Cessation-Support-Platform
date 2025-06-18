@@ -7,7 +7,7 @@ import { getMessages } from 'next-intl/server';
 import { Montserrat } from 'next/font/google';
 import ClientLayout from '../ClientLayout';
 import ApolloClientProvider from '../../apollo/apolloProviders';
-import ReduxProvider from '../ReduxProvider';
+import ReduxProvider from '../../components/providers/ReduxProvider';
 import ScrollToTop from '@/components/common/ScrollToTop';
 import ProgressBar from '@/components/common/ProgressBar';
 import { ToastBar, Toaster } from 'react-hot-toast';

@@ -34,9 +34,18 @@ export function getBlogs({
   search = "",
   orderBy = "created_at",
   sortOrder = "asc",
+  filters = undefined,
+}: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  orderBy?: string;
+  sortOrder?: string;
+  filters?: { authorId?: string };
 } = {}) {
   const { data, loading, error } = useQuery<{ blogs: BlogList }>(GET_BLOGS, {
-    variables: { page, limit, search, orderBy, sortOrder },
+    variables: { page, limit, search, orderBy, sortOrder, filters },
+    fetchPolicy: "cache-and-network",
   });
 
   const blogs = data?.blogs?.data || [];
@@ -45,6 +54,7 @@ export function getBlogs({
 
   return { blogs, total, totalPages, loading, error };
 }
+
 
 export function getBlogBySlug(slug?: string) {
   const { data, loading, error } = useQuery<{ blogBySlug: Blog }>(GET_BLOG_BY_SLUG, {

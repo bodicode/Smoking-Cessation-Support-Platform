@@ -1,36 +1,23 @@
 "use client";
 
-import { useState, ChangeEvent, FormEvent, useRef, useEffect } from "react";
-import Image from "next/image";
-import { X } from "lucide-react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
-import { MenuBar } from "@/components/editor/MenuBar";
-import useRequireRole from "@/hooks/useRequireRole";
-import { createBlog, getBlogBySlug, updateBlog } from "@/services/blogService";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
+import Image from "next/image";
+import toast from "react-hot-toast";
 import Loading from "@/components/common/Loading";
 import ConfirmModal from "@/components/common/ModalConfirm";
-import toast from "react-hot-toast";
-import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
+import { SuccessToast, ErrorToast } from "@/components/common/CustomToast";
+import { MenuBar } from "@/components/editor/MenuBar";
+import useRequireRole from "@/hooks/useRequireRole";
+import useBlogForm from "@/hooks/useBlogForm";
+import { FormEvent } from "react";
 
 export default function BlogCreatePage() {
   useRequireRole("COACH");
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const editSlug = searchParams.get("edit") || undefined;
-
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [coverImage, setCoverImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [error, setError] = useState("");
-  const [blogId, setBlogId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const editor = useEditor({
     extensions: [StarterKit, Underline],
@@ -46,96 +33,34 @@ export default function BlogCreatePage() {
     },
   });
 
-  const { blog, loading: loadingBlog } = getBlogBySlug(editSlug);
+  const {
+    editSlug, title, setTitle, setContent,
+    imagePreview, error,
+    loading, showConfirmModal, setShowConfirmModal, fileInputRef,
+    handleImageChange, handleRemoveImage, handleSubmit, loadingBlog
+  } = useBlogForm(editor);
 
-  useEffect(() => {
-    if (editor && blog) {
-      setBlogId(blog.id);
-      setTitle(blog.title || "");
-      setContent(blog.content || "");
-      editor.commands.setContent(blog.content || "");
-      setImagePreview(blog.cover_image || null);
-      setCoverImage(null);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blog, editor]);
-
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setCoverImage(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
+  const handleSuccess = (slug: string) => {
+    toast.custom(
+      <SuccessToast message={editSlug ? "Cập nhật thành công!" : "Đăng blog thành công!"} />
+    );
+    router.push(`/coach/blogs/${slug}`);
   };
 
-  const handleRemoveImage = () => {
-    setCoverImage(null);
-    setImagePreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (
-      !title.trim() ||
-      !content ||
-      content.replace(/<(.|\n)*?>/g, "").trim() === "" ||
-      (!coverImage && !imagePreview)
-    ) {
-      setError("Vui lòng nhập đầy đủ thông tin và chọn ảnh!");
-      return;
-    }
-    setError("");
-
-    if (editSlug && blogId) {
-      setShowConfirmModal(true);
-      return;
-    }
-    submitBlog();
-  };
-
-  const submitBlog = async () => {
-    setLoading(true);
-    try {
-      let result;
-      if (editSlug && blogId) {
-        result = await updateBlog({
-          id: blogId,
-          title,
-          content,
-          coverImage: coverImage || undefined,
-        });
-      } else {
-        result = await createBlog({ title, content, coverImage });
-      }
-      if (result?.slug) {
-        toast.custom(<SuccessToast message={editSlug ? "Cập nhật thành công!" : "Đăng blog thành công!"} />);
-        router.push(`/coach/blogs/${result.slug}`);
-        return;
-      }
-      setTitle("");
-      setContent("");
-      setCoverImage(null);
-      setImagePreview(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      editor?.commands.clearContent();
-    } catch (err: any) {
-      toast.custom(<ErrorToast message={err?.message} />);
-    } finally {
-      setLoading(false);
-    }
+  const handleError = (msg: string) => {
+    toast.custom(<ErrorToast message={msg} />);
   };
 
   const handleConfirmUpdate = () => {
     setShowConfirmModal(false);
-    submitBlog();
+    handleSubmit(handleSuccess, handleError)(new Event("submit") as unknown as FormEvent);
   };
 
   const handleCancelUpdate = () => {
     setShowConfirmModal(false);
   };
 
-  if (loadingBlog || loading) {
+  if (loading || loadingBlog) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loading />
@@ -149,7 +74,7 @@ export default function BlogCreatePage() {
         <h2 className="text-2xl font-bold mb-6 text-[#03256C]">
           {editSlug ? "Chỉnh sửa blog" : "Tạo blog mới"}
         </h2>
-        <form className="space-y-7" onSubmit={handleSubmit}>
+        <form className="space-y-7" onSubmit={handleSubmit(handleSuccess, handleError)}>
           <div>
             <input
               type="text"
@@ -176,18 +101,14 @@ export default function BlogCreatePage() {
                     +
                   </span>
                 </div>
-                <span className="text-gray-400 text-base">
-                  Nhấp vào để chọn ảnh
-                </span>
-                <span className="text-gray-500 text-xs mt-1">
-                  Hỗ trợ các file: PNG, JPG, JPEG
-                </span>
+                <span className="text-gray-400 text-base">Nhấp vào để chọn ảnh</span>
+                <span className="text-gray-500 text-xs mt-1">Hỗ trợ các file: PNG, JPG, JPEG</span>
                 <input
                   ref={fileInputRef}
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={handleImageChange}
+                  onChange={(e) => handleImageChange(e.target.files?.[0] || null)}
                   disabled={loading}
                 />
               </div>
@@ -214,17 +135,10 @@ export default function BlogCreatePage() {
           {error && <div className="text-red-400 font-semibold">{error}</div>}
           <button
             type="submit"
-            className={`w-full cursor-pointer bg-[#03256C] hover:bg-[#041E42] text-white font-semibold py-2 rounded-full mt-4 shadow-lg transition ${loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+            className={`w-full cursor-pointer bg-[#03256C] hover:bg-[#041E42] text-white font-semibold py-2 rounded-full mt-4 shadow-lg transition ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             disabled={loading}
           >
-            {loading
-              ? editSlug
-                ? <Loading />
-                : <Loading />
-              : editSlug
-                ? "Cập nhật bài viết"
-                : "Đăng bài"}
+            {loading ? <Loading /> : editSlug ? "Cập nhật bài viết" : "Đăng bài"}
           </button>
         </form>
       </div>
@@ -236,7 +150,6 @@ export default function BlogCreatePage() {
         onConfirm={handleConfirmUpdate}
         onCancel={handleCancelUpdate}
       />
-
     </div>
   );
 }

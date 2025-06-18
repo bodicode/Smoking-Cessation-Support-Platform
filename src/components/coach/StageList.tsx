@@ -9,7 +9,9 @@ export function StageList({ templateId }: { templateId: string }) {
         variables: { templateId }
     });
 
-    if (loading) return <div className="p-3 text-sky-600 flex items-center gap-2"><Loading size={18} /> Đang tải stage...</div>;
+    if (loading) return <div className="p-3 text-sky-600 flex items-center gap-2">
+        <Loading />
+    </div>;
     if (error) return <div className="text-red-500 p-3">Lỗi tải stages.</div>;
 
     const stages = data?.planStageTemplates?.data ?? [];
@@ -22,6 +24,7 @@ export function StageList({ templateId }: { templateId: string }) {
                     <div>
                         <span className="font-semibold text-[#03256C]">Bước {stage.stage_order}:</span> <span className="font-semibold">{stage.title}</span>
                         <div className="text-gray-500 text-sm mt-1">{stage.description}</div>
+                        <div className="text-gray-500 text-sm mt-1">Hành động: {stage.recommended_actions}</div>
                     </div>
                     <div className="flex gap-4 text-xs text-gray-600 min-w-fit md:justify-end">
                         <span className="flex items-center gap-1"><Clock size={14} /> {stage.duration_days} ngày</span>

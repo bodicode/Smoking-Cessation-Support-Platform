@@ -33,8 +33,6 @@ const BlogSection = () => {
 
     const blogs = data?.blogs?.data || [];
 
-    console.log(blogs)
-
     return (
         <section className="py-12 bg-[#f7f4ee] px-6 lg:px-36">
             <motion.h2
@@ -62,6 +60,7 @@ const BlogSection = () => {
                         const title = blog.title;
                         const excerpt = blog.content?.replace(/<[^>]+>/g, '').slice(0, 100) + "...";
                         const author = blog.author.name
+
                         return (
                             <motion.div
                                 key={blog.id}
@@ -75,7 +74,7 @@ const BlogSection = () => {
                                 >
                                     <div className="relative h-52 w-full">
                                         <Image
-                                            src={blog.cover_image || "/images/blog1.jpg"}
+                                            src={blog.cover_image}
                                             alt={title}
                                             fill
                                             className="object-cover"

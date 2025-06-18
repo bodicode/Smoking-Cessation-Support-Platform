@@ -3,10 +3,12 @@
 import { usePathname } from "next/navigation";
 import Header from "@/components/home/Header";
 import Footer from "@/components/home/Footer";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { setUser } from "@/store/userSlice";
+import { useAuth } from "@/hooks/useAuth";
+import Loading from "@/components/common/Loading";
 
 export default function ClientLayout({
   children,
@@ -18,9 +20,11 @@ export default function ClientLayout({
     pathname?.includes("/login") ||
     pathname?.includes("/signup") ||
     pathname?.includes("/coach") ||
+    pathname?.includes("/admin") ||
     pathname?.includes("/forgot-password");
   const dispatch = useDispatch();
-  const user = useSelector((state: any) => state.user);
+  const { user } = useAuth();
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     if (!user?.accessToken) {
@@ -41,7 +45,12 @@ export default function ClientLayout({
         }
       }
     }
+    setTimeout(() => setHydrated(true), 0);
   }, [user?.accessToken, dispatch]);
+
+  if (!hydrated) {
+    return <Loading />;
+  }
 
   return (
     <div className="bg-[#f9f5ec]">

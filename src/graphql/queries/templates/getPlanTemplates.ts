@@ -1,14 +1,24 @@
 import { gql } from "@apollo/client";
 
 export const GET_PLAN_TEMPLATES = gql`
-  query getPlanTemplates($page: Int!, $limit: Int!) {
-    cessationPlanTemplates(params: {
-      page: $page
-      limit: $limit
-      search: ""
-      orderBy: "created_at"
-      sortOrder: "desc"
-    }) {
+  query getPlanTemplates(
+    $page: Int!
+    $limit: Int!
+    $search: String
+    $orderBy: String
+    $sortOrder: String
+    $filters: CessationPlanTemplateFiltersInput
+  ) {
+    cessationPlanTemplates(
+      params: {
+        page: $page
+        limit: $limit
+        search: $search
+        orderBy: $orderBy
+        sortOrder: $sortOrder
+      }
+      filters: $filters
+    ) {
       data {
         id
         name
@@ -19,6 +29,14 @@ export const GET_PLAN_TEMPLATES = gql`
         success_rate
         average_rating
         created_at
+        coach {
+          id
+          name
+        }
+        stages {
+          id
+          title
+        }
       }
       total
       hasNext

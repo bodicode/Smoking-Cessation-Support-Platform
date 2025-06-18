@@ -31,7 +31,7 @@ export default function SuccessStories() {
                             snap-center
                             rounded-xl p-4 sm:p-6 w-[90vw] max-w-[340px] sm:w-60 md:w-72 min-h-[200px] sm:min-h-[250px]
                             flex flex-col justify-between
-                            ${idx % 2 === 1 ? 'bg-[#60C3A4] text-white' : 'bg-white text-blue-900'} shadow
+                            ${idx % 2 === 1 ? 'bg-[#004F7C] text-white' : 'bg-white text-blue-900'} shadow
                         `}
                         style={{
                             flex: "0 0 auto",

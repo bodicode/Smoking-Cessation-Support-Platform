@@ -13,11 +13,16 @@ import toast from "react-hot-toast";
 import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
 import { removeBlog } from '@/services/blogService';
 import client from "@/apollo/apolloClient";
+import { useAuth } from '@/hooks/useAuth';
 
 export default function CoachBlogsPage() {
     const [page, setPage] = useState(1);
     const [deleteBlog, setDeleteBlog] = useState<any>(null);
     const limit = 4;
+
+    const { user } = useAuth();
+
+    const authorId = user?.id;
 
     const { data, loading, error, refetch } = useQuery(GET_BLOGS, {
         variables: {
@@ -25,7 +30,8 @@ export default function CoachBlogsPage() {
             limit,
             search: "",
             orderBy: "created_at",
-            sortOrder: "desc"
+            sortOrder: "desc",
+            filters: user.id ? { authorId } : undefined,
         }
     });
 
