@@ -59,3 +59,12 @@ export type CreateSharedPostInput = {
 export type UpdateSharedPostInput = {
     caption: string;
 };
+
+export type ManagePostLikeInput = {
+    shared_post_id: string;
+};
+
+export type PostCommentInput = {
+    shared_post_id: string;
+    content: string;
+};
