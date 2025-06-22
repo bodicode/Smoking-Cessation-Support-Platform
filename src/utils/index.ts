@@ -22,13 +22,16 @@ export function safeT(t: any, key: string) {
 export function formatDate(iso: string) {
   const d = new Date(iso);
   return d.toLocaleDateString("vi-VN", {
-    day: "2-digit", month: "2-digit", year: "numeric",
-    hour: "2-digit", minute: "2-digit"
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
 
 export function pad(n: number) {
-  return n.toString().padStart(2, '0');
+  return n.toString().padStart(2, "0");
 }
 
 export function translateDifficulty(level: string) {
@@ -41,5 +44,63 @@ export function translateDifficulty(level: string) {
       return "Khó";
     default:
       return "Không xác định";
+  }
+}
+
+export function translatePlanStatus(status: string) {
+  switch (status) {
+    case "PLANNING":
+      return "Lên kế hoạch";
+    case "ACTIVE":
+      return "Đang thực hiện";
+    case "PAUSED":
+      return "Tạm dừng";
+    case "COMPLETED":
+      return "Hoàn thành";
+    case "ABANDONED":
+      return "Bỏ dở";
+    case "CANCELLED":
+      return "Đã huỷ";
+    default:
+      return status;
+  }
+}
+
+export function translateStageStatus(status: string) {
+  switch (status) {
+    case "PENDING":
+      return "Chưa bắt đầu";
+    case "ACTIVE":
+      return "Đang thực hiện";
+    case "COMPLETED":
+      return "Hoàn thành";
+    case "SKIPPED":
+      return "Bỏ qua";
+    default:
+      return status;
+  }
+}
+
+export function getAvailablePlanStatusTransitions(current: string) {
+  switch (current) {
+    case "PLANNING":
+      return ["ACTIVE", "CANCELLED", "ABANDONED"];
+    case "ACTIVE":
+      return ["PAUSED", "COMPLETED", "ABANDONED"];
+    case "PAUSED":
+      return ["ACTIVE", "CANCELLED", "ABANDONED"];
+    default:
+      return []; // COMPLETED, ABANDONED, CANCELLED: không cho chuyển nữa
+  }
+}
+
+export function getAvailableStageStatusTransitions(current: string) {
+  switch (current) {
+    case "PENDING":
+      return ["ACTIVE", "SKIPPED"];
+    case "ACTIVE":
+      return ["COMPLETED", "SKIPPED"];
+    default:
+      return [];
   }
 }
