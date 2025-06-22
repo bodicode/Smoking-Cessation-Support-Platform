@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, User, Pencil, Trash2, Check, X } from "lucide-react";
+import {
+  Heart,
+  User,
+  Pencil,
+  Trash2,
+  Check,
+  X,
+  MessageCircle,
+} from "lucide-react";
 import { formatDate } from "@/utils";
 import CommentList from "./CommentList";
 import { usePostComments } from "@/hooks/usePostComment";
@@ -20,6 +28,8 @@ export default function PostCard({
   onEdit,
   onDelete,
   canEditDelete,
+  onCommentAdded,
+  onCommentDeleted,
 }: any) {
   const { user } = useAuth();
   const [editing, setEditing] = useState(false);
@@ -71,9 +81,25 @@ export default function PostCard({
         content: commentInput.trim(),
       });
       setCommentInput("");
+      if (onCommentAdded) onCommentAdded();
     } catch (e: any) {
       toast.error(e?.message || "Gửi bình luận thất bại. Vui lòng thử lại.");
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!pendingDeleteId) return;
+    setDeleteLoadingId(pendingDeleteId);
+    try {
+      await submitDelete(pendingDeleteId);
+      toast.success("Đã xoá bình luận!");
+      if (onCommentDeleted) onCommentDeleted(); 
+    } catch (e: any) {
+      toast.error(e?.message || "Xoá bình luận thất bại.");
+    }
+    setDeleteLoadingId(null);
+    setPendingDeleteId(null);
+    setConfirmOpen(false);
   };
 
   const handleReply = async (parentId: string, text: string) => {
@@ -105,20 +131,6 @@ export default function PostCard({
   const askDelete = (commentId: string) => {
     setPendingDeleteId(commentId);
     setConfirmOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!pendingDeleteId) return;
-    setDeleteLoadingId(pendingDeleteId);
-    try {
-      await submitDelete(pendingDeleteId);
-      toast.success("Đã xoá bình luận!");
-    } catch (e: any) {
-      toast.error(e?.message || "Xoá bình luận thất bại.");
-    }
-    setDeleteLoadingId(null);
-    setPendingDeleteId(null);
-    setConfirmOpen(false);
   };
 
   const handleCancelDelete = () => {
@@ -240,7 +252,8 @@ export default function PostCard({
           {post.likes_count}
         </motion.button>
         <span className="text-gray-400 text-xs flex items-center gap-1">
-          💬 {post.comments_count}
+          <MessageCircle className="w-5 h-5" />
+          {post.comments_count}
         </span>
       </div>
 
