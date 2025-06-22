@@ -97,6 +97,24 @@ export default function Community() {
     }
   };
 
+  const handleCommentAdded = (postId: string) => {
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === postId ? { ...p, comments_count: p.comments_count + 1 } : p
+      )
+    );
+  };
+
+  const handleCommentDeleted = (postId: string) => {
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === postId
+          ? { ...p, comments_count: Math.max(0, p.comments_count - 1) }
+          : p
+      )
+    );
+  };
+
   const handleConfirmDelete = async () => {
     if (pendingDeleteId) {
       try {
@@ -195,6 +213,8 @@ export default function Community() {
                 onEdit={handleEditPost}
                 onDelete={() => handleAskDelete(post.id)}
                 canEditDelete={post.user_badge?.user?.id === user.id}
+                onCommentAdded={() => handleCommentAdded(post.id)}
+                onCommentDeleted={() => handleCommentDeleted(post.id)}
               />
             ))}
         </AnimatePresence>
