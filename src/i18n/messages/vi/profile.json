@@ -21,5 +21,11 @@
     "clickToChange": "Nhấn để thay đổi ảnh",
     "accountSettings": "Cài Đặt Tài Khoản",
     "changePassword": "Đổi Mật Khẩu",
-    "profileSettings": "Cài Đặt Hồ Sơ"
+    "profileSettings": "Cài Đặt Hồ Sơ",
+    "membership": "Thành viên",
+    "membershipActive": "Đang hoạt động",
+    "membershipInactive": "Tạm ngưng",
+    "membershipExpired": "Đã hết hạn",
+    "membershipEndDate": "Ngày kết thúc",
+    "membershipNone": "Chưa đăng ký"
 }

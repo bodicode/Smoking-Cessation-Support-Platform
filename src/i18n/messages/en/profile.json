@@ -21,5 +21,11 @@
     "clickToChange": "Click to change avatar",
     "accountSettings": "Account Settings",
     "changePassword": "Change Password",
-    "profileSettings": "Profile Settings"
+    "profileSettings": "Profile Settings",
+    "membership": "Membership",
+    "membershipActive": "Active",
+    "membershipInactive": "Inactive",
+    "membershipExpired": "Expired",
+    "membershipEndDate": "End date",
+    "membershipNone": "Not registered"
 }

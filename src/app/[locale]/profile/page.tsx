@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { MyBadge } from "@/types/api/badge";
 import { getMyAwardedBadges } from "@/services/badgesService";
+import MembershipInfo from "@/components/profile/MembershipInfo";
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
@@ -145,8 +146,8 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                {/* STATS */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+                {/* STATS AND MEMBERSHIP */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
                     <div className="bg-gradient-to-tr from-[#b8ede3] to-[#e9faf6] rounded-2xl p-8 shadow-md flex flex-col items-center gap-2 relative overflow-hidden">
                         <span className="absolute right-4 top-4 text-[#60c3a4] opacity-10 text-7xl font-black select-none">⏳</span>
                         <span className="text-sm text-[#60c3a4] font-semibold mb-1">{t("daysSmokeFree")}</span>
@@ -157,6 +158,9 @@ export default function ProfilePage() {
                         <span className="absolute right-4 top-4 text-[#e6b34c] opacity-10 text-7xl font-black select-none">📅</span>
                         <span className="text-sm text-[#e6b34c] font-semibold mb-1">{t("lastDaySmoked")}</span>
                         <span className="text-2xl font-bold text-[#e8a400] mb-2">{user.lastDaySmoked}</span>
+                    </div>
+                    <div className="md:col-span-1">
+                        <MembershipInfo />
                     </div>
                 </div>
 
