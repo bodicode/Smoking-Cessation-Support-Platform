@@ -27,5 +27,6 @@
     "membershipInactive": "Tạm ngưng",
     "membershipExpired": "Đã hết hạn",
     "membershipEndDate": "Ngày kết thúc",
-    "membershipNone": "Chưa đăng ký"
+    "membershipNone": "Chưa đăng ký",
+    "role": "Vai trò"
 }

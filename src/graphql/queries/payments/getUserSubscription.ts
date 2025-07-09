@@ -9,6 +9,8 @@ export const GET_USER_SUBSCRIPTION = gql`
       status
       start_date
       end_date
+      created_at
+      updated_at
     }
   }
-`; 
+`;

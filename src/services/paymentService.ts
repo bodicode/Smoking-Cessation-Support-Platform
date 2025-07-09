@@ -6,9 +6,10 @@ import { CREATE_PAYMENT, CreatePaymentInput, CreatePaymentResponse } from "@/gra
 import { getMembershipPackageById } from "./membershipService";
 import { jwtDecode } from "jwt-decode";
 import { Payment, PaymentStatus } from "@/types/api/payment";
+import { UserSubscription, GetUserSubscriptionResponse } from "@/types/api/subscription";
 
 // Get user ID from JWT token using existing pattern
-function getUserIdFromToken(): string | null {
+export function getUserIdFromToken(): string | null {
   try {
     const token = localStorage.getItem('access_token');
     if (!token) return null;
@@ -136,12 +137,32 @@ export async function updatePaymentStatus(paymentId: string, status: PaymentStat
   };
 }
 
-export async function getUserSubscription(user_id: string) {
-  const { data, errors } = await client.query({
-    query: GET_USER_SUBSCRIPTION,
-    variables: { user_id },
-    fetchPolicy: "network-only",
-  });
-  if (errors && errors.length > 0) throw new Error(errors[0].message);
-  return data.getUserSubscription;
-} 
+// Get user subscription
+export async function getUserSubscription(userId: string): Promise<UserSubscription | null> {
+  try {
+    const { data, errors } = await client.query<GetUserSubscriptionResponse>({
+      query: GET_USER_SUBSCRIPTION,
+      variables: { user_id: userId },
+      fetchPolicy: "network-only",
+    });
+
+    if (errors && errors.length > 0) {
+      throw new Error(errors[0].message);
+    }
+
+    return data.getUserSubscription;
+  } catch (error) {
+    console.error("Error fetching user subscription:", error);
+    throw error;
+  }
+}
+
+// Get current user subscription
+export async function getCurrentUserSubscription(): Promise<UserSubscription | null> {
+  const userId = getUserIdFromToken();
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
+  
+  return getUserSubscription(userId);
+}

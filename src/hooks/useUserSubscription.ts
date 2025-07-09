@@ -1,31 +1,17 @@
 import { useState, useEffect } from "react";
-import { getUserSubscription } from "@/services/paymentService";
-import { jwtDecode } from "jwt-decode";
+import { getCurrentUserSubscription } from "@/services/paymentService";
+import { UserSubscription } from "@/types/api/subscription";
 
 interface UseUserSubscriptionReturn {
-  subscription: any;
+  subscription: UserSubscription | null;
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
 }
 
-// Get user ID from JWT token using existing pattern
-function getUserIdFromToken(): string | null {
-  try {
-    const token = localStorage.getItem('access_token');
-    if (!token) return null;
-    
-    const decoded: any = jwtDecode(token);
-    return decoded.sub || null;
-  } catch (error) {
-    console.error('Error getting user ID from token:', error);
-    return null;
-  }
-}
-
 // Hook to get user subscription
 export function useUserSubscription(): UseUserSubscriptionReturn {
-  const [subscription, setSubscription] = useState<any>(null);
+  const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,14 +20,7 @@ export function useUserSubscription(): UseUserSubscriptionReturn {
       setLoading(true);
       setError(null);
       
-      const userId = getUserIdFromToken();
-      if (!userId) {
-        setError("User not authenticated");
-        setLoading(false);
-        return;
-      }
-
-      const data = await getUserSubscription(userId);
+      const data = await getCurrentUserSubscription();
       setSubscription(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch subscription");
@@ -60,4 +39,4 @@ export function useUserSubscription(): UseUserSubscriptionReturn {
     error,
     refetch: fetchSubscription,
   };
-} 
+}

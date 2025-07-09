@@ -27,5 +27,6 @@
     "membershipInactive": "Inactive",
     "membershipExpired": "Expired",
     "membershipEndDate": "End date",
-    "membershipNone": "Not registered"
+    "membershipNone": "Not registered",
+    "role": "Role"
 }
