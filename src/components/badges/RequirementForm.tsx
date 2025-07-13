@@ -17,7 +17,6 @@ export default function RequirementForm({ criteriaType, value, onChange }: Props
         }
     }, [criteriaType]);
 
-    // Task completed at a specific time
     if (criteriaType === "task_completed_at_time") {
         const time_before = initial?.condition?.time_before || "09:00";
         return (
@@ -40,8 +39,7 @@ export default function RequirementForm({ criteriaType, value, onChange }: Props
         );
     }
 
-    // Streak achieved
-    if (criteriaType === "streak_achieved") {
+    if (criteriaType === "streak") {
         const days = initial?.days ?? "";
         return (
             <div>
@@ -63,7 +61,6 @@ export default function RequirementForm({ criteriaType, value, onChange }: Props
         );
     }
 
-    // First plan created (no input)
     if (criteriaType === "first_plan_created") {
         return <div className="text-green-700 font-medium">Không cần điều kiện thêm</div>;
     }

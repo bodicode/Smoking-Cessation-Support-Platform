@@ -8,11 +8,13 @@ import RequirementForm from "./RequirementForm";
 import { GET_BADGE_TYPES } from "@/graphql/queries/badgesType/getBadgesType";
 import Loading from "../common/Loading";
 
-// Mapping badge_type_id => criteria_type
 const badgeTypeCriteriaMap: Record<string, string> = {
-    "19a8b54d-5257-457f-935b-d022beb64731": "task_completed_at_time",
-    "15ca49a7-c5e2-4c79-aeb6-c4c58c035c40": "streak_achieved",
-    "c691b3ac-2bb0-486c-92b3-7e6c6738051f": "first_plan_created",
+    "057e393f-4ad6-4d71-b9de-2219300375bb": "streak",
+    "293b1519-6dac-4dab-817f-d90cb72b7223": "streak",
+    "f8a9f979-e255-4695-823a-b71e6b1041eb": "streak",
+    "6b948cc9-c9ca-4402-b31e-ca20b7ad518c": "streak",
+    "48a58d46-f207-4949-b464-e90d89c09f1d": "streak",
+    "c2f1fb64-a2a5-47d4-859d-db37a8633e4e": "first_plan_created",
 };
 
 async function uploadImage(file: File): Promise<string> {
@@ -43,10 +45,8 @@ export default function CreateBadgeForm({ onSubmit, onCancel }: Props) {
         requirements: ""
     });
 
-    // Lấy criteria_type dựa vào badge_type_id được chọn
     const criteria_type = badgeTypeCriteriaMap[newBadge.badge_type_id] || "";
 
-    // Xác định loại này có cần nhập điều kiện không
     const requiresRequirement = criteria_type !== "first_plan_created";
 
     return (

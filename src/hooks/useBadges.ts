@@ -45,7 +45,6 @@ export function useBadges(filters: any = {}) {
         setUpdating(true);
         setUpdateError(null);
         try {
-            console.log(input)
             await createBadge(input);
             setUpdating(false);
             fetchBadgeList();
