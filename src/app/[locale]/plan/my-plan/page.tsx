@@ -20,6 +20,9 @@ import {
   translateStageStatus,
 } from "@/utils";
 
+import { useSearchParams } from "next/navigation";
+import ChatBubble from "@/components/myPlan/ChatBubble";
+
 function statusBadge(status: string) {
   const colors: any = {
     PLANNING: "bg-gray-200 text-gray-700",
@@ -120,6 +123,9 @@ export default function CustomStages() {
     STAGE_STATUS_OPTIONS,
   } = useCustomStages();
 
+  const searchParams = useSearchParams();
+  const planIdFromUrl = searchParams.get("planId");
+
   useEffect(() => {
     if (toastMsg) {
       if (toastType === "success") toast.success(toastMsg);
@@ -129,9 +135,23 @@ export default function CustomStages() {
     }
   }, [toastMsg, toastType, setToastMsg, setToastType]);
 
+  useEffect(() => {
+    if (planIdFromUrl && plans.length > 0) {
+      const targetPlanElement = document.getElementById(
+        `plan-${planIdFromUrl}`
+      );
+      if (targetPlanElement) {
+        targetPlanElement.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }
+  }, [planIdFromUrl, plans]);
+
   if (loading)
     return (
-      <div className="min-h-screen flex items-center">
+      <div className="min-h-screen flex items-center justify-center">
         <Loading />
       </div>
     );
@@ -156,6 +176,7 @@ export default function CustomStages() {
         return (
           <motion.div
             key={plan.id}
+            id={`plan-${plan.id}`}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.14, type: "spring" }}
@@ -174,11 +195,11 @@ export default function CustomStages() {
             <div className="flex flex-wrap gap-4 mb-2 text-gray-600">
               <div>
                 <b>Ngày bắt đầu:</b>{" "}
-                {new Date(plan.start_date).toLocaleDateString()}
+                {new Date(plan.start_date).toLocaleDateString("vi-VN")}
               </div>
               <div>
                 <b>Ngày mục tiêu:</b>{" "}
-                {new Date(plan.target_date).toLocaleDateString()}
+                {new Date(plan.target_date).toLocaleDateString("vi-VN")}
               </div>
             </div>
 
@@ -364,6 +385,7 @@ export default function CustomStages() {
                         name="title"
                         value={customForm[plan.id]?.title || ""}
                         onChange={(e) => handleChange(plan.id, e)}
+                        placeholder="Tên giai đoạn"
                         className="border rounded px-2 py-2 text-base"
                         required
                       />
@@ -443,18 +465,15 @@ export default function CustomStages() {
                         </span>
                         <span
                           className={`ml-2 px-2 py-1 rounded-full text-xs font-semibold
-                                                    ${
-                                                      stage.status ===
-                                                      "COMPLETED"
-                                                        ? "bg-green-200 text-green-700"
-                                                        : stage.status ===
-                                                          "ACTIVE"
-                                                        ? "bg-sky-200 text-sky-700"
-                                                        : stage.status ===
-                                                          "SKIPPED"
-                                                        ? "bg-gray-200 text-gray-500"
-                                                        : "bg-gray-100 text-gray-600"
-                                                    }`}
+                                    ${
+                                      stage.status === "COMPLETED"
+                                        ? "bg-green-200 text-green-700"
+                                        : stage.status === "ACTIVE"
+                                        ? "bg-sky-200 text-sky-700"
+                                        : stage.status === "SKIPPED"
+                                        ? "bg-gray-200 text-gray-500"
+                                        : "bg-gray-100 text-gray-600"
+                                    }`}
                         >
                           {translateStageStatus(stage.status ?? "")}
                         </span>
@@ -554,6 +573,7 @@ export default function CustomStages() {
           </motion.div>
         );
       })}
+      <ChatBubble />
 
       <ConfirmModal
         open={!!deleteStageId}
