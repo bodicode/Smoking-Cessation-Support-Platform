@@ -6,7 +6,7 @@ import Loading from "@/components/common/Loading";
 export default function CoachHome() {
     const router = useRouter();
     useEffect(() => {
-        router.replace("/coach/templates");
+        router.replace("/coach/chat");
     }, [router]);
 
     return <Loading />;

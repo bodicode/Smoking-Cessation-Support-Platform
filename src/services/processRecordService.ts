@@ -4,7 +4,7 @@ import { REMOVE_PROGRESS_RECORD } from "@/graphql/mutations/processRecord/delete
 import { UPDATE_PROGRESS_RECORD } from "@/graphql/mutations/processRecord/updateProcessRecordMutation";
 import { GET_PROGRESS_RECORDS } from "@/graphql/queries/processRecord/getProcessRecord";
 
-export async function getProgressRecords({ planId, page = 1, limit = 10 }: { planId: string, page?: number, limit?: number }) {
+export async function getProgressRecords({ planId, page = 1, limit = 20 }: { planId: string, page?: number, limit?: number }) {
     const { data, errors } = await client.query({
         query: GET_PROGRESS_RECORDS,
         variables: {
