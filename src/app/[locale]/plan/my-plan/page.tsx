@@ -569,7 +569,10 @@ export default function CustomStages() {
 
             <TemplateMyFeedbackBox templateId={plan.template?.id} />
 
-            <ProgressRecordTable planId={plan.id} />
+            <ProgressRecordTable
+              planId={plan.id}
+              coachId={plan.template.coach_id}
+            />
           </motion.div>
         );
       })}

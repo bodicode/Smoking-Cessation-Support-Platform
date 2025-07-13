@@ -11,6 +11,7 @@ export const GET_CESSATION_PLANS = gql`
         template { 
           id
           name
+          coach_id
         }
         reason
         status

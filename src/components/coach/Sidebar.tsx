@@ -1,14 +1,19 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FileText, BookOpen, LogOut, MessageCircle } from "lucide-react";
+import { FileText, BookOpen, LogOut, MessageCircle, Award } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { clearUser, setUser } from "@/store/userSlice";
 
 const menu = [
+  { label: "Chat", icon: MessageCircle, href: "/coach/chat" },
   { label: "Quản lý Blog", icon: BookOpen, href: "/coach/blogs" },
   { label: "Quản lý Kế hoạch", icon: FileText, href: "/coach/templates" },
-  { label: "Chat", icon: MessageCircle, href: "/coach/chat" },
+  {
+    label: "Quản lý Tiêu chí Sức khỏe",
+    icon: Award,
+    href: "/coach/health-criteria",
+  },
 ];
 
 export default function SidebarCoach() {
@@ -19,7 +24,7 @@ export default function SidebarCoach() {
   return (
     <aside
       className="
-                w-[240px]
+                w-[330px]
                 min-h-screen
                 flex flex-col
                 p-5
