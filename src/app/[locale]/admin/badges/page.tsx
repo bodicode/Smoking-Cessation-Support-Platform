@@ -50,7 +50,6 @@ function renderRequirement(requirement: string | null): React.ReactNode {
         );
     }
   } catch (err) {
-    // Nếu lỗi JSON thì hiện chuỗi gốc
     return (
       <span className="text-gray-500 text-xs">{String(requirement)}</span>
     );
