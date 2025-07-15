@@ -14,6 +14,7 @@ import ConfirmModal from "@/components/common/ModalConfirm";
 import toast from "react-hot-toast";
 import { ErrorToast, SuccessToast } from "@/components/common/CustomToast";
 import useTemplateSelection from "@/hooks/useTemplateSelection";
+import { useSubscription } from "@/context/SubscriptionContext";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 32, scale: 0.97 },
@@ -61,12 +62,10 @@ const difficultyLevels = [
 
 export default function PlanTemplatesPage() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("");
-
   const { templates, loading, error } = getPlanTemplates({
     filters: { difficultyLevel: selectedDifficulty || undefined },
   });
   const { fetchStages, stages, loading: stageLoading } = useLazyPlanStages();
-
   const {
     openStageModal,
     setOpenStageModal,
@@ -85,6 +84,7 @@ export default function PlanTemplatesPage() {
     setSuccessMsg,
     setErrorMsg,
   } = useTemplateSelection();
+  const { isSubscribed, loading: subscriptionLoading } = useSubscription(); // Sử dụng useSubscription
 
   useEffect(() => {
     if (successMsg) {
@@ -166,7 +166,7 @@ export default function PlanTemplatesPage() {
         </div>
       </div>
 
-      {loading ? (
+      {loading || subscriptionLoading ? (
         <Loading />
       ) : error ? (
         <div className="text-center text-red-600 py-10">Lỗi tải dữ liệu</div>
@@ -275,7 +275,7 @@ export default function PlanTemplatesPage() {
           href="/plan"
           className="text-blue-600 underline hover:text-blue-800 font-medium text-lg"
         >
-          &larr; Quay lại trang kế hoạch
+          ← Quay lại trang kế hoạch
         </Link>
       </div>
 
@@ -314,15 +314,38 @@ export default function PlanTemplatesPage() {
                   placeholder="Nhập lý do cá nhân..."
                 />
               </div>
-              <label className="flex items-center gap-2 cursor-pointer mt-4">
+              <div className="relative flex items-center gap-2 mt-4">
                 <input
                   type="checkbox"
-                  className="accent-sky-600 w-4 h-4"
-                  checked={isCustom}
-                  onChange={(e) => setIsCustom(e.target.checked)}
+                  className={`accent-sky-600 w-4 h-4 ${
+                    !isSubscribed ? "cursor-not-allowed opacity-50" : ""
+                  }`}
+                  checked={isSubscribed ? isCustom : false}
+                  onChange={(e) =>
+                    isSubscribed && setIsCustom(e.target.checked)
+                  }
+                  disabled={!isSubscribed}
+                  id="custom-plan"
                 />
-                <span className="text-sky-700">Tùy chỉnh kế hoạch</span>
-              </label>
+                <label
+                  htmlFor="custom-plan"
+                  className={`text-sky-700 group relative cursor-pointer ${
+                    !isSubscribed ? "cursor-not-allowed" : ""
+                  }`}
+                >
+                  Tùy chỉnh kế hoạch
+                  {!isSubscribed && (
+                    <div className="absolute left-0 top-full mt-2 hidden group-hover:block bg-gray-800 text-white text-sm rounded py-1 px-2 shadow-lg z-10">
+                      <Link
+                        href="/membership"
+                        className="hover:text-sky-400"
+                      >
+                        Nâng cấp gói thành viên
+                      </Link>
+                    </div>
+                  )}
+                </label>
+              </div>
             </div>
           )
         }
