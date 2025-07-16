@@ -1,13 +1,33 @@
 export interface MemberProfile {
-  cigarettes_per_day: number;
+  id: string;
+  user_id: string;
   sessions_per_day: number;
-  price_per_pack: number;
   recorded_at: string;
+  price_per_pack: number;
+  cigarettes_per_day?: number;
 }
 
 export interface CoachProfile {
+  id: string;
   experience_years: number;
-  bio: string;
+  user_id: string;
+  bio?: string;
+}
+
+export interface User {
+  id: string;
+  user_name: string;
+  name: string;
+  avatar_url?: string;
+  role: string;
+  status: string;
+  created_at: string;
+  coach_profile?: CoachProfile | null;
+  member_profile?: MemberProfile | null;
+}
+
+export interface GetAllUsersResponse {
+  GetAllUsers: User[];
 }
 
 export interface UserProfile {

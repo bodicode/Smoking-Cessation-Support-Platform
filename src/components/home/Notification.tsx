@@ -36,12 +36,8 @@ export default function Notification() {
     setLoading(true);
     try {
       const params: PaginationParamsInput = { page: pageNum, limit: 10 };
-      const filters: NotificationFiltersInput = {
-        status: "SENT",
-      };
-
       const response: UserNotificationsResponse =
-        await notificationService.getUserNotifications(params, filters);
+        await notificationService.getUserNotifications(params);
 
       const mappedNotifications: NotificationItem[] =
         response.userNotifications.data.map((n) => ({
@@ -77,7 +73,6 @@ export default function Notification() {
     } catch (err) {
       setError("Không thể đánh dấu thông báo là đã đọc");
       console.error(err);
-
       setTimeout(() => setError(null), 3000);
     }
   };
@@ -166,17 +161,19 @@ export default function Notification() {
                   <div
                     key={n.id}
                     className={`px-4 py-3 flex gap-3 items-start border-b last:border-0 
-                      ${n.read ? "bg-white" : "bg-[#E6F8F2]"}`}
+                      ${n.read ? "bg-gray-100" : "bg-[#E6F8F2]"}`}
                   >
                     {n.read ? (
-                      <CheckCircle className="w-5 h-5 mt-1 flex-shrink-0 text-gray-300" />
+                      <CheckCircle className="w-5 h-5 mt-1 flex-shrink-0 text-gray-400" />
                     ) : (
                       <AlertCircle className="w-5 h-5 mt-1 flex-shrink-0 text-green-500" />
                     )}
                     <div className="flex-1">
-                      <div className="font-semibold">{n.title}</div>
+                      <div className={`font-semibold ${n.read ? "text-gray-600" : "text-black"}`}>
+                        {n.title}
+                      </div>
                       {n.description && (
-                        <div className="text-sm text-gray-600">
+                        <div className={`text-sm ${n.read ? "text-gray-500" : "text-gray-600"}`}>
                           {n.description}
                         </div>
                       )}
