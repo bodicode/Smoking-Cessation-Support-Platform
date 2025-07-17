@@ -9,6 +9,8 @@ import { jwtDecode } from "jwt-decode";
 import { setUser } from "@/store/userSlice";
 import { useAuth } from "@/hooks/useAuth";
 import Loading from "@/components/common/Loading";
+import { SubscriptionProvider } from "@/context/SubscriptionContext";
+// Import SubscriptionProvider
 
 export default function ClientLayout({
   children,
@@ -54,9 +56,11 @@ export default function ClientLayout({
 
   return (
     <div className="bg-[#f9f5ec]">
-      {!hideLayout && <Header />}
-      {children}
-      {!hideLayout && <Footer />}
+      <SubscriptionProvider>
+        {!hideLayout && <Header />}
+        {children}
+        {!hideLayout && <Footer />}
+      </SubscriptionProvider>
     </div>
   );
 }

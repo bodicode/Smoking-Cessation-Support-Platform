@@ -1,29 +1,42 @@
 // Centralized payment service for all payment-related logic
 import { gql } from "@apollo/client";
 import client from "@/apollo/apolloClient";
-import { GET_USER_SUBSCRIPTION, GET_CURRENT_USER_SUBSCRIPTION, GET_PAYMENT_BY_ID, GetPaymentByIdResponse } from "@/graphql/queries/payments";
-import { CREATE_PAYMENT, CreatePaymentInput, CreatePaymentResponse } from "@/graphql/mutations/payments";
+import {
+  GET_USER_SUBSCRIPTION,
+  GET_PAYMENT_BY_ID,
+  GetPaymentByIdResponse,
+} from "@/graphql/queries/payments";
+import {
+  CREATE_PAYMENT,
+  CreatePaymentInput,
+  CreatePaymentResponse,
+} from "@/graphql/mutations/payments";
 import { getMembershipPackageById } from "./membershipService";
 import { jwtDecode } from "jwt-decode";
 import { Payment, PaymentStatus } from "@/types/api/payment";
-import { UserSubscription, GetUserSubscriptionResponse } from "@/types/api/subscription";
+import {
+  UserSubscription,
+  GetUserSubscriptionResponse,
+} from "@/types/api/subscription";
 
 // Get user ID from JWT token using existing pattern
 export function getUserIdFromToken(): string | null {
   try {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem("access_token");
     if (!token) return null;
-    
+
     const decoded: any = jwtDecode(token);
     return decoded.sub || null;
   } catch (error) {
-    console.error('Error getting user ID from token:', error);
+    console.error("Error getting user ID from token:", error);
     return null;
   }
 }
 
 // Create payment using GraphQL mutation
-export async function createPayment(membership_package_id: string): Promise<Payment> {
+export async function createPayment(
+  membership_package_id: string
+): Promise<Payment> {
   try {
     // Get user ID from JWT token using existing pattern
     const user_id = getUserIdFromToken();
@@ -33,7 +46,7 @@ export async function createPayment(membership_package_id: string): Promise<Paym
 
     // Get membership package details for package name
     const plan = await getMembershipPackageById(membership_package_id);
-    
+
     // Create payment input
     const input: CreatePaymentInput = {
       user_id,
@@ -126,7 +139,10 @@ export async function getPaymentById(paymentId: string): Promise<Payment> {
 }
 
 // Update payment status (mock - replace with real GraphQL mutation when available)
-export async function updatePaymentStatus(paymentId: string, status: PaymentStatus): Promise<Payment> {
+export async function updatePaymentStatus(
+  paymentId: string,
+  status: PaymentStatus
+): Promise<Payment> {
   return {
     id: paymentId,
     user_id: "demo-user-id",
@@ -138,11 +154,10 @@ export async function updatePaymentStatus(paymentId: string, status: PaymentStat
 }
 
 // Get user subscription
-export async function getUserSubscription(userId: string): Promise<UserSubscription | null> {
+export async function getUserSubscription(): Promise<UserSubscription | null> {
   try {
     const { data, errors } = await client.query<GetUserSubscriptionResponse>({
       query: GET_USER_SUBSCRIPTION,
-      variables: { user_id: userId },
       fetchPolicy: "network-only",
     });
 
@@ -150,38 +165,23 @@ export async function getUserSubscription(userId: string): Promise<UserSubscript
       throw new Error(errors[0].message);
     }
 
-    return data.getUserSubscription;
+    // Giả sử server trả về một mảng, lấy subscription active đầu tiên hoặc null
+    const activeSubscription = Array.isArray(data.getUserSubscription)
+      ? data.getUserSubscription.find((sub) => sub.status === "Active") || null
+      : null;
+
+    return activeSubscription;
   } catch (error) {
-    console.error("Error fetching user subscription:", error);
     throw error;
   }
 }
 
 // Get current user subscription
-export async function getCurrentUserSubscription(): Promise<UserSubscription | null> {
-  try {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      throw new Error("User not authenticated");
-    }
+// export async function getCurrentUserSubscription(): Promise<UserSubscription | null> {
+//   const userId = getUserIdFromToken();
+//   if (!userId) {
+//     throw new Error("User not authenticated");
+//   }
 
-    const { data, errors } = await client.query<GetUserSubscriptionResponse>({
-      query: GET_CURRENT_USER_SUBSCRIPTION,
-      context: {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      },
-      fetchPolicy: "network-only",
-    });
-
-    if (errors && errors.length > 0) {
-      throw new Error(errors[0].message);
-    }
-
-    return data.getUserSubscription;
-  } catch (error) {
-    console.error("Error fetching current user subscription:", error);
-    throw error;
-  }
-}
+//   return getUserSubscription(userId);
+// }

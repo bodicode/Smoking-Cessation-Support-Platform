@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CreateCessationPlanInput } from "@/types/api/cessationPlan";
@@ -8,6 +10,7 @@ import {
 import toast from "react-hot-toast";
 import { useAuth } from "./useAuth";
 import { ChatService } from "@/services/chatService";
+import { useSubscription } from "@/context/SubscriptionContext"; // Import useSubscription
 
 export default function useTemplateSelection() {
   const [openStageModal, setOpenStageModal] = useState(false);
@@ -21,6 +24,7 @@ export default function useTemplateSelection() {
 
   const router = useRouter();
   const { user } = useAuth();
+  const { isSubscribed } = useSubscription(); // Sử dụng useSubscription để lấy isSubscribed
 
   const checkHasPlan = async (userId: string, templateId: string) => {
     const plans = await getCessationPlans({ userId, templateId });
@@ -66,15 +70,6 @@ export default function useTemplateSelection() {
     try {
       const coachId = selectedTemplate.coach?.id;
 
-      if (!coachId) {
-        console.warn(
-          "Không tìm thấy ID huấn luyện viên cho template này. Bỏ qua tạo phòng chat."
-        );
-        toast.error(
-          "Kế hoạch đã tạo, nhưng không thể tạo phòng chat do thiếu thông tin huấn luyện viên."
-        );
-      }
-
       const today = new Date();
       const target = new Date(today);
       target.setDate(
@@ -97,17 +92,28 @@ export default function useTemplateSelection() {
       }
       createdPlanId = newPlan.id;
 
-      toast.success("Kế hoạch đã được tạo thành công!");
-
-      if (coachId) {
+      if (coachId && isSubscribed) {
         try {
           const newChatRoom = await ChatService.createChatRoom({
             receiver_id: coachId,
           });
           createdChatRoomId = newChatRoom.id;
+          toast.success("Kế hoạch và phòng chat với coach đã được tạo!");
         } catch (chatError: any) {
-          console.error("Lỗi khi tạo phòng chat:", chatError);
+          toast.error(
+            "Kế hoạch đã tạo, nhưng không thể tạo phòng chat: " +
+              chatError.message
+          );
         }
+      } else if (coachId && !isSubscribed) {
+        toast.success(
+          "Kế hoạch đã tạo, nhưng bạn cần gói thành viên để tạo phòng chat với coach."
+        );
+      } else {
+        console.warn(
+          "Không tìm thấy ID huấn luyện viên cho template này. Bỏ qua tạo phòng chat."
+        );
+        toast.success("Kế hoạch đã được tạo thành công!");
       }
 
       setShowConfirm(false);

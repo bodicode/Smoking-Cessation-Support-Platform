@@ -21,11 +21,6 @@ import Image from 'next/image';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     useRequireRole("ADMIN");
-    const t = useTranslations('adminDashboard');
-    const tUsers = useTranslations('adminUsers');
-    const tReports = useTranslations('adminReports');
-    const tTemplates = useTranslations('adminTemplates');
-    const tSidebar = useTranslations('adminSidebar');
     const params = useParams();
     const locale = (params.locale as string) || 'vi';
     const pathname = usePathname();
@@ -34,12 +29,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const router = useRouter()
 
     const menu = [
-        { href: '/admin', label: t('dashboard'), icon: LayoutDashboard },
-        { href: '/admin/users', label: tUsers('users'), icon: Users },
-        { href: '/admin/reports', label: tReports('reports'), icon: BarChart3 },
-        { href: '/admin/templates', label: tTemplates('templates'), icon: FileText },
-        { href: '/admin/badges', label: tSidebar('badges'), icon: Medal },
-        { href: '/admin/profile-quiz', label: tSidebar('quiz'), icon: Medal },
+        { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+        { href: '/admin/users', label: 'Người dùng', icon: Users },
+        { href: '/admin/reports', label: 'Báo cáo', icon: BarChart3 },
+        { href: '/admin/templates', label: 'Mẫu kế hoạch', icon: FileText },
+        { href: '/admin/badges', label: 'Huy hiệu', icon: Medal },
+        { href: '/admin/profile-quiz', label: 'Quiz', icon: Medal },
     ];
 
     return (
