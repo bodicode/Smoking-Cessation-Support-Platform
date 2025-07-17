@@ -6,7 +6,7 @@ interface QuestionCardProps {
     id: string;
     question_text: string;
     description?: string;
-    question_type: 'NUMBER' | 'SCALE' | 'MULTIPLE_CHOICE' | 'BOOLEAN';
+    question_type: 'NUMBER' | 'SCALE' | 'MULTIPLE_CHOICE' | 'BOOLEAN' | 'TEXT';
     options?: string[];
     is_required: boolean;
     validation_rule?: any;
@@ -127,6 +127,22 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, answer, onAnswer 
                 </motion.button>
               ))}
             </div>
+          </div>
+        );
+
+      case 'TEXT':
+        return (
+          <div className="space-y-2">
+            <input
+              type="text"
+              value={answer || ''}
+              onChange={(e) => onAnswer(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+              placeholder="Nhập câu trả lời..."
+            />
+            {question.validation_rule?.message && (
+              <p className="text-sm text-gray-500">{question.validation_rule.message}</p>
+            )}
           </div>
         );
 

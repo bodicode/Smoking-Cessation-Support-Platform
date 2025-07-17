@@ -1,7 +1,11 @@
 import { jwtDecode } from "jwt-decode";
 import client from "@/apollo/apolloClient";
-import { GET_USER_PROFILE, GET_CURRENT_USER } from "@/graphql/queries/user/getUserProfile";
-import { UserProfile, GetUserProfileResponse } from "@/types/api/user";
+import { GET_USER_PROFILE } from "@/graphql/queries/user/getUserProfile";
+import { UserProfile, GetUserProfileResponse, User } from "@/types/api/user";
+import { GET_ALL_USERS } from "@/graphql/queries/user/getAllUsers";
+import { REMOVE_USER_BY_ADMIN } from "@/graphql/mutations/user/removeUserMutation";
+import { UPDATE_USER_BY_ADMIN } from "@/graphql/mutations/user/updateUserByAdmin";
+import { CREATE_USER_BY_ADMIN } from "@/graphql/mutations/user/createUserByAdmin";
 
 // Get user ID from JWT token using existing pattern
 export function getUserIdFromToken(): string | null {
@@ -39,31 +43,12 @@ export async function getUserProfile(userId: string): Promise<UserProfile> {
 
 // Get current user profile
 export async function getCurrentUserProfile(): Promise<UserProfile | null> {
-  try {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      throw new Error("User not authenticated");
-    }
-
-    const { data, errors } = await client.query({
-      query: GET_CURRENT_USER,
-      context: {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      },
-      fetchPolicy: "network-only",
-    });
-
-    if (errors && errors.length > 0) {
-      throw new Error(errors[0].message);
-    }
-
-    return data.findOneUser;
-  } catch (error) {
-    console.error("Error fetching current user profile:", error);
-    throw error;
+  const userId = getUserIdFromToken();
+  if (!userId) {
+    throw new Error("User not authenticated");
   }
+
+  return getUserProfile(userId);
 }
 
 export async function getAllUsers(): Promise<User[]> {

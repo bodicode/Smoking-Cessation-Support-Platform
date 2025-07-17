@@ -10,7 +10,7 @@ export const GET_PROFILE_QUIZZES = gql`
       questions {
         id
         created_at
-        descriptioor
+        description
         is_required
         options
         order

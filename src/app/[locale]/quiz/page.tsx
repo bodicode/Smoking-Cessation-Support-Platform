@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { useQuiz } from '@/hooks/useQuiz';
@@ -9,9 +9,11 @@ import QuestionCard from '@/components/quiz/QuestionCard';
 import Loading from '@/components/common/Loading';
 import Breadcrumbs from '@/components/common/BreadCrumb';
 import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
+import { ProfileQuiz, QuizQuestion } from '@/types/api/quiz';
 
 export default function QuizPage() {
   const t = useTranslations('quiz');
+  const topRef = useRef<HTMLDivElement>(null);
   const {
     quizzes,
     currentQuiz,
@@ -23,13 +25,27 @@ export default function QuizPage() {
     isSubmitting,
     startQuiz,
     answerQuestion,
-    nextQuestion,
-    previousQuestion,
+    nextQuestion: nextQuestionBase,
+    previousQuestion: previousQuestionBase,
     submitQuiz,
     canGoNext,
     isLastQuestion,
     totalQuestions
   } = useQuiz();
+
+  const nextQuestion = () => {
+    nextQuestionBase();
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const previousQuestion = () => {
+    previousQuestionBase();
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   if (loading) {
     return (
@@ -57,7 +73,7 @@ export default function QuizPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 to-blue-50">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div ref={topRef} className="max-w-4xl mx-auto px-4 py-8">
         <Breadcrumbs
           items={[
             { label: "Trang chủ", href: "/" },
@@ -78,7 +94,7 @@ export default function QuizPage() {
             </div>
 
             <div className="grid gap-6">
-              {quizzes.map((quiz) => (
+              {quizzes.map((quiz: ProfileQuiz) => (
                 <QuizCard
                   key={quiz.id}
                   quiz={quiz}
@@ -99,12 +115,12 @@ export default function QuizPage() {
             <div className="bg-white rounded-lg p-4 shadow-sm">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-semibold text-gray-800">{currentQuiz.title}</h3>
-                <span className="text-sm text-gray-600">
+                {/* <span className="text-sm text-gray-600">
                   {t('questionProgress', { 
                     current: currentQuestionIndex + 1, 
                     total: totalQuestions 
                   })}
-                </span>
+                </span> */}
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <motion.div

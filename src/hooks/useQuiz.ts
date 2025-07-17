@@ -234,7 +234,7 @@ export const useQuiz = () => {
   const combinedError = error || questionsError || submitError;
 
   return {
-    quizzes,
+    quizzes: quizzes.filter((q: Quiz) => q.is_active),
     currentQuiz,
     currentQuestion: questions[currentQuestionIndex] || null,
     currentQuestionIndex,
