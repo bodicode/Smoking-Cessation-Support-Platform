@@ -24,6 +24,7 @@ import adminReports from './adminReports.json';
 import adminTemplates from './adminTemplates.json';
 import adminSettings from './adminSettings.json';
 import adminSidebar from './adminSidebar.json';
+import quiz from './quiz.json';
 
 export default {
     header,
@@ -51,5 +52,6 @@ export default {
     adminReports,
     adminTemplates,
     adminSettings,
-    adminSidebar
+    adminSidebar,
+    quiz
 };

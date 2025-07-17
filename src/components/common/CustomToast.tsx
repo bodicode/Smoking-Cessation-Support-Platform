@@ -1,9 +1,20 @@
-'use client'
+"use client";
 
 import { ToastBar, Toaster } from "react-hot-toast";
 import { FiCheckCircle, FiAlertTriangle } from "react-icons/fi";
+import { useEffect, useState } from "react";
 
 export default function ToasterClient() {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!isMounted) {
+        return null;
+    }
+
     return (
         <Toaster
             position="top-center"
