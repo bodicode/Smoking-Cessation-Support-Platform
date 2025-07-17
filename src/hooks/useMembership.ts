@@ -22,10 +22,10 @@ export function useMembership(): UseMembershipReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchMembershipPackages = async () => {
+  const fetchPackages = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
       const packages = await getMembershipPackages();
       setMembershipPackages(packages);
     } catch (err) {
@@ -36,49 +36,52 @@ export function useMembership(): UseMembershipReturn {
   };
 
   useEffect(() => {
-    fetchMembershipPackages();
+    fetchPackages();
   }, []);
 
   return {
     membershipPackages,
     loading,
     error,
-    refetch: fetchMembershipPackages,
+    refetch: fetchPackages,
   };
 }
 
-// Hook to get a specific membership package by ID
-export function useMembershipById(id: string): UseMembershipByIdReturn {
+// Hook to get membership package by ID
+export function useMembershipById(packageId: string): UseMembershipByIdReturn {
   const [membershipPackage, setMembershipPackage] = useState<MembershipPackage | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchMembershipPackage = async () => {
-    if (!id) {
+  const fetchPackage = async () => {
+    if (!packageId || packageId.trim() === "") {
+      setMembershipPackage(null);
       setLoading(false);
+      setError(null);
       return;
     }
 
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
-      const pkg = await getMembershipPackageById(id);
-      setMembershipPackage(pkg);
+      const packageData = await getMembershipPackageById(packageId);
+      setMembershipPackage(packageData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch membership package");
+      setMembershipPackage(null);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchMembershipPackage();
-  }, [id]);
+    fetchPackage();
+  }, [packageId]);
 
   return {
     membershipPackage,
     loading,
     error,
-    refetch: fetchMembershipPackage,
+    refetch: fetchPackage,
   };
-} 
+}

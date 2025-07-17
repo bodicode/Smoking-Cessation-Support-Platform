@@ -1,7 +1,7 @@
 // Centralized payment service for all payment-related logic
 import { gql } from "@apollo/client";
 import client from "@/apollo/apolloClient";
-import { GET_USER_SUBSCRIPTION, GET_PAYMENT_BY_ID, GetPaymentByIdResponse } from "@/graphql/queries/payments";
+import { GET_USER_SUBSCRIPTION, GET_CURRENT_USER_SUBSCRIPTION, GET_PAYMENT_BY_ID, GetPaymentByIdResponse } from "@/graphql/queries/payments";
 import { CREATE_PAYMENT, CreatePaymentInput, CreatePaymentResponse } from "@/graphql/mutations/payments";
 import { getMembershipPackageById } from "./membershipService";
 import { jwtDecode } from "jwt-decode";
@@ -159,10 +159,29 @@ export async function getUserSubscription(userId: string): Promise<UserSubscript
 
 // Get current user subscription
 export async function getCurrentUserSubscription(): Promise<UserSubscription | null> {
-  const userId = getUserIdFromToken();
-  if (!userId) {
-    throw new Error("User not authenticated");
+  try {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      throw new Error("User not authenticated");
+    }
+
+    const { data, errors } = await client.query<GetUserSubscriptionResponse>({
+      query: GET_CURRENT_USER_SUBSCRIPTION,
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      },
+      fetchPolicy: "network-only",
+    });
+
+    if (errors && errors.length > 0) {
+      throw new Error(errors[0].message);
+    }
+
+    return data.getUserSubscription;
+  } catch (error) {
+    console.error("Error fetching current user subscription:", error);
+    throw error;
   }
-  
-  return getUserSubscription(userId);
 }

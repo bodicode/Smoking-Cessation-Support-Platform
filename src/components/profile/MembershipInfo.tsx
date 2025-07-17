@@ -41,7 +41,7 @@ const MembershipInfo: React.FC<MembershipInfoProps> = ({ className = "" }) => {
     );
   }
 
-  const isActive = subscription.status === "Active";
+  const isActive = subscription.status?.toLowerCase() === "active";
   const endDate = new Date(subscription.end_date);
   const now = new Date();
   const isExpired = endDate < now;
@@ -55,7 +55,7 @@ const MembershipInfo: React.FC<MembershipInfoProps> = ({ className = "" }) => {
   const getStatusText = () => {
     if (isActive && !isExpired) return t("membershipActive");
     if (isExpired) return t("membershipExpired");
-    return t("membershipInactive");
+    return subscription.status || t("membershipInactive");
   };
 
   const getStatusIcon = () => {

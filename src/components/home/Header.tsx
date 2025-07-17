@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Phone, Globe, ChevronDown } from "lucide-react";
+import { Phone, Globe, ChevronDown, ClipboardList } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { useParams } from "next/navigation";
@@ -78,6 +78,25 @@ const Header = () => {
       </Link>
 
       <div className="flex flex-1 flex-wrap items-center justify-end gap-3 sm:gap-5 text-xs sm:text-sm">
+        {/* Quiz Link */}
+        <motion.div
+          whileHover={{
+            scale: 1.05,
+            boxShadow: "0px 4px 12px rgba(181, 216, 235, 0.4)",
+          }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 380, damping: 15 }}
+        >
+          <Link
+            href={`/${locale}/quiz`}
+            className="flex items-center gap-1 sm:gap-2 bg-white/20 hover:bg-white/30 text-white font-semibold px-3 py-2 rounded-full transition-all duration-200 text-xs sm:text-sm whitespace-nowrap"
+          >
+            <ClipboardList size={16} />
+            <span className="hidden sm:inline">{t("quiz") || "Health Quiz"}</span>
+            <span className="sm:hidden">Quiz</span>
+          </Link>
+        </motion.div>
+
         <motion.div
           className="flex items-center gap-1 sm:gap-2"
           onHoverStart={() => setPhoneIsHover(true)}

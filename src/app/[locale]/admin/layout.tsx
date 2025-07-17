@@ -39,6 +39,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { href: '/admin/reports', label: tReports('reports'), icon: BarChart3 },
         { href: '/admin/templates', label: tTemplates('templates'), icon: FileText },
         { href: '/admin/badges', label: tSidebar('badges'), icon: Medal },
+        { href: '/admin/profile-quiz', label: tSidebar('quiz'), icon: Medal },
     ];
 
     return (

@@ -1,0 +1,19 @@
+{
+  "title": "Health Assessment Quiz",
+  "description": "Complete this assessment to get personalized recommendations for your quit smoking journey",
+  "startQuiz": "Start Assessment",
+  "nextQuestion": "Next Question",
+  "previousQuestion": "Previous Question",
+  "submitQuiz": "Submit Assessment",
+  "completeQuiz": "Complete Assessment",
+  "loading": "Loading questions...",
+  "error": "Error loading quiz. Please try again.",
+  "questionProgress": "Question {{current}} of {{total}}",
+  "required": "This question is required",
+  "selectOption": "Please select an option",
+  "enterValue": "Please enter a value",
+  "thankYou": "Thank you for completing the assessment!",
+  "results": "Your assessment results will help us provide better recommendations.",
+  "backToHome": "Back to Home",
+  "retryQuiz": "Retry Assessment"
+}

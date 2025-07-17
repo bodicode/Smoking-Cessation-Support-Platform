@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getCurrentUserSubscription } from "@/services/paymentService";
-import { UserSubscription } from "@/types/api/subscription";
+import { UserSubscription } from "@/types/api/payment";
 
 interface UseUserSubscriptionReturn {
   subscription: UserSubscription | null;
@@ -16,14 +16,14 @@ export function useUserSubscription(): UseUserSubscriptionReturn {
   const [error, setError] = useState<string | null>(null);
 
   const fetchSubscription = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
-      
       const data = await getCurrentUserSubscription();
       setSubscription(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch subscription");
+      setSubscription(null);
     } finally {
       setLoading(false);
     }
