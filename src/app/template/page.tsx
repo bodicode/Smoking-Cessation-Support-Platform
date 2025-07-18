@@ -330,66 +330,59 @@ export default function PlanTemplatesPage() {
         open={showConfirm}
         title="Xác nhận sử dụng mẫu"
         message={
-          loadingCreate ? (
-            <Loading />
-          ) : (
-            <div>
-              <p>
-                Bạn có chắc chắn muốn tạo kế hoạch mới từ mẫu{" "}
-                <b>{selectedTemplate?.name}</b>?
-              </p>
-              <div className="mt-4">
-                <label
-                  className="block font-semibold mb-1 text-left"
-                  htmlFor="plan-reason"
-                >
-                  Lý do bỏ thuốc:
-                </label>
-                <input
-                  id="plan-reason"
-                  type="text"
-                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
-                  value={reason}
-                  onChange={(e) => setReason(e.target.value)}
-                  placeholder="Nhập lý do cá nhân..."
-                />
-              </div>
-              <div className="relative flex items-center gap-2 mt-4">
-                <input
-                  type="checkbox"
-                  className={`accent-sky-600 w-4 h-4 ${!isSubscribed ? "cursor-not-allowed opacity-50" : ""
-                    }`}
-                  checked={isSubscribed ? isCustom : false}
-                  onChange={(e) =>
-                    isSubscribed && setIsCustom(e.target.checked)
-                  }
-                  disabled={!isSubscribed}
-                  id="custom-plan"
-                />
-                <label
-                  htmlFor="custom-plan"
-                  className={`text-sky-700 group relative cursor-pointer ${!isSubscribed ? "cursor-not-allowed" : ""
-                    }`}
-                >
-                  <Crown className="inline-block" color="#FFFF00" width={16} height={16} /> Tùy chỉnh kế hoạch
-                  {!isSubscribed && (
-                    <div className="absolute left-0 top-full mt-2 hidden group-hover:block bg-gray-800 text-white text-sm rounded py-1 px-2 shadow-lg z-10">
-                      <div className="absolute left-0 -top-10 w-full h-full bg-transparent rounded-lg" />
-                      <Link
-                        href="/membership"
-                        className="hover:text-sky-400"
-                      >
-                        Nâng cấp gói thành viên ngay
-                      </Link>
-                    </div>
-                  )}
-                </label>
-              </div>
+          <div>
+            <p>
+              Bạn có chắc chắn muốn tạo kế hoạch mới từ mẫu{" "}
+              <b>{selectedTemplate?.name}</b>?
+            </p>
+            <div className="mt-4">
+              <label
+                className="block font-semibold mb-1 text-left"
+                htmlFor="plan-reason"
+              >
+                Lý do bỏ thuốc:
+              </label>
+              <input
+                id="plan-reason"
+                type="text"
+                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="Nhập lý do cá nhân..."
+              />
             </div>
-          )
+            <div className="relative flex items-center gap-2 mt-4 group">
+              <input
+                type="checkbox"
+                className={`accent-sky-600 w-4 h-4 ${!isSubscribed ? "cursor-not-allowed opacity-50" : ""}`}
+                checked={isSubscribed ? isCustom : false}
+                onChange={(e) => isSubscribed && setIsCustom(e.target.checked)}
+                disabled={!isSubscribed}
+                id="custom-plan"
+              />
+              <label
+                htmlFor="custom-plan"
+                className={`text-sky-700 relative cursor-pointer ${!isSubscribed ? "cursor-not-allowed" : ""}`}
+              >
+                <Crown className="inline-block" color="#FFFF00" width={16} height={16} /> Tùy chỉnh kế hoạch
+                <div className="absolute top-4 bg-transparent w-full h-full" />
+                {!isSubscribed && (
+                  <div className="absolute left-0 top-full mt-2 z-10 bg-gray-800 text-white text-sm rounded py-1 px-2 shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition">
+                    <Link
+                      href="/membership"
+                      className="hover:text-sky-400 relative z-10"
+                    >
+                      Nâng cấp gói thành viên ngay
+                    </Link>
+                  </div>
+                )}
+              </label>
+            </div>
+          </div>
         }
         onCancel={() => setShowConfirm(false)}
         onConfirm={handleConfirmCreate}
+        loading={loadingCreate}
       />
     </div>
   );

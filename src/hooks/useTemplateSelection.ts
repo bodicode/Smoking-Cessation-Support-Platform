@@ -70,17 +70,15 @@ export default function useTemplateSelection() {
     try {
       const coachId = selectedTemplate.coach?.id;
 
-      const today = new Date();
-      const target = new Date(today);
-      target.setDate(
-        today.getDate() + (selectedTemplate.estimated_duration_days || 30)
-      );
+      const now = new Date();
+      const target = new Date(now);
+      target.setDate(now.getDate() + (selectedTemplate.estimated_duration_days || 30));
 
       const input: CreateCessationPlanInput = {
         template_id: selectedTemplate.id,
         is_custom: isCustom,
-        start_date: today.toISOString().slice(0, 10),
-        target_date: target.toISOString().slice(0, 10),
+        start_date: now.toISOString(),
+        target_date: target.toISOString(),
         reason: reason.trim(),
       };
 

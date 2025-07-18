@@ -227,7 +227,7 @@ export default function CustomStages() {
                   return (
                     <StatusButtonGroup
                       value={plan.status}
-                      options={["CANCELLED"]}
+                      options={["ACTIVE", "CANCELLED"]}
                       onChange={async (newStatus) => {
                         try {
                           await updateCessationPlan({
@@ -241,6 +241,7 @@ export default function CustomStages() {
                         }
                       }}
                       colorMap={{
+                        ACTIVE: "bg-sky-500 text-white",
                         CANCELLED: "bg-red-400 text-white",
                       }}
                       translate={translatePlanStatus}
@@ -273,7 +274,6 @@ export default function CustomStages() {
                     />
                   );
                 }
-                // COMPLETED, CANCELLED: không hiện nút gì
                 return null;
               })()}
             </div>
@@ -616,7 +616,6 @@ export default function CustomStages() {
         );
       })}
 
-      {/* Ẩn ChatBubble nếu tất cả plan đều CANCELLED */}
       {plans.some(plan => plan.status !== "CANCELLED") && <ChatBubble />}
 
       <ConfirmModal

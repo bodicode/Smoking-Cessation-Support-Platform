@@ -78,6 +78,7 @@ export default function ProgressRecordTable({
       {showForm && (
         <div className="mb-8">
           <ProgressRecordForm
+            coachId={coachId}
             planId={planId}
             handleCreate={handleCreate}
             onSuccess={() => setShowForm(false)}

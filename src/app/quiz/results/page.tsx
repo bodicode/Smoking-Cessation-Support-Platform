@@ -86,7 +86,7 @@ export default function QuizResultsPage() {
       >
         <motion.div
           variants={itemVariants}
-          className="bg-white rounded-3xl shadow-xl p-8 text-center"
+          className="bg-white rounded-xl shadow-xl p-8 text-center"
         >
           <motion.div
             initial={{ scale: 0 }}
@@ -186,7 +186,7 @@ export default function QuizResultsPage() {
                   </ul>
                 </div>
               </div>
-            <div className="flex justify-center mt-8 gap-4">
+              <div className="flex justify-center mt-8 gap-4">
                 <Link
                   href="/"
                   className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-lg font-semibold hover:from-sky-600 hover:to-blue-700 transition-all"
