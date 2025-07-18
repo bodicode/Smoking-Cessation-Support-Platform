@@ -7,16 +7,20 @@ function pad(num: number) {
     return num.toString().padStart(2, "0");
 }
 
-export default function ClockCountUp({ startDate }: { startDate: string }) {
+export default function ClockCountUp({ startDate, targetDate }: { startDate: string, targetDate?: string }) {
     const [now, setNow] = useState(new Date());
+    const target = targetDate ? new Date(targetDate) : undefined;
+    const isStopped = target && now >= target;
 
     useEffect(() => {
+        if (isStopped) return;
         const interval = setInterval(() => setNow(new Date()), 1000);
         return () => clearInterval(interval);
-    }, []);
+    }, [isStopped]);
 
     const start = new Date(startDate);
-    const diff = now.getTime() - start.getTime();
+    const end = isStopped && target ? target : now;
+    const diff = end.getTime() - start.getTime();
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);

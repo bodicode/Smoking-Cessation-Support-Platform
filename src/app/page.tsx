@@ -32,11 +32,12 @@ export default function Home() {
     <div className="min-screen">
       <Hero />
 
-      {plan ? (
+      {plan && plan.status !== "CANCELLED" ? (
         <SmokeFreeStats
           plan={{
             id: plan.id,
             created_at: plan.start_date,
+            target_date: plan.target_date,
           }}
           records={records}
           loading={loading}

@@ -22,7 +22,7 @@ export default function SmokeFreeStats({
                 Thống kê quá trình bỏ thuốc của bạn
             </h2>
 
-            <ClockCountUp startDate={plan.created_at} />
+            <ClockCountUp startDate={plan.created_at} targetDate={plan.target_date} />
 
             <SmokeFreeSummary
                 planCreatedAt={plan.created_at}
