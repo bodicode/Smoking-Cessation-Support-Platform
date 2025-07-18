@@ -24,11 +24,12 @@ export default function useTemplateSelection() {
 
   const router = useRouter();
   const { user } = useAuth();
-  const { isSubscribed } = useSubscription(); // Sử dụng useSubscription để lấy isSubscribed
+  const { isSubscribed } = useSubscription(); 
 
   const checkHasPlan = async (userId: string, templateId: string) => {
     const plans = await getCessationPlans({ userId, templateId });
-    return plans.length > 0;
+    if (plans.length === 0) return false;
+    return plans.some(plan => plan.status !== 'CANCELLED');
   };
 
   const handleUseTemplate = async (tpl: any) => {
@@ -46,7 +47,6 @@ export default function useTemplateSelection() {
       setSelectedTemplate(tpl);
       setShowConfirm(true);
     } catch (e) {
-      console.error("Lỗi kiểm tra kế hoạch:", e);
       toast.error("Lỗi kiểm tra kế hoạch. Thử lại sau!");
     }
   };
@@ -127,7 +127,6 @@ export default function useTemplateSelection() {
       }
       router.push(redirectPath);
     } catch (err: any) {
-      console.error("Lỗi trong quá trình tạo kế hoạch hoặc phòng chat:", err);
       setErrorMsg(
         err.message || "Có lỗi xảy ra khi tạo kế hoạch. Vui lòng thử lại."
       );

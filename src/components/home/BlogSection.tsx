@@ -1,9 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useQuery } from '@apollo/client';
@@ -23,9 +21,6 @@ const cardVariants = {
 };
 
 const BlogSection = () => {
-    const t = useTranslations('blogSection');
-    const params = useParams();
-    const locale = (params?.locale as string) || 'vi';
 
     const { data, loading, error } = useQuery(GET_BLOGS, {
         variables: { page: 1, limit: 6, search: "", orderBy: "created_at", sortOrder: "asc" }
@@ -42,7 +37,7 @@ const BlogSection = () => {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.6, type: "spring", stiffness: 180 }}
             >
-                {t('sectionTitle')}
+                Bài viết
             </motion.h2>
             {loading ? (
                 <div className="text-center py-8">Đang tải blog...</div>
@@ -69,7 +64,7 @@ const BlogSection = () => {
                                 transition={{ type: "spring", stiffness: 220, damping: 18 }}
                             >
                                 <Link
-                                    href={`/${locale}/blog/${blog.slug}`}
+                                    href={`/blog/${blog.slug}`}
                                     className="bg-[#ffffff] rounded-xl shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer h-full flex flex-col"
                                 >
                                     <div className="relative h-52 w-full">
@@ -85,7 +80,7 @@ const BlogSection = () => {
                                             {title}
                                         </h3>
                                         <p className="text-gray-500 text-xs italic min-h-[20px]">
-                                            {t("author")} {author}
+                                            {author}
                                         </p>
                                         <p className="text-gray-700 text-sm line-clamp-3 mt-1">{excerpt}</p>
                                     </div>
@@ -105,10 +100,10 @@ const BlogSection = () => {
             >
                 <motion.div whileHover={{ scale: 1.08, y: -4, boxShadow: "0px 4px 18px rgba(96,195,164,0.10)" }}>
                     <Link
-                        href={`/${locale}/blog`}
+                        href={`/blog`}
                         className="inline-block bg-[#60C3A4] hover:bg-[#37836a] text-white font-bold px-6 py-3 rounded-full shadow-md transition"
                     >
-                        {t('popularBlogs.readMore', { fallback: t('readMore') })}
+                        Đọc thêm
                     </Link>
                 </motion.div>
             </motion.div>

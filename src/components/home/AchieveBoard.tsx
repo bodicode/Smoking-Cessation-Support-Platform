@@ -1,11 +1,8 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 
 const Achieveboard = () => {
-    const t = useTranslations('achieveBoard');
-
     const leaderboard = [
         {
             name: "Nguyễn Văn A",
@@ -59,7 +56,7 @@ const Achieveboard = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.55, type: "spring", stiffness: 200 }}
             >
-                {t('leaderboardTitle')}
+                Bảng xếp hạng
             </motion.h2>
 
             <div className="space-y-4">
@@ -84,12 +81,10 @@ const Achieveboard = () => {
                                     {user.name}
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                    {t('daysSmokeFree', { days: user.daysSmokeFree })}
+                                    {user.daysSmokeFree} ngày không hút thuốc
                                 </p>
                                 <p className="text-sm text-green-600 font-medium">
-                                    {t('moneySaved', {
-                                        amount: user.moneySaved.toLocaleString(),
-                                    })}
+                                    {user.moneySaved.toLocaleString()} đồng đã tiết kiệm
                                 </p>
                             </div>
                         </div>

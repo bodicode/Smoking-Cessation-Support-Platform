@@ -21,7 +21,6 @@ export default function PostCard({
   post,
   idx,
   postVariants,
-  t,
   showAllComments,
   setShowAllComments,
   onLike,
@@ -199,7 +198,7 @@ export default function PostCard({
               </span>
             )}
             <span className="block text-gray-400 text-xs sm:text-sm ml-2">
-              {t("datePrefix")} {formatDate(post.created_at)}
+              {formatDate(post.created_at)}
             </span>
           </div>
         </div>
@@ -227,7 +226,7 @@ export default function PostCard({
           </button>
           <button
             className="cursor-pointer p-1 rounded bg-gray-100 hover:bg-gray-200"
-            title={t("cancel")}
+            title={"Hủy"}
             onClick={() => setEditing(false)}
           >
             <X className="w-5 h-5 text-gray-500" />
@@ -281,7 +280,7 @@ export default function PostCard({
               setShowAllComments((s: any) => ({ ...s, [post.id]: true }))
             }
           >
-            {t("showMore", { count: comments.length - 2 })}
+            Xem thêm {comments.length - 2} bình luận
           </button>
         )}
         {comments.length > 2 && showAll && (
@@ -291,13 +290,13 @@ export default function PostCard({
               setShowAllComments((s: any) => ({ ...s, [post.id]: false }))
             }
           >
-            {t("showLess")}
+            Xem ít hơn
           </button>
         )}
         <div className="flex gap-2 mt-3 bg-slate-50 rounded-xl px-3 py-2 border border-gray-100 shadow-sm">
           <input
             className="border-none outline-none bg-transparent flex-1 text-xs sm:text-sm"
-            placeholder={t("commentPlaceholder")}
+            placeholder="Nhập bình luận"
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}
             onKeyDown={(e) => {
@@ -314,7 +313,7 @@ export default function PostCard({
             whileTap={{ scale: 0.96 }}
             disabled={editing || addLoading || !commentInput.trim()}
           >
-            {addLoading ? <Loading color="#FFFFFF" /> : t("send")}
+            {addLoading ? <Loading color="#FFFFFF" /> : "Gửi bình luận"}
           </motion.button>
         </div>
       </div>

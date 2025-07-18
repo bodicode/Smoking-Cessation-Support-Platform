@@ -28,7 +28,6 @@ export class NotificationService {
 
       return response.data;
     } catch (error) {
-      console.error("Error fetching notifications:", error);
       throw error;
     }
   }

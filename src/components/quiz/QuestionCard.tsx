@@ -37,9 +37,10 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, answer, onAnswer 
         );
 
       case 'BOOLEAN':
+        const boolOptions = question.options ?? ['Có', 'Không'];
         return (
           <div className="space-y-3">
-            {question.options?.map((option, index) => (
+            {boolOptions.map((option, index) => (
               <motion.button
                 key={index}
                 whileHover={{ scale: 1.02 }}
@@ -71,32 +72,43 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, answer, onAnswer 
       case 'MULTIPLE_CHOICE':
         return (
           <div className="space-y-3">
-            {question.options?.map((option, index) => (
-              <motion.button
-                key={index}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => onAnswer(option)}
-                className={`w-full p-4 text-left border-2 rounded-lg transition-all ${
-                  answer === option
-                    ? 'border-sky-500 bg-sky-50 text-sky-700'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-4 h-4 rounded border-2 transition-all ${
-                    answer === option ? 'border-sky-500 bg-sky-500' : 'border-gray-300'
-                  }`}>
-                    {answer === option && (
-                      <svg className="w-full h-full text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    )}
+            {question.options?.map((option, index) => {
+              const checked = Array.isArray(answer) && answer.includes(option);
+              return (
+                <motion.button
+                  key={index}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    if (!Array.isArray(answer)) {
+                      onAnswer([option]);
+                    } else if (checked) {
+                      onAnswer(answer.filter((item: string) => item !== option));
+                    } else {
+                      onAnswer([...answer, option]);
+                    }
+                  }}
+                  className={`w-full p-4 text-left border-2 rounded-lg transition-all ${
+                    checked
+                      ? 'border-sky-500 bg-sky-50 text-sky-700'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-4 h-4 rounded border-2 transition-all ${
+                      checked ? 'border-sky-500 bg-sky-500' : 'border-gray-300'
+                    }`}>
+                      {checked && (
+                        <svg className="w-full h-full text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </div>
+                    <span className="font-medium">{option}</span>
                   </div>
-                  <span className="font-medium">{option}</span>
-                </div>
-              </motion.button>
-            ))}
+                </motion.button>
+              );
+            })}
           </div>
         );
 
@@ -131,6 +143,28 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, answer, onAnswer 
         );
 
       case 'TEXT':
+        if (question.description === 'Tên thương hiệu thuốc lá bạn thường xuyên mua') {
+          const brands = [
+            'Vinataba', 'Thăng Long', 'Sài Gòn', 'Bastos', '555', 'Hero', 'Craven A', 'White Horse', 'Ruby', 'Zest', 'Khánh Hội', 'Điện Biên', 'Hà Nội', 'Khánh Hội', 'Khánh Hòa', 'Khánh Bình', 'Khánh Vĩnh', 'Khánh Sơn', 'Khánh Nam', 'Khánh Trung', 'Khánh Đông', 'Khánh Tây', 'Khánh Bắc', 'Khánh Nam', 'Khánh Phú', 'Khánh An', 'Khánh Bình', 'Khánh Hòa', 'Khánh Hội', 'Khánh Lâm', 'Khánh Lộc', 'Khánh Mỹ', 'Khánh Phong', 'Khánh Sơn', 'Khánh Thạnh', 'Khánh Thịnh', 'Khánh Tiến', 'Khánh Toàn', 'Khánh Trung', 'Khánh Vĩnh', 'Khánh Xuân', 'Khánh Yên', 'Khánh Hòa', 'Khánh Hội', 'Khánh Lâm', 'Khánh Lộc', 'Khánh Mỹ', 'Khánh Phong', 'Khánh Sơn', 'Khánh Thạnh', 'Khánh Thịnh', 'Khánh Tiến', 'Khánh Toàn', 'Khánh Trung', 'Khánh Vĩnh', 'Khánh Xuân', 'Khánh Yên', 'Khác'
+          ];
+          return (
+            <div className="space-y-2">
+              <select
+                value={answer || ''}
+                onChange={e => onAnswer(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+              >
+                <option value="">Chọn thương hiệu...</option>
+                {brands.map((b, index) => (
+                  <option key={index} value={b}>{b}</option>
+                ))}
+              </select>
+              {question.validation_rule?.message && (
+                <p className="text-sm text-gray-500">{question.validation_rule.message}</p>
+              )}
+            </div>
+          );
+        }
         return (
           <div className="space-y-2">
             <input

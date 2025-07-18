@@ -59,7 +59,6 @@ export default function ChatComponent({
         content: messageContent,
       });
     } catch (error) {
-      console.error("Failed to send message:", error);
       toast.error("Không thể gửi tin nhắn. Vui lòng thử lại.");
     } finally {
       setSendingMessage(false);

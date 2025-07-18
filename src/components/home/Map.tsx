@@ -3,7 +3,6 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
-import { useTranslations } from "next-intl";
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "/leaflet/marker-icon-2x.png",
@@ -12,7 +11,6 @@ L.Icon.Default.mergeOptions({
 });
 
 const FixedMapComponent = () => {
-  const t = useTranslations("map");
   const fixedPosition: LatLngExpression = [
     10.841412097713482, 106.8100010126096,
   ];
@@ -20,7 +18,7 @@ const FixedMapComponent = () => {
   return (
     <div>
       <h4 className="text-2xl font-bold mb-2 text-nowrap text-accent uppercase">
-        {t("title")}
+        Bản đồ
       </h4>
       <hr className="mb-4 border-white/30" />
       <MapContainer

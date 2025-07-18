@@ -23,7 +23,6 @@ export const ChatService = {
       });
 
       if (errors) {
-        console.error("GraphQL Errors (createChatRoom):", errors);
         const errorMessage = errors.map((err) => err.message).join(", ");
         throw new Error(
           `Failed to create chat room due to GraphQL errors: ${errorMessage}`
@@ -36,7 +35,6 @@ export const ChatService = {
 
       return data.createChatRoom as IChatRoom;
     } catch (error) {
-      console.error("Error creating chat room:", error);
       throw error;
     }
   },
@@ -50,7 +48,6 @@ export const ChatService = {
       });
 
       if (errors) {
-        console.error("GraphQL Errors (getChatMessagesByRoomId):", errors);
         const errorMessage = errors.map((err) => err.message).join(", ");
         throw new Error(
           `Failed to get chat messages due to GraphQL errors: ${errorMessage}`
@@ -63,7 +60,6 @@ export const ChatService = {
 
       return data.getChatMessagesByRoomId;
     } catch (error) {
-      console.error("Error getting chat messages:", error);
       throw new Error("Không thể lấy tin nhắn chat.");
     }
   },
@@ -78,7 +74,6 @@ export const ChatService = {
       });
 
       if (errors) {
-        console.error("GraphQL Errors (getAllChatRoomsByUser):", errors);
         const errorMessage = errors.map((err) => err.message).join(", ");
         throw new Error(
           `Failed to get all chat rooms due to GraphQL errors: ${errorMessage}`
@@ -86,12 +81,11 @@ export const ChatService = {
       }
 
       if (!data || !data.getAllChatRoomsByUser) {
-        return []; // Trả về mảng rỗng nếu không có dữ liệu
+        return [];
       }
 
       return data.getAllChatRoomsByUser;
     } catch (error) {
-      console.error("Error getting all chat rooms:", error);
       throw new Error("Không thể lấy danh sách phòng chat.");
     }
   },
@@ -112,10 +106,9 @@ export const ChatService = {
         }
       },
       error: (err) => {
-        console.error("Subscription error:", err);
         toast.error("Lỗi kết nối chat thời gian thực.");
       },
-      complete: () => {},
+      complete: () => { },
     });
 
     return () => subscription.unsubscribe();

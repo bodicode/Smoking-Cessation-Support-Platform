@@ -7,7 +7,6 @@ import {
     FaYoutube,
 } from 'react-icons/fa6';
 import FixedMap from './FixedMap';
-import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import Logo from '../common/Logo';
 import { motion } from 'framer-motion';
@@ -22,8 +21,6 @@ const socialIcons = [
 ];
 
 const Footer = () => {
-    const t = useTranslations('footer');
-
     return (
         <motion.footer
             className="bg-[#60C3A4] text-white py-10 px-4 sm:px-8 md:px-16"
@@ -38,7 +35,7 @@ const Footer = () => {
                     <form className="flex bg-white rounded overflow-hidden w-full max-w-xs mt-4">
                         <input
                             type="email"
-                            placeholder={t('placeholderEmail')}
+                            placeholder="Nhập email của bạn"
                             className="text-black px-3 py-2 w-full focus:outline-none"
                         />
                         <button
@@ -66,24 +63,24 @@ const Footer = () => {
                         ))}
                     </div>
                     <p className="text-sm mt-6">
-                        {t('addressLine1')}
+                        Địa chỉ: 123 Đường ABC, Quận XYZ, TP. HCM
                         <br />
-                        {t('addressLine2')}
+                        Email: info@example.com
                     </p>
                 </div>
 
                 <div className="min-w-0 md:mx-0">
                     <h4 className="text-2xl font-bold mb-2 text-nowrap text-accent uppercase">
-                        {t('quickLinks')}
+                        Liên kết
                     </h4>
                     <hr className="mb-4 border-white/30" />
                     <ul className="space-y-1">
                         {[
-                            { href: "/about-us", label: t('aboutUs') },
-                            { href: "/contact-us", label: t('contactUs') },
-                            { href: "/how-to-quit", label: t('howToQuit') },
-                            { href: "/blog", label: t('news') },
-                            { href: "/community", label: t('community') },
+                            { href: "/about-us", label: "Về chúng tôi" },
+                            { href: "/contact-us", label: "Liên hệ" },
+                            { href: "/how-to-quit", label: "Cách bỏ thuốc" },
+                            { href: "/blog", label: "Bài viết" },
+                            { href: "/community", label: "Cộng đồng" },
                         ].map((item, idx) => (
                             <li key={idx}>
                                 <Link
@@ -108,7 +105,7 @@ const Footer = () => {
                 </div>
             </div>
             <div className="mt-4 text-center py-3 text-sm">
-                {t('copyright')}
+                Bản quyền © 2025. Tất cả quyền được bảo lưu.
             </div>
         </motion.footer>
     );

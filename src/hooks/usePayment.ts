@@ -64,7 +64,6 @@ export function usePaymentStatus(paymentId: string, initialStatus: PaymentStatus
         }
       } catch (err) {
         console.error('Error polling payment status:', err);
-        // Don't stop polling on errors, just log them
       }
     }, 5000);
 

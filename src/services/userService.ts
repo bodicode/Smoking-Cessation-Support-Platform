@@ -1,11 +1,13 @@
 import { jwtDecode } from "jwt-decode";
 import client from "@/apollo/apolloClient";
-import { GET_USER_PROFILE } from "@/graphql/queries/user/getUserProfile";
+// import { GET_USER_PROFILE } from "@/graphql/queries/user/getUserProfile";
 import { UserProfile, GetUserProfileResponse, User } from "@/types/api/user";
 import { GET_ALL_USERS } from "@/graphql/queries/user/getAllUsers";
 import { REMOVE_USER_BY_ADMIN } from "@/graphql/mutations/user/removeUserMutation";
 import { UPDATE_USER_BY_ADMIN } from "@/graphql/mutations/user/updateUserByAdmin";
 import { CREATE_USER_BY_ADMIN } from "@/graphql/mutations/user/createUserByAdmin";
+import { GET_ALL_COACHES } from "@/graphql/queries/user/getAllCoaches";
+import { FIND_ONE_USER } from "@/graphql/queries/user/getUserProfile";
 
 // Get user ID from JWT token using existing pattern
 export function getUserIdFromToken(): string | null {
@@ -25,7 +27,7 @@ export function getUserIdFromToken(): string | null {
 export async function getUserProfile(userId: string): Promise<UserProfile> {
   try {
     const { data, errors } = await client.query<GetUserProfileResponse>({
-      query: GET_USER_PROFILE,
+      query: FIND_ONE_USER,
       variables: { id: userId },
       fetchPolicy: "network-only",
     });
@@ -63,6 +65,21 @@ export async function getAllUsers(): Promise<User[]> {
     }
 
     return data.GetAllUsers;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getAllCoaches() {
+  try {
+    const { data, errors } = await client.query({
+      query: GET_ALL_COACHES,
+      fetchPolicy: "network-only",
+    });
+    if (errors && errors.length > 0) {
+      throw new Error(errors[0].message);
+    }
+    return data.findAllCoaches;
   } catch (error) {
     throw error;
   }
@@ -115,4 +132,13 @@ export async function createUserByAdmin(createUserInput: any) {
     console.error("Error creating user:", error);
     throw error;
   }
+}
+
+export async function getUserProfileNew() {
+  const { data, errors } = await client.query({
+    query: FIND_ONE_USER,
+    fetchPolicy: "no-cache"
+  });
+  if (errors && errors.length > 0) throw new Error(errors[0].message || "Lấy user profile thất bại");
+  return data.findOneUser;
 }

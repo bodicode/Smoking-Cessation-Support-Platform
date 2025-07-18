@@ -3,9 +3,10 @@ import { useRouter } from 'next/navigation';
 import { 
   useProfileQuizzes, 
   useQuizQuestions, 
-  useSubmitQuizResponse,
-  CreateQuizResponseInput 
+  startQuiz as startQuizService,
+  submitQuiz as submitQuizService
 } from '@/services/quizService';
+import { SubmitQuizInput } from '@/types/api/quiz';
 
 interface QuizOption {
   id: string;
@@ -43,6 +44,7 @@ export const useQuiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, any>>(new Map());
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // GraphQL hooks
   const { quizzes, loading, error, refetch } = useProfileQuizzes();
@@ -52,7 +54,6 @@ export const useQuiz = () => {
     error: questionsError,
     refetch: refetchQuestions 
   } = useQuizQuestions(currentQuiz?.id || '');
-  const { submitResponse, loading: isSubmitting, error: submitError } = useSubmitQuizResponse();
 
   const loadQuizzes = async () => {
     try {
@@ -76,18 +77,29 @@ export const useQuiz = () => {
   }, [refetch]); // Add refetch as dependency
 
   const startQuiz = async (quizId: string) => {
-    const quiz = quizzes.find((q: Quiz) => q.id === quizId);
-    if (quiz) {
-      setCurrentQuiz(quiz);
-      setCurrentQuestionIndex(0);
-      setAnswers(new Map());
+    try {
+      // Call the startQuiz service to create quiz attempt
+      const quizAttempt = await startQuizService({ quiz_id: quizId });
       
-      // Fetch questions for this quiz
-      try {
-        await refetchQuestions();
-      } catch (err) {
-        console.error('Failed to load quiz questions:', err);
+      // Store the attempt ID for later use
+      localStorage.setItem('currentQuizAttempt', quizAttempt.id);
+      
+      const quiz = quizzes.find((q: Quiz) => q.id === quizId);
+      if (quiz) {
+        setCurrentQuiz(quiz);
+        setCurrentQuestionIndex(0);
+        setAnswers(new Map());
+        
+        // Fetch questions for this quiz
+        try {
+          await refetchQuestions();
+        } catch (err) {
+          console.error('Failed to load quiz questions:', err);
+        }
       }
+    } catch (err) {
+      console.error('Failed to start quiz:', err);
+      throw err;
     }
   };
 
@@ -113,37 +125,47 @@ export const useQuiz = () => {
     if (!currentQuiz || !questions.length) return;
     
     try {
-      const quizAnswers = Array.from(answers.entries()).map(([questionId, answer]) => ({
+      setIsSubmitting(true);
+      // Get attempt_id from localStorage
+      const attemptId = localStorage.getItem('currentQuizAttempt');
+      if (!attemptId) {
+        throw new Error('Không tìm thấy thông tin quiz attempt');
+      }
+      
+      // Convert answers to the correct format
+      const responses = Array.from(answers.entries()).map(([questionId, answer]) => ({
         question_id: questionId,
-        answer_value: answer
+        answer: answer
       }));
       
-      const input: CreateQuizResponseInput = {
-        quiz_id: currentQuiz.id,
-        answers: quizAnswers
+      const input: SubmitQuizInput = {
+        attempt_id: attemptId,
+        responses: responses
       };
       
-      const result = await submitResponse({
-        variables: { input }
-      });
+      const result = await submitQuizService(input);
       
-      if (result.data) {
-        // Create a mock result for the results page since the API doesn't return detailed info
+      if (result) {
+        // Create a mock result for the results page
         const mockResult = {
-          id: result.data.createQuizResponse.id,
+          id: result.attempt_id,
           user_id: 'current-user',
           quiz_id: currentQuiz.id,
-          completed_at: result.data.createQuizResponse.created_at, // Use created_at instead of completed_at
-          total_score: calculateScore(), // Calculate based on answers
-          recommendations: generateRecommendations() // Generate based on answers
+          completed_at: new Date().toISOString(),
+          total_score: calculateScore(),
+          recommendations: generateRecommendations(),
+          message: result.message
         };
         
         localStorage.setItem('quizResults', JSON.stringify(mockResult));
+        localStorage.removeItem('currentQuizAttempt'); // Clean up
         router.push('/quiz/results');
       }
     } catch (err) {
       console.error('Failed to submit quiz:', err);
       throw err;
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -231,7 +253,7 @@ export const useQuiz = () => {
 
   // Combine loading states and errors
   const combinedLoading = loading || questionsLoading;
-  const combinedError = error || questionsError || submitError;
+  const combinedError = error || questionsError;
 
   return {
     quizzes: quizzes.filter((q: Quiz) => q.is_active),

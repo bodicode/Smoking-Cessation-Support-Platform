@@ -5,15 +5,14 @@ interface QuizProgressProps {
   title: string;
   current: number;
   total: number;
-  t: (key: string, params?: Record<string, any>) => string;
 }
 
-const QuizProgress: React.FC<QuizProgressProps> = ({ title, current, total, t }) => (
-  <div className="bg-white rounded-lg p-4 shadow-sm">
+const QuizProgress: React.FC<QuizProgressProps> = ({ title, current, total }) => (
+  <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
     <div className="flex items-center justify-between mb-2">
       <h3 className="font-semibold text-gray-800">{title}</h3>
       <span className="text-sm text-gray-600">
-        {t('questionProgress', { current, total })}
+        Câu hỏi {current} / {total}
       </span>
     </div>
     <div className="w-full bg-gray-200 rounded-full h-2">

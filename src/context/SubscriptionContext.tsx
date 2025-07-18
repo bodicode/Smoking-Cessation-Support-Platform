@@ -54,7 +54,13 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   };
 
   useEffect(() => {
-    fetchSubscription();
+    const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+    if (token) {
+      fetchSubscription();
+    } else {
+      setLoading(false);
+      setSubscription(null);
+    }
   }, []);
 
   return (

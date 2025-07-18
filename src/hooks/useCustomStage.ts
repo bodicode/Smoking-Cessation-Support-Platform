@@ -11,9 +11,9 @@ import { CreatePlanStageInput, PlanStage, UpdatePlanStageInput } from "@/types/a
 const PLAN_STATUS_OPTIONS = [
     "PLANNING",
     "ACTIVE",
-    "PAUSED",
+    // "PAUSED",
     "COMPLETED",
-    "ABANDONED",
+    // "ABANDONED",
     "CANCELLED",
 ];
 
