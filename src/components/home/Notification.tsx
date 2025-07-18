@@ -9,6 +9,7 @@ import {
   NotificationFiltersInput,
 } from "@/types/api/notification";
 import { UserNotificationsResponse } from "@/types/api/notification";
+import Loading from "../common/Loading";
 
 interface NotificationItem {
   id: string;
@@ -54,7 +55,6 @@ export default function Notification() {
       setTotal(response.userNotifications.total);
     } catch (err) {
       setError("Không thể tải thông báo");
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -72,7 +72,6 @@ export default function Notification() {
       );
     } catch (err) {
       setError("Không thể đánh dấu thông báo là đã đọc");
-      console.error(err);
       setTimeout(() => setError(null), 3000);
     }
   };
@@ -133,9 +132,7 @@ export default function Notification() {
             className="max-h-80 rounded-3xl overflow-y-auto scrollbar-hidden"
           >
             {loading && notifications.length === 0 && (
-              <div className="p-4 text-gray-500 text-sm text-center">
-                Đang tải...
-              </div>
+              <Loading />
             )}
             {error && (
               <div className="p-4 text-red-500 text-sm text-center">

@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -8,21 +7,21 @@ import { motion } from "framer-motion";
 const tipList = [
     {
         icon: "/images/brain.png",
-        alt: "Know the triggers",
-        headingKey: "tip1.heading",
-        bodyKey: "tip1.body",
+        alt: "Nhận biết nguyên nhân",
+        heading: "Nhận biết nguyên nhân khiến bạn muốn hút thuốc",
+        body: "Hãy xác định rõ những tình huống, cảm xúc hoặc thói quen nào thường khiến bạn muốn hút thuốc. Khi nhận diện được các \"kích hoạt\" này, bạn sẽ dễ dàng kiểm soát và tránh xa hơn.",
     },
     {
         icon: "/images/idea.png",
-        alt: "Be patient and positive",
-        headingKey: "tip2.heading",
-        bodyKey: "tip2.body",
+        alt: "Kiên nhẫn và tích cực",
+        heading: "Kiên nhẫn và giữ thái độ tích cực",
+        body: "Bỏ thuốc là một quá trình, có thể gặp thất bại nhưng đừng nản lòng. Hãy tự động viên bản thân, ghi nhận từng tiến bộ nhỏ và luôn tin rằng bạn sẽ làm được!",
     },
     {
         icon: "/images/help.png",
-        alt: "Keep the conversation going",
-        headingKey: "tip3.heading",
-        bodyKey: "tip3.body",
+        alt: "Tìm kiếm sự hỗ trợ",
+        heading: "Tìm kiếm sự hỗ trợ từ cộng đồng và người thân",
+        body: "Chia sẻ với bạn bè, gia đình hoặc tham gia cộng đồng hỗ trợ sẽ giúp bạn có thêm động lực, kinh nghiệm và lời khuyên hữu ích trong hành trình bỏ thuốc.",
     },
 ];
 
@@ -55,8 +54,6 @@ const imageVariant = {
 };
 
 const SupportTips = () => {
-    const t = useTranslations('supportTips');
-
     return (
         <motion.div
             className="bg-[#f7f4ee] py-12 px-6 lg:px-36 flex flex-col-reverse lg:flex-row items-center gap-10 mt-8 rounded-t-4xl"
@@ -70,8 +67,8 @@ const SupportTips = () => {
                 variants={containerVariant}
             >
                 <motion.div variants={tipVariant}>
-                    <h2 className="text-4xl font-bold text-[#03256C] mb-4">{t('title')}</h2>
-                    <p>{t('intro')}</p>
+                    <h2 className="text-4xl font-bold text-[#03256C] mb-4">Các mẹo hỗ trợ</h2>
+                    <p>Các mẹo hỗ trợ bạn trong quá trình bỏ thuốc lá</p>
                 </motion.div>
 
                 {tipList.map((tip, idx) => (
@@ -86,9 +83,9 @@ const SupportTips = () => {
                             <Image src={tip.icon} alt={tip.alt} width={48} height={48} />
                         </div>
                         <div>
-                            <h3 className="text-xl font-semibold text-[#03256C]">{t(tip.headingKey)}</h3>
+                            <h3 className="text-xl font-semibold text-[#03256C]">{tip.heading}</h3>
                             <p className="text-gray-700">
-                                {t(tip.bodyKey)}
+                                {tip.body}
                             </p>
                         </div>
                     </motion.div>
@@ -99,7 +96,7 @@ const SupportTips = () => {
                         href="/community"
                         className="mt-2 hover:underline font-semibold flex justify-center text-[#03256C]"
                     >
-                        {t('cta.text')}
+                        Tham gia cộng đồng hỗ trợ
                     </Link>
                 </motion.div>
             </motion.div>

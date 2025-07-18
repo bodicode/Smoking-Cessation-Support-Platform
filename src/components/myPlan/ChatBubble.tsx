@@ -95,7 +95,6 @@ const ChatBubble: React.FC<ChatBubbleProps> = () => {
           setMessages((prev) => [...prev, welcomeMessage]);
         }
       } catch (error) {
-        console.error("Failed to load chat rooms or messages:", error);
         toast.error("Không thể tải phòng chat hoặc tin nhắn.");
         setActualChatRoomId(null);
         setMessages([]);

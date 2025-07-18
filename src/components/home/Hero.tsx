@@ -1,5 +1,4 @@
 "use client";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -9,19 +8,25 @@ import { getCessationPlans } from "@/services/cessationPlanService";
 
 const cards = [
   {
-    titleKey: "buildYourQuitPlan",
-    icon: "/images/quit-plan.jpg",
-    bg: "bg-[#004F7C]",
-    href: "/plan"
+    titleKey: "Kiểm tra",
+    icon: "/images/health-quiz.jpg",
+    bg: "bg-[#FF9966]",
+    href: "/quiz"
   },
   {
-    titleKey: "membership",
+    titleKey: "Mẫu kế hoạch",
+    icon: "/images/quit-plan.jpg",
+    bg: "bg-[#004F7C]",
+    href: "/template"
+  },
+  {
+    titleKey: "Thành viên",
     icon: "/images/membership.jpg",
     bg: "bg-[#00C2A0]",
     href: "/membership"
   },
   {
-    titleKey: "reairSocialMedia",
+    titleKey: "Cộng đồng",
     icon: "/images/social.png",
     bg: "bg-[#FFC400]",
     href: "/community"
@@ -48,7 +53,6 @@ const cardVariant = {
 };
 
 const Hero = () => {
-  const t = useTranslations("hero");
   const router = useRouter();
   const [hasPlan, setHasPlan] = useState<boolean | null>(null);
   const [checkingPlan, setCheckingPlan] = useState(false);
@@ -70,7 +74,7 @@ const Hero = () => {
     return () => { isMounted = false };
   }, []);
 
-  const handleFirstCardClick = () => {
+  const handleSecondCardClick = () => {
     if (hasPlan) {
       router.push("/plan/my-plan");
     } else {
@@ -92,16 +96,15 @@ const Hero = () => {
         className="w-full lg:max-w-2xl z-10 text-center lg:text-left"
       >
         <h1 className="text-3xl sm:text-4xl lg:text-[58px] font-extrabold text-[#001858] leading-tight mb-2 text-nowrap">
-          {t("title.line1")}{" "}
+          Bắt đầu <br />
           <span className="relative text-[#ff5c00]">
-            {t("title.highlight")}
+            ngay hôm nay
             <span className="absolute left-0 -bottom-1 w-full h-2 bg-[#ff5c00] rounded-full blur-sm opacity-60"></span>
           </span>
           <br />
-          {t("title.line2")}
         </h1>
         <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl text-[#534BC6] font-medium">
-          {t("subtitle")}
+          Tham gia với chúng tôi
         </p>
       </motion.div>
 
@@ -120,9 +123,9 @@ const Hero = () => {
             }}
             transition={{ type: "spring", stiffness: 350, damping: 20 }}
           >
-            {i === 0 ? (
+            {i === 1 ? (
               <button
-                onClick={handleFirstCardClick}
+                onClick={handleSecondCardClick}
                 disabled={checkingPlan || hasPlan === null}
                 className={`
                   ${c.bg} text-white rounded-2xl p-4 sm:p-6 w-40 sm:w-44 md:w-48 flex flex-col items-center
@@ -135,16 +138,16 @@ const Hero = () => {
                 <div className="relative bg-white w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden flex items-center justify-center mb-3 sm:mb-4">
                   <Image
                     src={c.icon}
-                    alt={t(`cards.${c.titleKey}`)}
+                    alt={c.titleKey}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 64px, (max-width: 1024px) 80px, 96px"
                   />
                 </div>
-                <p className="text-center font-semibold text-xs sm:text-sm md:text-base">
+                <p className="text-center text-xs sm:text-sm md:text-base">
                   {hasPlan
-                    ? "Bản kế hoạch của bạn"
-                    : t(`cards.${c.titleKey}`)}
+                    ? "Kế hoạch của bạn"
+                    : c.titleKey}
                 </p>
                 {checkingPlan && (
                   <span className="absolute top-1 right-2 text-xs text-white animate-pulse">
@@ -163,14 +166,14 @@ const Hero = () => {
                 <div className="relative bg-white w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden flex items-center justify-center mb-3 sm:mb-4">
                   <Image
                     src={c.icon}
-                    alt={t(`cards.${c.titleKey}`)}
+                    alt={c.titleKey}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 64px, (max-width: 1024px) 80px, 96px"
                   />
                 </div>
                 <p className="text-center font-medium text-xs sm:text-sm md:text-base">
-                  {t(`cards.${c.titleKey}`)}
+                  {c.titleKey}
                 </p>
               </Link>
             )}

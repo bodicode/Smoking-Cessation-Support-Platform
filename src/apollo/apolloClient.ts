@@ -12,22 +12,22 @@ import { createClient } from "graphql-ws";
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (typeof window === "undefined") return;
 
-  // if (graphQLErrors) {
-  //   for (let err of graphQLErrors) {
-  //     if (
-  //       err.message?.toLowerCase().includes("expired token") ||
-  //       err.message?.toLowerCase().includes("unauthorized") ||
-  //       err.extensions?.code === "UNAUTHENTICATED"
-  //     ) {
-  //       toast.error("Phiên đăng nhập đã hết hạn!");
-  //       localStorage.removeItem("access_token");
-  //       if (window.location.pathname !== "/login") {
-  //         window.location.href = "/login";
-  //       }
-  //       return;
-  //     }
-  //   }
-  // }
+  if (graphQLErrors) {
+    for (let err of graphQLErrors) {
+      if (
+        err.message?.toLowerCase().includes("expired token") ||
+        err.message?.toLowerCase().includes("unauthorized") ||
+        err.extensions?.code === "UNAUTHENTICATED"
+      ) {
+        toast.error("Phiên đăng nhập đã hết hạn!");
+        localStorage.removeItem("access_token");
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
+        return;
+      }
+    }
+  }
 
   if (networkError) {
     console.error(`[Network error]:`, networkError);

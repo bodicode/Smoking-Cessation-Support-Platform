@@ -31,7 +31,7 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStartQuiz, buttonText }) =>
         <div className="flex-1">
           <h3 className="text-xl font-bold text-gray-800 mb-2">{quiz.title}</h3>
           <p className="text-gray-600 mb-4 line-clamp-2">{quiz.description}</p>
-          
+
           <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
             <div className="flex items-center gap-1">
               <Users className="w-4 h-4" />
@@ -47,7 +47,7 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStartQuiz, buttonText }) =>
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onStartQuiz(quiz.id)}
-            className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+            className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
           >
             {buttonText}
           </motion.button>

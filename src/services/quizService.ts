@@ -2,7 +2,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import { GET_PROFILE_QUIZZES } from "@/graphql/queries/quiz/getProfileQuizzes";
 import { GET_QUIZ_QUESTIONS } from "@/graphql/queries/quiz/getQuizQuestions";
 import { CREATE_QUIZ_ANSWER } from "@/graphql/mutations/quiz/createQuizAnswer";
-import { CREATE_QUIZ_RESPONSE } from "@/graphql/mutations/quiz/submitQuizResponse";
+import { SUBMIT_QUIZ } from "@/graphql/mutations/quiz/submitQuizResponse";
+import { START_QUIZ } from "@/graphql/mutations/quiz/startQuiz";
 import client from "@/apollo/apolloClient";
 import { CREATE_PROFILE_QUIZ } from "@/graphql/mutations/quiz/createProfileQuiz";
 import { CREATE_QUIZ_QUESTION } from "@/graphql/mutations/quiz/createQuizQuestion";
@@ -10,6 +11,9 @@ import { UPDATE_PROFILE_QUIZ } from "@/graphql/mutations/quiz/updateProfileQuiz"
 import { DELETE_PROFILE_QUIZ } from "@/graphql/mutations/quiz/deleteProfileQuiz";
 import { UPDATE_QUIZ_QUESTION } from "@/graphql/mutations/quiz/updateQuizQuestion";
 import { DELETE_QUIZ_QUESTION } from "@/graphql/mutations/quiz/deleteQuizQuestion";
+import { GET_AI_RECOMMENDATION } from "@/graphql/queries/templates/getAIRecommendation";
+import { GET_QUIZ_ATTEMPT_ON_CURRENT_USER } from "@/graphql/queries/quiz/getQuizAttemptOnCurrentUser";
+import { StartQuizInput, StartQuizResponse, SubmitQuizInput, SubmitQuizResponse } from "@/types/api/quiz";
 
 export interface QuizAnswer {
   question_id: string;
@@ -62,10 +66,10 @@ export function useCreateQuizAnswer() {
 
 // Hook to submit quiz response
 export function useSubmitQuizResponse() {
-  const [createResponse, { loading, error }] = useMutation(CREATE_QUIZ_RESPONSE);
+  const [submitQuiz, { loading, error }] = useMutation(SUBMIT_QUIZ);
   
   return {
-    submitResponse: createResponse,
+    submitResponse: submitQuiz,
     loading,
     error: error?.message || null
   };
@@ -123,4 +127,40 @@ export async function deleteQuizQuestion(id: string) {
   });
   if (errors && errors.length > 0) throw new Error(errors[0].message || "Xóa quiz question thất bại");
   return data.deleteQuizQuestion;
+}
+
+export async function startQuiz(input: StartQuizInput): Promise<StartQuizResponse> {
+  const { data, errors } = await client.mutate({
+    mutation: START_QUIZ,
+    variables: { startQuizInput2: input },
+  });
+  if (errors && errors.length > 0) throw new Error(errors[0].message || "Bắt đầu quiz thất bại");
+  return data.startQuiz;
+}
+
+export async function submitQuiz(input: SubmitQuizInput): Promise<SubmitQuizResponse> {
+  const { data, errors } = await client.mutate({
+    mutation: SUBMIT_QUIZ,
+    variables: { input },
+  });
+  if (errors && errors.length > 0) throw new Error(errors[0].message || "Submit quiz thất bại");
+  return data.submitQuiz;
+}
+
+export async function getAIRecommendation(): Promise<any> {
+  const { data, errors } = await client.query({
+    query: GET_AI_RECOMMENDATION,
+    fetchPolicy: "no-cache"
+  });
+  if (errors && errors.length > 0) throw new Error(errors[0].message || "Lấy gợi ý AI thất bại");
+  return data.getAIRecommendation;
+}
+
+export async function getQuizAttemptOnCurrentUser(): Promise<any> {
+  const { data, errors } = await client.query({
+    query: GET_QUIZ_ATTEMPT_ON_CURRENT_USER,
+    fetchPolicy: "no-cache"
+  });
+  if (errors && errors.length > 0) throw new Error(errors[0].message || "Lấy quiz attempt thất bại");
+  return data.getQuizAttemptOnCurrentUser;
 }

@@ -2,15 +2,12 @@ import React from "react";
 import { useUserSubscription } from "@/hooks/useUserSubscription";
 import { useMembershipById } from "@/hooks/useMembership";
 import { Crown, Calendar, Gift, Clock, CheckCircle, XCircle } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
 
 interface MembershipInfoProps {
   className?: string;
 }
 
 const MembershipInfo: React.FC<MembershipInfoProps> = ({ className = "" }) => {
-  const t = useTranslations("profile");
-  const locale = useLocale();
   const { subscription, loading, error } = useUserSubscription();
   const { membershipPackage } = useMembershipById(subscription?.package_id || "");
 
@@ -31,11 +28,11 @@ const MembershipInfo: React.FC<MembershipInfoProps> = ({ className = "" }) => {
       <div className={`bg-[#fef2f2] rounded-2xl p-7 shadow-md min-h-[180px] flex flex-col justify-center ${className}`}>
         <div className="flex items-center gap-2 mb-2">
           <Calendar className="w-5 h-5 text-blue-400" />
-          <span className="text-base font-semibold text-blue-700">{t("membership")}</span>
+          <span className="text-base font-semibold text-blue-700">Thành viên</span>
         </div>
         <div className="flex items-center gap-2 mt-2">
           <XCircle className="w-4 h-4 text-red-500" />
-          <span className="text-sm text-red-600 font-medium">{t("membershipNone")}</span>
+          <span className="text-sm text-red-600 font-medium">Chưa đăng ký thành viên</span>
         </div>
       </div>
     );
@@ -53,9 +50,9 @@ const MembershipInfo: React.FC<MembershipInfoProps> = ({ className = "" }) => {
   };
 
   const getStatusText = () => {
-    if (isActive && !isExpired) return t("membershipActive");
-    if (isExpired) return t("membershipExpired");
-    return subscription.status || t("membershipInactive");
+    if (isActive && !isExpired) return "Hoạt động";
+    if (isExpired) return "Hết hạn";
+    return subscription.status || "Không hoạt động";
   };
 
   const getStatusIcon = () => {
@@ -83,28 +80,28 @@ const MembershipInfo: React.FC<MembershipInfoProps> = ({ className = "" }) => {
       <span className="absolute right-4 top-4 opacity-10 text-6xl font-black select-none">
         {isActive && !isExpired ? "✓" : isExpired ? "✗" : "⏸"}
       </span>
-      
+
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           {getPackageIcon()}
-          <span className="text-base font-semibold text-gray-700">{t("membership")}</span>
+          <span className="text-base font-semibold text-gray-700">Thành viên</span>
         </div>
         <div className="flex items-center gap-1">
           {getStatusIcon()}
           <span className={`text-sm font-medium ${getStatusColor()}`}>{getStatusText()}</span>
         </div>
       </div>
-      
+
       <div className="mt-3">
         <div className="text-xl font-bold text-gray-800 mb-1">
           {membershipPackage?.name || "Basic Plan"}
         </div>
         <div className="text-sm text-gray-600 font-medium">
-          {t("membershipEndDate")}: <span className="font-bold text-gray-800">{endDate.toLocaleDateString(locale)}</span>
+          Hết hạn: <span className="font-bold text-gray-800">{endDate.toLocaleDateString()}</span>
         </div>
         {subscription.start_date && (
           <div className="text-xs text-gray-500 mt-1">
-            Bắt đầu: {new Date(subscription.start_date).toLocaleDateString(locale)}
+            Thời gian: {new Date(subscription.start_date).toLocaleDateString()}
           </div>
         )}
       </div>
