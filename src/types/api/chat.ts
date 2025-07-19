@@ -1,4 +1,5 @@
 export interface IChatRoomUser {
+  id: string;
   name: string;
 }
 

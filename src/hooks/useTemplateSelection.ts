@@ -29,7 +29,7 @@ export default function useTemplateSelection() {
   const checkHasPlan = async (userId: string, templateId: string) => {
     const plans = await getCessationPlans({ userId, templateId });
     if (plans.length === 0) return false;
-    return plans.some(plan => plan.status !== 'CANCELLED');
+    return plans.some(plan => plan.status !== 'CANCELLED' && plan.status !== 'COMPLETED');
   };
 
   const handleUseTemplate = async (tpl: any) => {

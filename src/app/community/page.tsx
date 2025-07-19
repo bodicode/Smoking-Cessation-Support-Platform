@@ -159,9 +159,10 @@ export default function Community() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 18 }}
-            className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 bg-gradient-to-r from-blue-500 to-green-500 text-white py-2 px-4 sm:py-3 sm:px-6 rounded-full font-bold shadow-lg hover:scale-105 hover:shadow-xl transition-all text-sm sm:text-base"
+            className="fixed top-30 -right-4 z-50 text-white py-3 px-6 rounded-full font-bold shadow-2xl hover:scale-110 hover:shadow-3xl transition-all text-base border-2 border-white bg-gradient-to-r from-blue-500 to-green-500"
             onClick={() => setShowAddForm(true)}
-            whileHover={{ scale: 1.07, boxShadow: "0px 4px 16px #60C3A477" }}
+            whileHover={{ scale: 1.1, boxShadow: "0px 8px 25px rgba(239, 68, 68, 0.4)" }}
+            whileTap={{ scale: 0.95 }}
           >
             Chia sẻ
           </motion.button>
