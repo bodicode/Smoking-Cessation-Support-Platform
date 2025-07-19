@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import {
-    Plus, Edit, Clock, Zap, Star, ChartNoAxesColumnDecreasing, ChevronDown, ChevronUp, List, Trash2
+    Plus, Edit, Clock, Zap, Star, ChartNoAxesColumnDecreasing, ChevronDown, ChevronUp, List, Trash2,
+    Eye
 } from "lucide-react";
 import Loading from "@/components/common/Loading";
 import Pagination from "@/components/common/Pagination";
@@ -90,10 +91,14 @@ export default function CoachTemplatesPage() {
                                 key={tpl.id}
                                 className="bg-white rounded-2xl shadow-md p-7 flex flex-col gap-2 border-l-8 border-sky-200 hover:border-sky-500 transition-all duration-200 hover:shadow-lg"
                             >
-                                <div className="flex items-start justify-between mb-2">
-                                    <h2 className="text-xl font-extrabold text-sky-700">{tpl.name}</h2>
-
-                                    <div className="flex items-center gap-5">
+                                <div className="flex flex-col items-start justify-between">
+                                    <div className="flex items-center gap-5 mb-4">
+                                        <Link
+                                            href={`/coach/templates/${tpl.id}`}
+                                            className="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1"
+                                        >
+                                            <Eye className="w-4 h-4" /> Xem
+                                        </Link>
                                         <Link
                                             href={`/coach/templates/new?edit=${tpl.id}`}
                                             className="text-sky-600 hover:text-sky-800 font-medium inline-flex items-center gap-1"
@@ -108,6 +113,12 @@ export default function CoachTemplatesPage() {
                                             <Trash2 className="w-4 h-4" /> Xóa
                                         </button>
                                     </div>
+                                    <Link
+                                        href={`/coach/templates/${tpl.id}`}
+                                        className="text-xl font-extrabold text-sky-700 hover:text-sky-900 transition-colors"
+                                    >
+                                        {tpl.name}
+                                    </Link>
                                 </div>
                                 <p className="text-gray-600 mb-3 truncate">{tpl.description}</p>
                                 <div className="flex flex-col gap-2 text-base text-gray-700 mt-3">

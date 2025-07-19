@@ -21,6 +21,7 @@ import {
 } from "@/utils";
 
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import ChatBubble from "@/components/myPlan/ChatBubble";
 
 function statusBadge(status: string) {
@@ -606,10 +607,47 @@ export default function CustomStages() {
 
                 <TemplateMyFeedbackBox templateId={plan.template?.id} />
 
-                <ProgressRecordTable
-                  planId={plan.id}
-                  coachId={plan.template.coach_id}
-                />
+                <div className={`${plan.status === "COMPLETED" ? "opacity-50 pointer-events-none mt-4" : ""}`}>
+                  {plan.status === "COMPLETED" && (
+                    <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center gap-2 text-green-700 font-semibold">
+                        <span className="text-lg">✅</span>
+                        Kế hoạch đã hoàn thành
+                      </div>
+                      <p className="text-green-600 text-sm mt-1">
+                        Bạn đã hoàn thành tất cả các giai đoạn của kế hoạch này.
+                      </p>
+                    </div>
+                  )}
+                  <ProgressRecordTable
+                    planId={plan.id}
+                    coachId={plan.template.coach_id}
+                  />
+                </div>
+                
+                {plan.status === "COMPLETED" && (
+                  <div className="mt-6 p-6 bg-gradient-to-r from-sky-50 to-green-50 border border-sky-200 rounded-xl">
+                    <div className="text-center">
+                      <h3 className="text-lg font-bold text-sky-700 mb-2">
+                        🎉 Chúc mừng bạn đã hoàn thành!
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        Bạn đã chứng minh được sự kiên trì và quyết tâm của mình. 
+                        Hãy tiếp tục duy trì thành quả này!
+                      </p>
+                      <Link
+                        href="/template"
+                        className="inline-flex items-center gap-2 bg-gradient-to-r from-sky-500 to-green-500 hover:from-sky-600 hover:to-green-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                      >
+                        <Plus className="w-5 h-5" />
+                        Tạo một kế hoạch khác
+                      </Link>
+                      <p className="text-sm text-gray-500 mt-3">
+                        Nếu bạn muốn thử thách tiếp với template khác
+                      </p>
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </motion.div>

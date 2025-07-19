@@ -1,18 +1,19 @@
-// src/components/myPlan/ChatBubble.tsx
 
 "use client";
 
 import React, { useState, useEffect } from "react";
 import { MessageCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { createPortal } from "react-dom";
 import ChatComponent from "./Chat";
+import ChatRoomSelector from "./ChatRoomSelector";
 import { ChatService } from "@/services/chatService";
 import { IChatRoom, ChatMessage } from "@/types/api/chat";
 import toast from "react-hot-toast";
 import { useAuth } from "@/hooks/useAuth";
 
-interface ChatBubbleProps {}
+interface ChatBubbleProps { }
 
 const ChatBubble: React.FC<ChatBubbleProps> = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,6 +29,10 @@ const ChatBubble: React.FC<ChatBubbleProps> = () => {
   const [coachNameForHeader, setCoachNameForHeader] = useState<string | null>(
     null
   );
+  const [coachId, setCoachId] = useState<string | null>(null);
+  const [allRooms, setAllRooms] = useState<IChatRoom[]>([]);
+  const [showRoomSelector, setShowRoomSelector] = useState(false);
+  const [isSwitchingRoom, setIsSwitchingRoom] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -38,30 +43,24 @@ const ChatBubble: React.FC<ChatBubbleProps> = () => {
       let tempCoachName: string | null = null;
 
       try {
+        const rooms: IChatRoom[] = await ChatService.getAllChatRoomsByUser();
+        setAllRooms(rooms);
+
         if (chatRoomIdFromUrl) {
           roomIdToUse = chatRoomIdFromUrl;
-          try {
-            const rooms: IChatRoom[] =
-              await ChatService.getAllChatRoomsByUser();
-            const foundRoom = rooms.find(
-              (room) => room.id === chatRoomIdFromUrl
-            );
-            if (foundRoom) {
-              tempCoachName = foundRoom.receiver.name;
-            }
-          } catch (error) {
-            console.error(
-              "Failed to fetch chat room info for coach name:",
-              error
-            );
+          const foundRoom = rooms.find(
+            (room) => room.id === chatRoomIdFromUrl
+          );
+          if (foundRoom) {
+            tempCoachName = foundRoom.receiver.name;
+            setCoachId(foundRoom.receiver.id);
           }
         } else {
-          const rooms: IChatRoom[] = await ChatService.getAllChatRoomsByUser();
-
           if (rooms.length > 0) {
             const firstRoom = rooms[0];
             roomIdToUse = firstRoom.id;
             tempCoachName = firstRoom.receiver.name;
+            setCoachId(firstRoom.receiver.id);
           } else {
             setLoadingChatRoom(false);
             return;
@@ -104,10 +103,10 @@ const ChatBubble: React.FC<ChatBubbleProps> = () => {
       }
     };
 
-    if (mounted) {
+    if (mounted && !isSwitchingRoom) {
       loadChatRoomAndMessages();
     }
-  }, [mounted, chatRoomIdFromUrl, coachNameForHeader]);
+  }, [mounted, chatRoomIdFromUrl]);
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
@@ -158,9 +157,62 @@ const ChatBubble: React.FC<ChatBubbleProps> = () => {
       {isOpen && (
         <div className="fixed bottom-24 right-6 w-[380px] h-[550px] bg-white rounded-2xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden animate-fade-in-up">
           <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 flex justify-between items-center rounded-t-2xl shadow-md">
-            <h3 className="text-lg font-semibold tracking-wide">
-              {coachNameForHeader || "Trò chuyện"}
-            </h3>
+            <div className="flex items-center gap-4">
+              <ChatRoomSelector
+                rooms={allRooms}
+                selectedRoomId={actualChatRoomId}
+                onRoomSelect={async (roomId) => {
+                  try {
+                    setIsSwitchingRoom(true);
+                    setLoadingChatRoom(true);
+                    const selectedRoom = allRooms.find(room => room.id === roomId);
+
+                    if (selectedRoom) {
+                      setActualChatRoomId(roomId);
+                      setCoachNameForHeader(selectedRoom.receiver.name);
+                      setCoachId(selectedRoom.receiver.id);
+
+                      const fetchedMessages = await ChatService.getChatMessagesByRoomId(roomId);
+
+                      const sortedMessages = [...fetchedMessages].sort(
+                        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+                      );
+                      setMessages(sortedMessages);
+
+                      if (sortedMessages.length === 0) {
+                        const welcomeMessage: ChatMessage = {
+                          id: "welcome-" + Date.now().toString(),
+                          content: `Tôi là ${selectedRoom.receiver.name}, cảm ơn bạn đã sử dụng template của tôi, tôi sẽ đồng hành cùng bạn đến cuối chặng đường.`,
+                          sender: { name: selectedRoom.receiver.name },
+                          chat_room: { id: roomId, creator: { name: selectedRoom.receiver.name } },
+                          created_at: new Date().toISOString(),
+                          updated_at: new Date().toISOString(),
+                          is_read: false,
+                          session_id: "welcome-session-" + Date.now().toString(),
+                        };
+                        setMessages([welcomeMessage]);
+                      }
+                    }
+                  } catch (error) {
+                    console.error("Error switching room:", error);
+                    toast.error("Không thể tải tin nhắn.");
+                  } finally {
+                    setLoadingChatRoom(false);
+                    setIsSwitchingRoom(false);
+                  }
+                }}
+                isOpen={showRoomSelector}
+                onToggle={() => setShowRoomSelector(!showRoomSelector)}
+              />
+              <Link
+                href={coachId ? `/profile/${coachId}` : "#"}
+                className="text-white hover:text-blue-100 font-medium hover:underline"
+              >
+                <p className="text-nowrap text-sm">
+                  {coachNameForHeader || "Coach"}
+                </p>
+              </Link>
+            </div>
             <button
               onClick={() => setIsOpen(false)}
               className="text-white hover:text-blue-100 cursor-pointer p-1 rounded-full hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300"

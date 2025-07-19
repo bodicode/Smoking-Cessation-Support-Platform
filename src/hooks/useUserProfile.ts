@@ -1,79 +1,52 @@
 import { useState, useEffect } from "react";
-import { getCurrentUserProfile, getUserProfile } from "@/services/userService";
-import { UserProfile } from "@/types/api/user";
+import { getUserById } from "@/services/userProfileService";
+import { UserProfile } from "@/types/api/userProfile";
 
-interface UseUserProfileReturn {
-  userProfile: UserProfile | null;
-  loading: boolean;
-  error: string | null;
-  refetch: () => Promise<void>;
-}
-
-// Hook to get current user profile
-export function useUserProfile(): UseUserProfileReturn {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+export function useUserProfile(userId?: string) {
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchUserProfile = async () => {
-    try {
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!userId) return;
+
       setLoading(true);
       setError(null);
-      
-      const profile = await getCurrentUserProfile();
-      setUserProfile(profile);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch user profile");
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
+      try {
+        const data = await getUserById(userId);
+        setProfile(data);
+      } catch (err: any) {
+        setError(err.message || "Lỗi tải thông tin người dùng");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  return {
-    userProfile,
-    loading,
-    error,
-    refetch: fetchUserProfile,
-  };
-}
-
-// Hook to get user profile by ID
-export function useUserProfileById(userId: string): UseUserProfileReturn {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchUserProfile = async () => {
-    if (!userId) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const profile = await getUserProfile(userId);
-      setUserProfile(profile);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch user profile");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserProfile();
+    fetchProfile();
   }, [userId]);
 
+  const refetch = async () => {
+    if (!userId) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await getUserById(userId);
+      setProfile(data);
+    } catch (err: any) {
+      setError(err.message || "Lỗi tải thông tin người dùng");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
-    userProfile,
+    profile,
     loading,
     error,
-    refetch: fetchUserProfile,
+    refetch
   };
 }

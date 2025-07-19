@@ -27,8 +27,6 @@ export default function SmokeFreeStats({
             <SmokeFreeSummary
                 planCreatedAt={plan.created_at}
                 records={records}
-                avgPricePerPack={avgPricePerPack}
-                cigarettesPerPack={cigarettesPerPack}
             />
 
             <div className="mt-4">

@@ -199,7 +199,12 @@ export default function PlanTemplateDetail() {
           <div className="flex items-center gap-3 text-gray-600">
             <Users size={18} className="text-purple-500" />
             <b>Coach:</b>
-            <span>{template.coach?.name}</span>
+            <Link 
+              href={`/profile/${template.coach?.id}`}
+              className="text-sky-600 hover:text-sky-800 font-medium hover:underline"
+            >
+              {template.coach?.name}
+            </Link>
           </div>
         </motion.div>
 
