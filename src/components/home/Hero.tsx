@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { getCessationPlans } from "@/services/cessationPlanService";
+import { useAuth } from "@/hooks/useAuth";
 
 const cards = [
   {
@@ -54,11 +55,16 @@ const cardVariant = {
 
 const Hero = () => {
   const router = useRouter();
+  const { user } = useAuth();
   const [hasPlan, setHasPlan] = useState<boolean | null>(null);
   const [checkingPlan, setCheckingPlan] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
+    if (!user?.accessToken) {
+      setHasPlan(false);
+      return;
+    }
     (async () => {
       setCheckingPlan(true);
       try {
@@ -72,7 +78,7 @@ const Hero = () => {
       }
     })();
     return () => { isMounted = false };
-  }, []);
+  }, [user?.accessToken]);
 
   const handleSecondCardClick = () => {
     if (hasPlan) {
@@ -83,19 +89,19 @@ const Hero = () => {
   };
 
   return (
-    <motion.div
+    <motion.div 
       initial="hidden"
       animate="visible"
       variants={container}
-      className="relative px-4 sm:px-8 lg:px-20 py-10 sm:py-16 lg:py-20 flex flex-col-reverse lg:flex-row items-center justify-between gap-8 lg:gap-12"
+      className="relative px-4 sm:px-8 lg:px-20 py-10 sm:py-16 lg:py-20 flex flex-col-reverse 2xl:flex-row items-center justify-between gap-8 2xl:gap-12"
     >
       <motion.div
         initial={{ opacity: 0, x: -60 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="w-full lg:max-w-2xl z-10 text-center lg:text-left"
+        className="w-full lg:max-w-2xl z-10 text-center 2xl:text-left"
       >
-        <h1 className="text-3xl sm:text-4xl lg:text-[58px] font-extrabold text-[#001858] leading-tight mb-2 text-nowrap">
+        <h1 className="text-3xl sm:text-4xl lg:text-[58px] font-extrabold text-[#001858] leading-tight mb-2">
           Bắt đầu <br />
           <span className="relative text-[#ff5c00]">
             ngay hôm nay
@@ -109,7 +115,7 @@ const Hero = () => {
       </motion.div>
 
       <motion.div
-        className="w-full flex flex-nowrap justify-center lg:justify-end gap-4 sm:gap-6"
+        className="w-full flex flex-wrap justify-center lg:flex-nowrap gap-4 md:gap-6"
         variants={container}
       >
         {cards.map((c, i) => (
@@ -128,10 +134,10 @@ const Hero = () => {
                 onClick={handleSecondCardClick}
                 disabled={checkingPlan || hasPlan === null}
                 className={`
-                  ${c.bg} text-white rounded-2xl p-4 sm:p-6 w-40 sm:w-44 md:w-48 flex flex-col items-center
-                  transition hover:scale-105 hover:shadow-lg cursor-pointer border-none outline-none relative
-                  ${checkingPlan || hasPlan === null ? "opacity-60 pointer-events-none" : ""}
-                `}
+                  ${c.bg} text-white rounded-2xl p-4 sm:p-6 w-40 sm:w-44 md:w-48 flex flex-col items-center
+                  transition hover:scale-105 hover:shadow-lg cursor-pointer border-none outline-none relative
+                  ${checkingPlan || hasPlan === null ? "opacity-60 pointer-events-none" : ""}
+                `}
                 type="button"
                 style={{ appearance: "none" }}
               >
@@ -159,9 +165,9 @@ const Hero = () => {
               <Link
                 href={c.href}
                 className={`
-                  ${c.bg} text-white rounded-2xl p-4 sm:p-6 w-40 sm:w-44 md:w-48 flex flex-col items-center
-                  transition hover:scale-105 hover:shadow-lg
-                `}
+                  ${c.bg} text-white rounded-2xl p-4 sm:p-6 w-40 sm:w-44 md:w-48 flex flex-col items-center
+                  transition hover:scale-105 hover:shadow-lg
+                `}
               >
                 <div className="relative bg-white w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden flex items-center justify-center mb-3 sm:mb-4">
                   <Image

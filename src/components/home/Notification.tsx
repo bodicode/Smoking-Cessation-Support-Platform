@@ -10,6 +10,7 @@ import {
 } from "@/types/api/notification";
 import { UserNotificationsResponse } from "@/types/api/notification";
 import Loading from "../common/Loading";
+import { useAuth } from "@/hooks/useAuth";
 
 interface NotificationItem {
   id: string;
@@ -27,7 +28,7 @@ export default function Notification() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
-
+  const { user } = useAuth();
   const notificationService = new NotificationService();
 
   const fetchNotifications = async (
@@ -54,7 +55,7 @@ export default function Notification() {
       );
       setTotal(response.userNotifications.total);
     } catch (err) {
-      setError("Không thể tải thông báo");
+      // setError("Không thể tải thông báo");
     } finally {
       setLoading(false);
     }
@@ -77,8 +78,10 @@ export default function Notification() {
   };
 
   useEffect(() => {
-    fetchNotifications(1);
-  }, []);
+    if (user?.accessToken) {
+      fetchNotifications(1);
+    }
+  }, [user?.accessToken]);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
