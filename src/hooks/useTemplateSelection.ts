@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CreateCessationPlanInput } from "@/types/api/cessationPlan";
@@ -8,6 +10,7 @@ import {
 import toast from "react-hot-toast";
 import { useAuth } from "./useAuth";
 import { ChatService } from "@/services/chatService";
+import { useSubscription } from "@/context/SubscriptionContext"; // Import useSubscription
 
 export default function useTemplateSelection() {
   const [openStageModal, setOpenStageModal] = useState(false);
@@ -21,10 +24,12 @@ export default function useTemplateSelection() {
 
   const router = useRouter();
   const { user } = useAuth();
+  const { isSubscribed } = useSubscription(); 
 
   const checkHasPlan = async (userId: string, templateId: string) => {
     const plans = await getCessationPlans({ userId, templateId });
-    return plans.length > 0;
+    if (plans.length === 0) return false;
+    return plans.some(plan => plan.status !== 'CANCELLED' && plan.status !== 'COMPLETED');
   };
 
   const handleUseTemplate = async (tpl: any) => {
@@ -42,7 +47,6 @@ export default function useTemplateSelection() {
       setSelectedTemplate(tpl);
       setShowConfirm(true);
     } catch (e) {
-      console.error("Lỗi kiểm tra kế hoạch:", e);
       toast.error("Lỗi kiểm tra kế hoạch. Thử lại sau!");
     }
   };
@@ -66,26 +70,15 @@ export default function useTemplateSelection() {
     try {
       const coachId = selectedTemplate.coach?.id;
 
-      if (!coachId) {
-        console.warn(
-          "Không tìm thấy ID huấn luyện viên cho template này. Bỏ qua tạo phòng chat."
-        );
-        toast.error(
-          "Kế hoạch đã tạo, nhưng không thể tạo phòng chat do thiếu thông tin huấn luyện viên."
-        );
-      }
-
-      const today = new Date();
-      const target = new Date(today);
-      target.setDate(
-        today.getDate() + (selectedTemplate.estimated_duration_days || 30)
-      );
+      const now = new Date();
+      const target = new Date(now);
+      target.setDate(now.getDate() + (selectedTemplate.estimated_duration_days || 30));
 
       const input: CreateCessationPlanInput = {
         template_id: selectedTemplate.id,
         is_custom: isCustom,
-        start_date: today.toISOString().slice(0, 10),
-        target_date: target.toISOString().slice(0, 10),
+        start_date: now.toISOString(),
+        target_date: target.toISOString(),
         reason: reason.trim(),
       };
 
@@ -97,17 +90,28 @@ export default function useTemplateSelection() {
       }
       createdPlanId = newPlan.id;
 
-      toast.success("Kế hoạch đã được tạo thành công!");
-
-      if (coachId) {
+      if (coachId && isSubscribed) {
         try {
           const newChatRoom = await ChatService.createChatRoom({
             receiver_id: coachId,
           });
           createdChatRoomId = newChatRoom.id;
+          toast.success("Kế hoạch và phòng chat với coach đã được tạo!");
         } catch (chatError: any) {
-          console.error("Lỗi khi tạo phòng chat:", chatError);
+          toast.error(
+            "Kế hoạch đã tạo, nhưng không thể tạo phòng chat: " +
+              chatError.message
+          );
         }
+      } else if (coachId && !isSubscribed) {
+        toast.success(
+          "Kế hoạch đã tạo, nhưng bạn cần gói thành viên để tạo phòng chat với coach."
+        );
+      } else {
+        console.warn(
+          "Không tìm thấy ID huấn luyện viên cho template này. Bỏ qua tạo phòng chat."
+        );
+        toast.success("Kế hoạch đã được tạo thành công!");
       }
 
       setShowConfirm(false);
@@ -121,7 +125,6 @@ export default function useTemplateSelection() {
       }
       router.push(redirectPath);
     } catch (err: any) {
-      console.error("Lỗi trong quá trình tạo kế hoạch hoặc phòng chat:", err);
       setErrorMsg(
         err.message || "Có lỗi xảy ra khi tạo kế hoạch. Vui lòng thử lại."
       );

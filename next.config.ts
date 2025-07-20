@@ -1,15 +1,14 @@
-import createNextIntlPlugin from "next-intl/plugin";
-
-const withNextIntl = createNextIntlPlugin();
-
 const nextConfig = {
   webpack: (config: any) => {
     config.cache = false;
     return config;
   },
   images: {
-    unoptimized: true,
+    domains: [
+      'yxlouqtuxvvkgwtkdxav.supabase.co',
+      'via.placeholder.com'
+    ],
   },
 };
 
-export default withNextIntl(nextConfig);
+export default nextConfig;

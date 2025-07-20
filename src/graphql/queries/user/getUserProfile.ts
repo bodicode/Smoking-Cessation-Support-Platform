@@ -1,25 +1,35 @@
 import { gql } from "@apollo/client";
 
-export const GET_USER_PROFILE = gql`
-  query FindOneUser($id: String!) {
-    findOneUser(id: $id) {
+export const FIND_ONE_USER = gql`
+  query FindOneUser {
+    findOneUser {
       id
-      user_name
-      name
       avatar_url
+      user_name
+      created_at
+      name
       role
       status
-      created_at
-      updated_at
-      member_profile {
-        cigarettes_per_day
-        sessions_per_day
-        price_per_pack
-        recorded_at
-      }
       coach_profile {
+        id
         experience_years
-        bio
+        user_id
+      }
+      member_profile {
+        id
+        user_id
+        sessions_per_day
+        recorded_at
+        allergies
+        brand_preference
+        cigarettes_per_day
+        daily_routine
+        health_conditions
+        medications
+        nicotine_level
+        preferred_support
+        previous_attempts
+        price_per_pack
       }
     }
   }

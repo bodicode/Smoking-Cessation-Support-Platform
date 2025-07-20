@@ -1,42 +1,26 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Phone, Globe, ChevronDown } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useRouter, usePathname } from "@/i18n/navigation";
-import { useParams } from "next/navigation";
+import { Phone, ChevronDown } from "lucide-react";
 import Link from "next/link";
-import {
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-} from "@headlessui/react";
 import { useAuth } from "@/hooks/useAuth";
 import Logo from "../common/Logo";
 import Notification from "./Notification";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { clearUser } from "@/store/userSlice";
 
 const Header = () => {
-  const t = useTranslations("header");
   const [isPhoneHover, setPhoneIsHover] = useState(false);
   const [isGlobeHover, setIsGlobeHover] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showHeader, setShowHeader] = useState(true);
 
   const { user, logout } = useAuth();
-
-  const locales = [
-    { code: "en", label: t("english") },
-    { code: "vi", label: t("vietnamese") },
-  ];
-
   const router = useRouter();
-  const pathname = usePathname();
-  const params = useParams();
-  const locale = (params.locale as string) || "en";
-
-  const [showHeader, setShowHeader] = useState(true);
   const lastScrollY = useRef(0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,6 +36,24 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const syncUser = () => {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        dispatch(clearUser());
+      }
+    };
+    // Kiểm tra khi mount
+    syncUser();
+    // Lắng nghe khi back/forward hoặc chuyển tab
+    window.addEventListener("popstate", syncUser);
+    document.addEventListener("visibilitychange", syncUser);
+    return () => {
+      window.removeEventListener("popstate", syncUser);
+      document.removeEventListener("visibilitychange", syncUser);
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     const handleClickOutside = () => setShowUserDropdown(false);
@@ -100,42 +102,6 @@ const Header = () => {
             0123456789
           </a>
         </motion.div>
-        <div className="relative">
-          <motion.div
-            className="flex items-center gap-1 sm:gap-2 px-1 sm:px-3 py-1 text-white"
-            onHoverStart={() => setIsGlobeHover(true)}
-            onHoverEnd={() => setIsGlobeHover(false)}
-          >
-            <motion.span
-              animate={isGlobeHover ? { rotateZ: 360 } : { rotateZ: 0 }}
-              transition={{ duration: 0.7, ease: "linear" }}
-              style={{ display: "inline-block" }}
-            >
-              <Globe className="text-[#B5D8EB]" size={16} />
-            </motion.span>
-            <Listbox
-              value={locale}
-              onChange={(value) => router.replace(pathname, { locale: value })}
-            >
-              <div className="relative">
-                <ListboxButton className="bg-[#60C3A4] py-1 px-2 sm:py-2 rounded text-white cursor-pointer text-xs sm:text-sm">
-                  {locales.find((l) => l.code === locale)?.label}
-                </ListboxButton>
-                <ListboxOptions className="absolute mt-2 bg-white rounded shadow-lg z-10 min-w-[120px]">
-                  {locales.map((l) => (
-                    <ListboxOption
-                      key={l.code}
-                      value={l.code}
-                      className="px-3 py-2 text-black hover:bg-[#e0f2f1] cursor-pointer text-xs sm:text-sm text-nowrap"
-                    >
-                      {l.label}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </div>
-            </Listbox>
-          </motion.div>
-        </div>
 
         <div>
           <Notification />
@@ -152,13 +118,13 @@ const Header = () => {
             className="inline-block"
           >
             <Link
-              href={`/${locale}/login`}
+              href={`/login`}
               className="
                 bg-[#B5D8EB] hover:bg-[#95cce9] text-white font-bold px-3 py-1 sm:px-4 sm:py-2 
                 rounded-full shadow-2xl cursor-pointer text-xs sm:text-sm whitespace-nowrap 
                 transition-all duration-200"
             >
-              {t("login")}
+              Đăng nhập
             </Link>
           </motion.div>
         ) : (
@@ -177,15 +143,15 @@ const Header = () => {
             {showUserDropdown && (
               <div className="absolute right-0 mt-2 w-44 sm:w-48 bg-white rounded-lg shadow-lg z-20 py-2 transition-all">
                 <Link
-                  href={`/${locale}/profile`}
+                  href={`/profile`}
                   className="block px-4 py-2 text-xs sm:text-sm text-gray-900 hover:bg-[#e0f2f1] hover:text-[#03256C]"
                   onClick={() => setShowUserDropdown(false)}
                 >
-                  {t("profile")}
+                  Hồ sơ
                 </Link>
                 {user.role === "COACH" &&
                   <Link
-                    href={`/${locale}/coach`}
+                    href={`/coach`}
                     className="block px-4 py-2 text-xs sm:text-sm text-gray-900 hover:bg-[#e0f2f1] hover:text-[#03256C]"
                     onClick={() => setShowUserDropdown(false)}
                   >
@@ -197,10 +163,10 @@ const Header = () => {
                   onClick={() => {
                     logout();
                     setShowUserDropdown(false);
-                    router.push(`/login`);
+                    router.push("/login");
                   }}
                 >
-                  {t("logout") || "Đăng xuất"}
+                  Đăng xuất
                 </button>
               </div>
             )}

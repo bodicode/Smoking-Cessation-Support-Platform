@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-export const loginSchema = (t: (key: string) => string) =>
+export const loginSchema = () =>
     z.object({
-        email: z.string().email({ message: t("schema.email") }),
-        password: z.string().min(6, { message: t("schema.password") }),
+        email: z.string().email({ message: "Email không hợp lệ" }),
+        password: z.string().min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" }),
     });
 
 export type LoginForm = z.infer<ReturnType<typeof loginSchema>>;

@@ -5,13 +5,13 @@ export async function signupHandler({
     data,
     signup,
     router,
-    tError,
+    error,
     parseSignupError,
 }: {
     data: SignupForm,
     signup: (options: { variables: { signupInput: SignupForm } }) => Promise<any>,
     router: AppRouterInstance,
-    tError: (msg: string) => string,
+    error: (msg: string) => string,
     parseSignupError: (msg: string) => string,
 }) {
     try {
@@ -42,7 +42,7 @@ export async function signupHandler({
         } else if (gqlErr?.message) {
             rawMessage = gqlErr.message;
         }
-        throw new Error(tError(parseSignupError(rawMessage)));
+        throw new Error(error(parseSignupError(rawMessage)));
     }
 }
 

@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { Dispatch, SetStateAction, FormEvent } from "react";
 
 type AddPostFormProps = {
-    t: (key: string) => string;
     newCaption: string;
     setNewCaption: Dispatch<SetStateAction<string>>;
     onCancel: () => void;
@@ -10,7 +9,6 @@ type AddPostFormProps = {
 };
 
 export default function AddPostForm({
-    t,
     newCaption,
     setNewCaption,
     onSubmit,
@@ -34,15 +32,15 @@ export default function AddPostForm({
                 transition={{ type: "spring", stiffness: 320, damping: 22 }}
             >
                 <h2 className="font-bold text-lg sm:text-xl mb-2 text-center">
-                    {t("shareTitle")}
+                    Chia sẻ
                 </h2>
                 <div>
-                    <label className="font-semibold">{t("captionLabel")}</label>
+                    <label className="font-semibold">Nội dung</label>
                     <textarea
                         className="w-full border px-3 py-2 rounded mt-1"
                         value={newCaption}
                         rows={2}
-                        placeholder={t("captionPlaceholder")}
+                        placeholder="Nhập nội dung..."
                         onChange={(e) => setNewCaption(e.target.value)}
                         required
                     />
@@ -53,13 +51,13 @@ export default function AddPostForm({
                         className="cursor-pointer px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
                         onClick={onCancel}
                     >
-                        {t("cancel")}
+                        Hủy
                     </button>
                     <button
                         type="submit"
                         className="cursor-pointer px-4 py-2 rounded bg-gradient-to-r from-blue-500 to-green-500 text-white font-bold hover:to-green-600"
                     >
-                        {t("submit")}
+                        Đăng
                     </button>
                 </div>
             </motion.form>

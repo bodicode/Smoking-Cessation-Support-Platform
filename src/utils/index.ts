@@ -52,15 +52,15 @@ export function translatePlanStatus(status: string) {
     case "PLANNING":
       return "Lên kế hoạch";
     case "ACTIVE":
-      return "Đang thực hiện";
-    case "PAUSED":
-      return "Tạm dừng";
+      return "Bắt đầu";
+    // case "PAUSED":
+    //   return "Tạm dừng";
     case "COMPLETED":
       return "Hoàn thành";
-    case "ABANDONED":
-      return "Bỏ dở";
+    // case "ABANDONED":
+    //   return "Bỏ dở";
     case "CANCELLED":
-      return "Đã huỷ";
+      return "Hủy";
     default:
       return status;
   }
@@ -86,7 +86,7 @@ export function getAvailablePlanStatusTransitions(current: string) {
     case "PLANNING":
       return ["ACTIVE", "CANCELLED", "ABANDONED"];
     case "ACTIVE":
-      return ["PAUSED", "COMPLETED", "ABANDONED"];
+      return ["PAUSED", "COMPLETED", "CANCELLED", "ABANDONED"];
     case "PAUSED":
       return ["ACTIVE", "CANCELLED", "ABANDONED"];
     default:

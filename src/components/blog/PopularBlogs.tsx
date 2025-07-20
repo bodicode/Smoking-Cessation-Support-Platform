@@ -10,8 +10,6 @@ import Loading from "../common/Loading";
 const BLOGS_PER_FETCH = 6;
 
 const PopularBlogs = () => {
-    const params = useParams();
-    const locale = (params?.locale as string) || 'vi';
 
     const { data, loading, error } = useQuery(GET_BLOGS, {
         variables: {
@@ -37,7 +35,7 @@ const PopularBlogs = () => {
                 <h3 className="font-bold text-2xl mb-10">Bài viết nổi bật</h3>
                 <div className="flex flex-col gap-6">
                     {blogs.map((item: any) => (
-                        <Link href={`/${locale}/blog/${item.slug}`} key={item.id} className="flex gap-3 items-center">
+                        <Link href={`/blog/${item.slug}`} key={item.id} className="flex gap-3 items-center">
                             <div className="w-14 h-14 relative rounded-lg overflow-hidden flex-shrink-0">
                                 <Image src={item.cover_image || '/images/blog2.jpg'} alt={item.title} fill className="object-cover" />
                             </div>
