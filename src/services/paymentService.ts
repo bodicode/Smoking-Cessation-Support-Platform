@@ -175,13 +175,11 @@ export async function getUserSubscription(): Promise<UserSubscription | null> {
     throw error;
   }
 }
+export async function getCurrentUserSubscription(): Promise<UserSubscription | null> {
+  const userId = getUserIdFromToken();
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
 
-// Get current user subscription
-// export async function getCurrentUserSubscription(): Promise<UserSubscription | null> {
-//   const userId = getUserIdFromToken();
-//   if (!userId) {
-//     throw new Error("User not authenticated");
-//   }
-
-//   return getUserSubscription(userId);
-// }
+  return getUserSubscription();
+}
