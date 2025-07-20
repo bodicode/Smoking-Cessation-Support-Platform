@@ -5,13 +5,16 @@ import Loading from "@/components/common/Loading";
 import PaymentQRCode from "@/components/common/PaymentQRCode";
 import PaymentStatusBadge from "@/components/common/PaymentStatusBadge";
 import { usePayment, usePaymentStatus } from "@/hooks/usePayment";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function PaymentPage() {
   const { paymentId } = useParams();
   const router = useRouter();
   
   const { payment, loading, error, refetch } = usePayment(paymentId as string);
-  const { status, polling } = usePaymentStatus(paymentId as string, payment?.status);
+  const { status, checkStatus, checking } = usePaymentStatus(paymentId as string, payment?.status);
+  const [redirecting, setRedirecting] = useState(false);
 
   if (loading) {
     return (
@@ -80,22 +83,45 @@ export default function PaymentPage() {
         <h1 className="text-2xl font-bold text-center mb-4 text-sky-700">Thanh toán gói thành viên</h1>
         <div className="mb-2 text-lg text-gray-700">Gói: <span className="font-bold">{payment.packageName}</span></div>
         <div className="mb-2 text-lg text-gray-700">Số tiền: <span className="font-bold text-green-600">{payment.price.toLocaleString('vi-VN')} đ</span></div>
-        <div className="mb-6 text-gray-500 text-sm">Nội dung chuyển khoản: <span className="font-mono bg-gray-100 px-2 py-1 rounded">{payment.content}</span></div>
         <PaymentQRCode amount={payment.price} description={payment.content} />
         <div className="mb-4 mt-6">
           <PaymentStatusBadge status={status} />
-          {polling && (
-            <p className="text-xs text-gray-500 mt-2 text-center">
-              Đang kiểm tra trạng thái thanh toán...
-            </p>
-          )}
         </div>
-        <button
-          className="mt-2 px-6 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg font-bold transition"
-          onClick={() => router.push("/membership")}
+        {status === "SUCCESS" || redirecting ? (
+          <button
+            className="mt-2 px-6 py-2 bg-gray-400 text-white rounded-lg font-bold transition flex items-center gap-2 cursor-not-allowed"
+            disabled
+          >
+            Đang trở về trang chủ
+          </button>
+        ) : (
+          <button
+            className="mt-2 px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold transition flex items-center gap-2"
+            onClick={async () => {
+              const result = await checkStatus();
+              if (result === "SUCCESS") {
+                sessionStorage.removeItem("pendingMembershipId");
+                sessionStorage.removeItem("pendingPaymentId");
+                setRedirecting(true);
+                setTimeout(() => {
+                  router.push("/");
+                }, 2000);
+              }
+            }}
+            disabled={checking}
+          >
+            {checking ? "Đang kiểm tra..." : "Kiểm tra trạng thái thanh toán"}
+          </button>
+        )}
+        <Link
+          href="/membership"
+          className="mt-4 flex items-center text-sky-700 hover:text-sky-900 font-bold transition"
         >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 mr-2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
           Quay lại trang gói thành viên
-        </button>
+        </Link>
       </motion.div>
     </div>
   );

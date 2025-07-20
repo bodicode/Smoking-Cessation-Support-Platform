@@ -45,33 +45,30 @@ export function usePayment(paymentId: string): UsePaymentReturn {
   };
 }
 
-// Hook to poll payment status
+// Hook to check payment status manually
 export function usePaymentStatus(paymentId: string, initialStatus: PaymentStatus = "PENDING") {
   const [status, setStatus] = useState<PaymentStatus>(initialStatus);
-  const [polling, setPolling] = useState(false);
+  const [checking, setChecking] = useState(false);
 
+  const checkStatus = async () => {
+    if (!paymentId) return undefined;
+    setChecking(true);
+    try {
+      const data = await getPaymentById(paymentId);
+      setStatus(data.status);
+      return data.status;
+    } catch (err) {
+      console.error('Error checking payment status:', err);
+      return undefined;
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  // Update status if initialStatus changes (e.g., after payment loads)
   useEffect(() => {
-    if (!paymentId || status !== "PENDING") return;
+    setStatus(initialStatus);
+  }, [initialStatus]);
 
-    setPolling(true);
-    const interval = setInterval(async () => {
-      try {
-        const data = await getPaymentById(paymentId);
-        setStatus(data.status);
-        if (data.status !== "PENDING") {
-          clearInterval(interval);
-          setPolling(false);
-        }
-      } catch (err) {
-        console.error('Error polling payment status:', err);
-      }
-    }, 5000);
-
-    return () => {
-      clearInterval(interval);
-      setPolling(false);
-    };
-  }, [paymentId, status]);
-
-  return { status, polling };
+  return { status, checkStatus, checking };
 } 
