@@ -6,14 +6,18 @@ import {
 } from "@/services/processRecordService";
 import { useEffect, useState } from "react";
 
-export function useProgressRecords(planId: string) {
+export function useProgressRecords(planId?: string) {
   const [records, setRecords] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(null);
   const [reload, setReload] = useState(0);
 
   useEffect(() => {
-    if (!planId) return;
+    if (!planId) {
+      setRecords([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     getProgressRecords({ planId })
       .then(setRecords)

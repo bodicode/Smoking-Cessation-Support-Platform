@@ -8,13 +8,15 @@ import SuccessStories from "@/components/home/SuccessStories";
 import SupportTips from "@/components/home/SupportTips";
 import { useCustomStages } from "@/hooks/useCustomStage";
 import { useProgressRecords } from "@/hooks/useProcessRecord";
+import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
 
 export default function Home() {
+  const { user } = useAuth();
   const {
     plans,
     loading: loadingPlans,
-  } = useCustomStages();
+  } = user?.accessToken ? useCustomStages() : { plans: [], loading: false };
 
   const plan =
     plans.find((p) => p.status === "ACTIVE") ||
