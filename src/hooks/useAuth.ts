@@ -10,11 +10,13 @@ export function useAuth() {
     const login = useCallback((userData: any) => {
         dispatch(setUser(userData));
         localStorage.setItem("access_token", userData.accessToken);
+        localStorage.setItem("user", JSON.stringify(userData));
     }, [dispatch]);
 
     const logout = useCallback(() => {
         dispatch(clearUser());
         localStorage.removeItem("access_token");
+        localStorage.removeItem("user");
     }, [dispatch]);
 
     return { user, login, logout };

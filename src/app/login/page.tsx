@@ -143,9 +143,12 @@ export default function LoginPage() {
                     </div>
 
                     <div className="text-sm text-center mt-6">
-                        <Link href="/" className="text-blue-600 hover:underline">
+                        <button
+                            className="text-blue-600 hover:underline cursor-pointer"
+                            onClick={() => window.location.href = "/"}
+                        >
                             Quay lại trang chủ
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </motion.div>

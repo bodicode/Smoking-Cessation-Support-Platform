@@ -8,6 +8,8 @@ import Logo from "../common/Logo";
 import Notification from "./Notification";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { clearUser } from "@/store/userSlice";
 
 const Header = () => {
   const [isPhoneHover, setPhoneIsHover] = useState(false);
@@ -18,6 +20,7 @@ const Header = () => {
   const { user, logout } = useAuth();
   const router = useRouter();
   const lastScrollY = useRef(0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,6 +36,24 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const syncUser = () => {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        dispatch(clearUser());
+      }
+    };
+    // Kiểm tra khi mount
+    syncUser();
+    // Lắng nghe khi back/forward hoặc chuyển tab
+    window.addEventListener("popstate", syncUser);
+    document.addEventListener("visibilitychange", syncUser);
+    return () => {
+      window.removeEventListener("popstate", syncUser);
+      document.removeEventListener("visibilitychange", syncUser);
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     const handleClickOutside = () => setShowUserDropdown(false);

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { CalendarCheck2 } from "lucide-react";
 
 function pad(num: number) {
     return num.toString().padStart(2, "0");
