@@ -19,35 +19,47 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+import { useQuery } from '@apollo/client';
+import { GET_DASHBOARD_METRICS, type DashboardStats, type RevenueByMonth } from '@/graphql/queries/payments';
 
 export default function AdminDashboard() {
+    const { data, loading, error } = useQuery(GET_DASHBOARD_METRICS);
+    const stats: DashboardStats | undefined = data?.getDashboardMetrics?.stats;
+    const revenueByMonth: RevenueByMonth[] = data?.getDashboardMetrics?.revenueByMonth || [];
 
-    const metrics = [
-        { title: 'Tổng người dùng', value: '1,234', icon: Users, color: 'bg-blue-100 text-blue-600' },
-        { title: 'Doanh thu', value: '12,340,000₫', icon: PiggyBank, color: 'bg-green-100 text-green-600' },
-        { title: 'Tổng số mẫu kế hoạch', value: '42', icon: FileText, color: 'bg-pink-100 text-pink-600' },
-        { title: 'Tổng số coach', value: '12', icon: UserCheck, color: 'bg-yellow-100 text-yellow-700' },
-        { title: 'Đánh giá', value: '4.8/5', icon: Star, color: 'bg-purple-100 text-purple-600' },
-    ];
-
-    const recentActivities = [
-        { type: 'motivation', message: 'Motivational message sent to John Doe', time: '2 hours ago', icon: Send },
-        { type: 'interaction', message: 'Coach Anna replied to Mike', time: '3 hours ago', icon: MessageCircle },
-        { type: 'badge', message: 'Jane earned ', badge: '7 Days Smoke-Free', time: '5 hours ago', icon: Medal },
-        { type: 'badge', message: 'Sarah achieved ', badge: '30 Days Smoke-Free', time: '6 hours ago', icon: Medal },
-    ];
+    // Get last 6 months including current month
+    const now = new Date();
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const currentMonthIdx = now.getMonth();
+    const last6Months = [];
+    for (let i = 5; i >= 0; i--) {
+        let idx = (currentMonthIdx - i + 12) % 12;
+        last6Months.push(monthNames[idx]);
+    }
+    const filteredRevenue = last6Months.map(month => {
+        const found = revenueByMonth.find(r => r.month === month);
+        return found ? found.revenue : 0;
+    });
 
     const revenueData = {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        labels: last6Months,
         datasets: [
             {
                 label: 'Doanh thu theo tháng',
-                data: [2000000, 2500000, 3000000, 2200000, 2700000, 3400000],
+                data: filteredRevenue,
                 backgroundColor: '#60C3A4',
                 borderRadius: 8,
             },
         ],
     };
+
+    const metrics = [
+        { title: 'Tổng người dùng', value: stats ? stats.totalUsers.toLocaleString() : '...', icon: Users, color: 'bg-blue-100 text-blue-600' },
+        { title: 'Doanh thu', value: stats ? stats.totalRevenue.toLocaleString('vi-VN') + '₫' : '...', icon: PiggyBank, color: 'bg-green-100 text-green-600' },
+        { title: 'Tổng số mẫu kế hoạch', value: stats ? stats.totalCessationTemplates.toLocaleString() : '...', icon: FileText, color: 'bg-pink-100 text-pink-600' },
+        { title: 'Tổng số coach', value: stats ? stats.totalCoaches.toLocaleString() : '...', icon: UserCheck, color: 'bg-yellow-100 text-yellow-700' },
+        { title: 'Đánh giá', value: stats ? stats.averageTemplateRating.toFixed(2) + '/5' : '...', icon: Star, color: 'bg-purple-100 text-purple-600' },
+    ];
 
     const revenueOptions = {
         responsive: true,
@@ -65,6 +77,9 @@ export default function AdminDashboard() {
         { label: 'Gửi tin nhắn khích lệ', icon: Send, color: 'bg-[#B5D8EB] hover:bg-[#95cce9]', onClick: () => {} },
         { label: 'Xem hoạt động cộng đồng', icon: Users, color: 'bg-[#03256C] hover:bg-[#021a4d]', onClick: () => {} },
     ];
+
+    if (loading) return <div className="p-8 text-center">Đang tải dữ liệu dashboard...</div>;
+    if (error) return <div className="p-8 text-center text-red-500">Lỗi tải dữ liệu dashboard</div>;
 
     return (
         <div className="space-y-8">

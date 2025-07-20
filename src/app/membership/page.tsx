@@ -36,15 +36,15 @@ export default function MembershipPage() {
 
     // On mount, check for pending payment in sessionStorage
     useEffect(() => {
-      const storedMembershipId = sessionStorage.getItem("pendingMembershipId");
-      const storedPaymentId = sessionStorage.getItem("pendingPaymentId");
-      setPendingMembershipId(storedMembershipId);
-      setPendingPaymentId(storedPaymentId);
-      if (storedMembershipId && storedPaymentId) {
-        setFilteredPackages(membershipPackages.filter(pkg => pkg.id === storedMembershipId));
-      } else {
-        setFilteredPackages(membershipPackages);
-      }
+        const storedMembershipId = sessionStorage.getItem("pendingMembershipId");
+        const storedPaymentId = sessionStorage.getItem("pendingPaymentId");
+        setPendingMembershipId(storedMembershipId);
+        setPendingPaymentId(storedPaymentId);
+        if (storedMembershipId && storedPaymentId) {
+            setFilteredPackages(membershipPackages.filter(pkg => pkg.id === storedMembershipId));
+        } else {
+            setFilteredPackages(membershipPackages);
+        }
     }, [membershipPackages]);
 
     // Placeholder for createPayment mutation (replace with actual GraphQL mutation)
@@ -77,7 +77,7 @@ export default function MembershipPage() {
             <div className="max-w-5xl mx-auto py-10 px-4">
                 <div className="text-center">
                     <p className="text-red-500 mb-4">Error loading membership packages: {error}</p>
-                    <button 
+                    <button
                         onClick={refetch}
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                     >
@@ -133,43 +133,45 @@ export default function MembershipPage() {
                         <div className="text-3xl font-extrabold text-green-600 mb-2">
                             {plan.price.toLocaleString('vi-VN')} <span className="text-base font-normal">đ</span>
                         </div>
-                        <p className="text-gray-600 mb-4 text-center">{plan.description}</p>
+                        <p className="text-gray-600 mb-4 text-center">Đăng ký linh hoạt, không lo cam kết.</p>
                         <div className="mb-6 space-y-2 w-full min-h-32">
-                            <div className="flex items-center gap-2 text-sm text-gray-700">
-                                <span className="inline-block w-2 h-2 bg-green-400 rounded-full" /> 
-                                Thời hạn: {plan.duration_days} ngày
-                            </div>
-                            <div className="flex items-center gap-2 text-sm text-gray-700">
-                                <span className="inline-block w-2 h-2 bg-green-400 rounded-full" /> 
-                                Hỗ trợ 24/7
-                            </div>
-                            <div className="flex items-center gap-2 text-sm text-gray-700">
-                                <span className="inline-block w-2 h-2 bg-green-400 rounded-full" /> 
-                                Toàn bộ tính năng Premium
-                            </div>
+                            {Array.isArray(plan.description)
+                                ? plan.description.map((desc: string, i: number) => (
+                                    <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
+                                        <span className="inline-block w-2 h-2 bg-green-400 rounded-full" />
+                                        {desc}
+                                    </div>
+                                ))
+                                : (
+                                    <div className="flex items-center gap-2 text-sm text-gray-700">
+                                        <span className="inline-block w-2 h-2 bg-green-400 rounded-full" />
+                                        {plan.description}
+                                    </div>
+                                )
+                            }
                         </div>
                         {pendingMembershipId === plan.id && pendingPaymentId ? (
-                          <motion.button
-                            type="button"
-                            className="cursor-pointer w-full bg-gradient-to-r from-sky-600 to-green-400 hover:to-green-600 text-white font-bold py-2 rounded-lg text-lg transition-all"
-                            whileHover={{ scale: 1.04 }}
-                            whileTap={{ scale: 0.96 }}
-                            onClick={() => router.push(`/payment/${pendingPaymentId}`)}
-                            disabled={loading}
-                          >
-                            Tiếp tục thanh toán
-                          </motion.button>
+                            <motion.button
+                                type="button"
+                                className="cursor-pointer w-full bg-gradient-to-r from-sky-600 to-green-400 hover:to-green-600 text-white font-bold py-2 rounded-lg text-lg transition-all"
+                                whileHover={{ scale: 1.04 }}
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => router.push(`/payment/${pendingPaymentId}`)}
+                                disabled={loading}
+                            >
+                                Tiếp tục thanh toán
+                            </motion.button>
                         ) : (
-                          <motion.button
-                            type="button"
-                            className="cursor-pointer w-full bg-gradient-to-r from-sky-600 to-green-400 hover:to-green-600 text-white font-bold py-2 rounded-lg text-lg transition-all"
-                            whileHover={{ scale: 1.04 }}
-                            whileTap={{ scale: 0.96 }}
-                            onClick={() => initiatePayment(plan.id)}
-                            disabled={loading}
-                          >
-                            {loading ? "Đang xử lý..." : "Mua ngay"}
-                          </motion.button>
+                            <motion.button
+                                type="button"
+                                className="cursor-pointer w-full bg-gradient-to-r from-sky-600 to-green-400 hover:to-green-600 text-white font-bold py-2 rounded-lg text-lg transition-all"
+                                whileHover={{ scale: 1.04 }}
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => initiatePayment(plan.id)}
+                                disabled={loading}
+                            >
+                                {loading ? "Đang xử lý..." : "Mua ngay"}
+                            </motion.button>
                         )}
                     </motion.div>
                 ))}

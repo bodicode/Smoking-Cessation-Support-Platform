@@ -45,10 +45,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             href={`${item.href}`}
                             key={item.href}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl text-nowrap transition-all text-base
-                                ${pathname.startsWith(item.href)
+                                ${(item.href === '/admin'
+                                    ? pathname === '/admin'
+                                    : pathname.startsWith(item.href)
+                                )
                                     ? 'bg-[#60C3A4] text-white shadow'
                                     : 'text-gray-600 hover:bg-[#e0f2f1] hover:text-[#03256C]'
-                                }`}
+                                }
+                            }`}
                         >
                             <item.icon className="w-4 h-4" />
                             {item.label}
