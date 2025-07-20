@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getCurrentUserSubscription } from "@/services/paymentService";
+import { getUserSubscription } from "@/services/paymentService";
 import { UserSubscription } from "@/types/api/payment";
 
 interface UseUserSubscriptionReturn {
@@ -19,7 +19,7 @@ export function useUserSubscription(): UseUserSubscriptionReturn {
     setLoading(true);
     setError(null);
     try {
-      const data = await getCurrentUserSubscription();
+      const data = await getUserSubscription();
       setSubscription(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch subscription");
