@@ -39,7 +39,7 @@ export default function SignupPage() {
                 error: (msg: string) => msg,
                 parseSignupError,
             });
-            toast.success(msg || "Đăng ký thành công");
+            toast.success("Đăng ký thành công");
         } catch (err: any) {
             toast.error(err?.message || "Đăng ký thất bại");
         }
@@ -234,7 +234,7 @@ export default function SignupPage() {
                             className="w-full bg-[#60C3A4] hover:bg-[#2eac84] text-white font-bold py-2 rounded cursor-pointer transition duration-150"
                             disabled={loading}
                         >
-                            {loading ? <Loading /> : "Đăng ký"}
+                            {loading ? <Loading color="#FFF" /> : "Đăng ký"}
                         </motion.button>
                     </motion.form>
 

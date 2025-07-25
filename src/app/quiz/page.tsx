@@ -9,11 +9,12 @@ import QuizLayout from '@/components/quiz/QuizLayout';
 import QuizSelection from '@/components/quiz/QuizSelection';
 import QuizProgress from '@/components/quiz/QuizProgress';
 import QuizNavigation from '@/components/quiz/QuizNavigation';
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getQuizAttemptOnCurrentUser } from '@/services/quizService';
 
 export default function QuizPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const topRef = useRef<HTMLDivElement>(null);
   const {
     quizzes,
@@ -36,6 +37,8 @@ export default function QuizPage() {
 
   useEffect(() => {
     async function checkQuizAttempt() {
+      // Nếu có retry=1 thì cho phép làm lại
+      if (searchParams.get("retry") === "1") return;
       try {
         const attempt = await getQuizAttemptOnCurrentUser();
         if (attempt?.length > 0) {
@@ -46,7 +49,7 @@ export default function QuizPage() {
       }
     }
     checkQuizAttempt();
-  }, [router]);
+  }, [router, searchParams]);
 
   const nextQuestion = () => {
     nextQuestionBase();

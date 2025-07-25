@@ -6,9 +6,10 @@ import Image from "next/image";
 import { MyBadge } from "@/types/api/badge";
 import { getMyAwardedBadges } from "@/services/badgesService";
 import MembershipInfo from "@/components/profile/MembershipInfo";
-import { getUserProfileNew } from "@/services/userService";
+import { getUserProfileNew, updateUserProfile } from "@/services/userService";
 import { useAuth } from "@/hooks/useAuth";
 import Loading from "@/components/common/Loading";
+import toast from "react-hot-toast";
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
@@ -65,11 +66,22 @@ export default function ProfilePage() {
         }
     }, [userProfile]);
 
-    const handleSaveProfile = () => {
-        // TODO: Implement API call to update profile
+    const handleSaveProfile = async () => {
         if (userProfile) {
-            setModal(null);
-            fetchUserProfile(); // Refetch profile data
+            try {
+                await updateUserProfile({
+                    id: userProfile.id,
+                    avatar_url: avatarInput || userProfile.avatar_url || "",
+                    name: nameInput,
+                    user_name: userProfile.user_name,
+                    // member_profile_id: authUser?.id,
+                    // coach_profile_id: userProfile.coach_profile?.[0]?.id,
+                });
+                setModal(null);
+                fetchUserProfile();
+            } catch (err: any) {
+                toast.error("Cập nhật hồ sơ thất bại");
+            }
         }
     };
 
@@ -214,56 +226,6 @@ export default function ProfilePage() {
                                     <svg className="w-4 h-4 text-yellow-400" fill="none" viewBox="0 0 24 24"><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" strokeWidth={2} /></svg>
                                     Giá/gói
                                 </p>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className={cardClass}>
-                                <div className="font-semibold text-gray-700 mb-1 flex items-center gap-2">
-                                    Thương hiệu thường dùng
-                                </div>
-                                <div className="text-gray-800">{mp?.brand_preference ?? 'Không có'}</div>
-                            </div>
-                            <div className={cardClass}>
-                                <div className="font-semibold text-gray-700 mb-1 flex items-center gap-2">
-                                    Lịch làm việc
-                                </div>
-                                <div className="text-gray-800">
-                                    Thức dậy: {mp?.daily_routine?.wake_time ?? '-'}<br />
-                                    Công việc: {mp?.daily_routine?.work_type ?? '-'}<br />
-                                    Ngủ: {mp?.daily_routine?.sleep_time ?? '-'}
-                                </div>
-                            </div>
-                            <div className={cardClass}>
-                                <div className="font-semibold text-gray-700 mb-1 flex items-center gap-2">
-                                    Tình trạng sức khỏe
-                                </div>
-                                <div className="text-gray-800">
-                                    {(mp?.health_conditions?.length > 0) ? mp.health_conditions.join(', ') : 'Không có'}
-                                </div>
-                            </div>
-                            <div className={cardClass}>
-                                <div className="font-semibold text-gray-700 mb-1 flex items-center gap-2">
-                                    Dị ứng
-                                </div>
-                                <div className="text-gray-800">
-                                    {(mp?.allergies?.length > 0) ? mp.allergies.join(', ') : 'Không có'}
-                                </div>
-                            </div>
-                            <div className={cardClass}>
-                                <div className="font-semibold text-gray-700 mb-1 flex items-center gap-2">
-                                    Thuốc
-                                </div>
-                                <div className="text-gray-800">
-                                    {(mp?.medications?.length > 0) ? mp.medications.join(', ') : 'Không có'}
-                                </div>
-                            </div>
-                            <div className={cardClass}>
-                                <div className="font-semibold text-gray-700 mb-1 flex items-center gap-2">
-                                    Hỗ trợ
-                                </div>
-                                <div className="text-gray-800">
-                                    {(mp?.preferred_support?.length > 0) ? mp.preferred_support.join(', ') : 'Không có'}
-                                </div>
                             </div>
                         </div>
                     </div>

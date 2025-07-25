@@ -52,14 +52,18 @@ export default function usePlanTemplateForm() {
             if (editId) {
                 await updatePlanTemplate({ id: editId, ...input } as PlanTemplateUpdateInput);
                 setSuccessMsg("Cập nhật thành công!");
+                setTimeout(() => {
+                    router.push('/coach/templates');
+                    router.refresh();
+                }, 1000);
             } else {
-                await createPlanTemplate(input);
+                const created = await createPlanTemplate(input);
                 setSuccessMsg("Tạo mẫu thành công!");
+                setTimeout(() => {
+                    router.push(`/coach/templates/new?edit=${created.id}`);
+                    router.refresh();
+                }, 1000);
             }
-            setTimeout(() => {
-                router.push('/coach/templates');
-                router.refresh();
-            }, 1000);
         } catch (err: any) {
             setErrorMsg(err?.message || "Có lỗi xảy ra");
         } finally {

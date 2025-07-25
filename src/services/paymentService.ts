@@ -81,7 +81,6 @@ export async function createPayment(
 
     return payment;
   } catch (error) {
-    console.error("Error creating payment:", error);
     throw error;
   }
 }

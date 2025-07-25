@@ -8,6 +8,7 @@ export const UPDATE_PLAN_STAGE_TEMPLATE = gql`
       title
       description
       recommended_actions
+      max_cigarettes_per_day
       duration_days
     }
   }

@@ -20,6 +20,7 @@ export const GET_PLAN_STAGE_TEMPLATES_BY_TEMPLATE = gql`
         duration_days
         recommended_actions
         created_at
+        max_cigarettes_per_day
       }
       total
       page

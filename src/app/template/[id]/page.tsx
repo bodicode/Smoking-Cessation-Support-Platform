@@ -285,12 +285,16 @@ export default function PlanTemplateDetail() {
             <div className="text-sm text-gray-600 mt-1 pl-8">
               {stage.description}
             </div>
+            {typeof stage.max_cigarettes_per_day === 'number' && (
+              <div className="text-xs text-red-600 mt-1 pl-8">
+                Số điếu tối đa/ngày: <b>{stage.max_cigarettes_per_day}</b>
+              </div>
+            )}
             <div className="text-xs text-gray-500 mt-1 pl-8">
               <b>Thời lượng:</b> {stage.duration_days} ngày
               {stage.recommended_actions && (
                 <>
-                  {" "}
-                  – <b>Khuyến nghị:</b> {stage.recommended_actions}
+                  {" "}– <b>Khuyến nghị:</b> {stage.recommended_actions}
                 </>
               )}
             </div>

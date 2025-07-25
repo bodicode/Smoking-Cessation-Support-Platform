@@ -23,6 +23,7 @@ export const GET_PLAN_TEMPLATE_BY_ID = gql`
       description
       recommended_actions
       duration_days
+      max_cigarettes_per_day
     }
   }
 }

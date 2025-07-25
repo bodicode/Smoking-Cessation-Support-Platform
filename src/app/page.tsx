@@ -10,6 +10,8 @@ import { useCustomStages } from "@/hooks/useCustomStage";
 import { useProgressRecords } from "@/hooks/useProcessRecord";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getPlanStageCharts } from "@/services/cessationPlanStageService";
 
 export default function Home() {
   const { user } = useAuth();
@@ -25,27 +27,42 @@ export default function Home() {
 
   const {
     records,
+    totalMoneySaved,
     loading: loadingRecords,
   } = useProgressRecords(plan?.id);
 
   const loading = loadingPlans || loadingRecords;
+
+  // Lấy dữ liệu stages cho chart trend
+  const [stages, setStages] = useState<any[]>([]);
+  useEffect(() => {
+    if (plan?.id) {
+      getPlanStageCharts(plan.id)
+        .then((data) => setStages(data?.stages || []))
+        .catch(() => setStages([]));
+    } else {
+      setStages([]);
+    }
+  }, [plan?.id]);
 
   return (
     <div className="min-screen">
       <Hero />
 
       {plan && plan.status !== "CANCELLED" ? (
-        <SmokeFreeStats
-          plan={{
-            id: plan.id,
-            created_at: plan.start_date,
-            target_date: plan.target_date,
-          }}
-          records={records}
-          loading={loading}
-          avgPricePerPack={32000}
-          cigarettesPerPack={20}
-        />
+        <>
+          <SmokeFreeStats
+            plan={{
+              id: plan.id,
+              created_at: plan.start_date,
+              target_date: plan.target_date,
+            }}
+            records={records}
+            loading={loading}
+            stages={stages}
+            totalMoneySaved={totalMoneySaved}
+          />
+        </>
       ) : (
         <div className="max-w-5xl mx-auto mt-10 bg-white/50 rounded-2xl flex flex-col items-center gap-4 p-10 border border-blue-100">
           <svg width="56" height="56" fill="none" viewBox="0 0 24 24" className="text-blue-400 mb-1">

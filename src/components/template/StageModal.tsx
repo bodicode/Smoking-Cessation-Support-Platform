@@ -62,6 +62,11 @@ export function StageModal({ open, onClose, stages, loading }: {
                                                 {stage.duration_days} ngày
                                             </span>
                                         </div>
+                                        {typeof stage.max_cigarettes_per_day === 'number' && (
+                                            <div className="text-xs text-red-600 mb-1">
+                                                Số điếu tối đa/ngày: <b>{stage.max_cigarettes_per_day}</b>
+                                            </div>
+                                        )}
                                         <div className="text-gray-700 text-sm mb-1">{stage.description}</div>
                                         <div className="text-xs text-gray-500 italic">
                                             <span className="font-semibold text-sky-600">Khuyến nghị:</span> {stage.recommended_actions}
