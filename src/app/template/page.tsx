@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { BsStarFill, BsStarHalf, BsStar } from "react-icons/bs";
@@ -70,6 +70,8 @@ export default function PlanTemplatesPage() {
   const [selectedCoach, setSelectedCoach] = useState<string>("");
   const [hasCompletedQuiz, setHasCompletedQuiz] = useState<boolean | null>(null);
   const router = useRouter();
+  const [showQuizWarning, setShowQuizWarning] = useState(false);
+  const pendingTemplateRef = useRef<any>(null);
 
   useEffect(() => {
     getAllCoaches().then(setCoaches).catch(() => setCoaches([]));
@@ -131,6 +133,15 @@ export default function PlanTemplatesPage() {
     fetchStages({ variables: { templateId } });
   };
 
+  const handleUseTemplateClick = (tpl: any) => {
+    if (hasCompletedQuiz === false) {
+      pendingTemplateRef.current = tpl;
+      setShowQuizWarning(true);
+    } else {
+      handleUseTemplate(tpl);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto py-12 px-4">
       <Breadcrumbs
@@ -142,7 +153,7 @@ export default function PlanTemplatesPage() {
       {hasCompletedQuiz === false && (
         <div className="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded flex items-center justify-between">
           <span className="text-yellow-800 font-semibold">
-            Bạn có thể hoàn thành bài kiểm tra sức khỏe trước khi sử dụng các mẫu kế hoạch và nhận được gợi ý từ AI cho kế hoạch bỏ thuốc.
+            Bạn nên hoàn thành bài kiểm tra sức khỏe trước khi sử dụng các mẫu kế hoạch để xem được số tiền tiết kiệm và nhận được gợi ý từ AI cho kế hoạch bỏ thuốc.
           </span>
           <button
             className="ml-4 px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-white font-bold rounded transition cursor-pointer text-nowrap"
@@ -219,7 +230,7 @@ export default function PlanTemplatesPage() {
                 initial="hidden"
                 animate="visible"
                 variants={cardVariants}
-                className="relative bg-gradient-to-br from-sky-50 to-green-50 shadow-xl rounded-2xl p-7 flex flex-col gap-2 border-t-4 border-transparent hover:border-sky-400 transition-all group"
+                className="relative bg-gradient-to-br from-sky-50 to-green-50 shadow-xl rounded-2xl p-7 flex flex-col gap-2 border-t-4 border-transparent hover:border-sky-400 transition-all group min-h-[420px]"
                 whileHover={{
                   y: -7,
                   scale: 1.035,
@@ -227,7 +238,18 @@ export default function PlanTemplatesPage() {
                 }}
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="font-bold text-xl text-sky-800 text-nowrap">
+                  <span
+                    className="font-bold text-xl text-sky-800 block break-words"
+                    style={{
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      minHeight: '3.2em', // hoặc 2.8em, 3em tùy font
+                      lineHeight: '1.2',
+                      wordBreak: 'break-word',
+                    }}
+                  >
                     {tpl.name}
                   </span>
                 </div>
@@ -286,7 +308,7 @@ export default function PlanTemplatesPage() {
                     className="flex-1 cursor-pointer text-nowrap bg-gradient-to-r from-green-500 to-sky-400 hover:from-green-600 hover:to-sky-600 text-white font-semibold py-2 px-4 rounded-xl shadow-md transition-all"
                     whileHover={{ scale: 1.055, y: -2 }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => handleUseTemplate(tpl)}
+                    onClick={() => handleUseTemplateClick(tpl)}
                   >
                     Sử dụng mẫu này
                   </motion.button>
@@ -324,6 +346,24 @@ export default function PlanTemplatesPage() {
         onClose={() => setOpenStageModal(false)}
         stages={stages}
         loading={stageLoading}
+      />
+
+      <ConfirmModal
+        open={showQuizWarning}
+        title="Bạn chưa làm bài kiểm tra sức khỏe"
+        message={
+          <div>
+            <p className="mb-2 text-red-600 font-semibold">Bạn chưa hoàn thành bài kiểm tra sức khỏe.</p>
+            <p className="mb-2">Nếu tiếp tục sử dụng mẫu kế hoạch, bạn sẽ <b>không chắc chắn chọn đúng mẫu phù hợp với tình trạng sức khỏe</b> và <b>không tính được số tiền tiết kiệm</b>.</p>
+            <p>Bạn vẫn muốn tiếp tục sử dụng mẫu này?</p>
+          </div>
+        }
+        onCancel={() => setShowQuizWarning(false)}
+        onConfirm={() => {
+          setShowQuizWarning(false);
+          if (pendingTemplateRef.current) handleUseTemplate(pendingTemplateRef.current);
+        }}
+        loading={false}
       />
 
       <ConfirmModal

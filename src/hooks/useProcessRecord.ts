@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 export function useProgressRecords(planId?: string) {
   const [records, setRecords] = useState<any[]>([]);
+  const [totalMoneySaved, setTotalMoneySaved] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(null);
   const [reload, setReload] = useState(0);
@@ -15,12 +16,16 @@ export function useProgressRecords(planId?: string) {
   useEffect(() => {
     if (!planId) {
       setRecords([]);
+      setTotalMoneySaved(0);
       setLoading(false);
       return;
     }
     setLoading(true);
     getProgressRecords({ planId })
-      .then(setRecords)
+      .then(({ records, totalMoneySaved }) => {
+        setRecords(records);
+        setTotalMoneySaved(totalMoneySaved);
+      })
       .catch(setError)
       .finally(() => setLoading(false));
   }, [planId, reload]);
@@ -42,6 +47,7 @@ export function useProgressRecords(planId?: string) {
 
   return {
     records,
+    totalMoneySaved,
     loading,
     error,
     handleCreate,

@@ -23,7 +23,10 @@ export async function getProgressRecords({ planId, page = 1, limit = 20 }: { pla
     });
 
     if (errors && errors.length > 0) throw new Error(errors[0].message || "Không thể lấy progress records");
-    return data.progressRecords?.data || [];
+    return {
+        records: data.progressRecords?.data || [],
+        totalMoneySaved: data.progressRecords?.total_money_saved ?? 0,
+    };
 }
 
 export async function createProgressRecord(input: any) {

@@ -1,6 +1,5 @@
 import { jwtDecode } from "jwt-decode";
 import client from "@/apollo/apolloClient";
-// import { GET_USER_PROFILE } from "@/graphql/queries/user/getUserProfile";
 import { UserProfile, GetUserProfileResponse, User } from "@/types/api/user";
 import { GET_ALL_USERS } from "@/graphql/queries/user/getAllUsers";
 import { REMOVE_USER_BY_ADMIN } from "@/graphql/mutations/user/removeUserMutation";
@@ -8,8 +7,9 @@ import { UPDATE_USER_BY_ADMIN } from "@/graphql/mutations/user/updateUserByAdmin
 import { CREATE_USER_BY_ADMIN } from "@/graphql/mutations/user/createUserByAdmin";
 import { GET_ALL_COACHES } from "@/graphql/queries/user/getAllCoaches";
 import { FIND_ONE_USER } from "@/graphql/queries/user/getUserProfile";
+import { UPDATE_USER_PROFILE } from "@/graphql/mutations/user/updateUserProfile";
+import { GET_STREAK_LEADERBOARD } from "@/graphql/queries/user/getStreakLeaderboard";
 
-// Get user ID from JWT token using existing pattern
 export function getUserIdFromToken(): string | null {
   try {
     const token = localStorage.getItem('access_token');
@@ -23,7 +23,6 @@ export function getUserIdFromToken(): string | null {
   }
 }
 
-// Get user profile by ID
 export async function getUserProfile(userId: string): Promise<UserProfile> {
   try {
     const { data, errors } = await client.query<GetUserProfileResponse>({
@@ -43,7 +42,6 @@ export async function getUserProfile(userId: string): Promise<UserProfile> {
   }
 }
 
-// Get current user profile
 export async function getCurrentUserProfile(): Promise<UserProfile | null> {
   const userId = getUserIdFromToken();
   if (!userId) {
@@ -140,5 +138,33 @@ export async function getUserProfileNew() {
     fetchPolicy: "no-cache"
   });
   if (errors && errors.length > 0) throw new Error(errors[0].message || "Lấy user profile thất bại");
+  return data.findOneUser;
+}
+
+export async function getStreakLeaderboard(limit = 10, offset = 0) {
+  const { data, errors } = await client.query({
+    query: GET_STREAK_LEADERBOARD,
+    variables: { limit, offset },
+    fetchPolicy: "no-cache"
+  });
+  if (errors && errors.length > 0) throw new Error(errors[0].message || "Không thể lấy leaderboard");
+  return data.streakLeaderboard;
+}
+
+export async function updateUserProfile(input: any) {
+  const { data, errors } = await client.mutate({
+    mutation: UPDATE_USER_PROFILE,
+    variables: { updateUserInput: input },
+  });
+  if (errors && errors.length > 0) throw new Error(errors[0].message || "Không thể cập nhật hồ sơ");
+  return data?.updateUserProfile;
+}
+
+export async function getCurrentCoachProfile() {
+  const { data, errors } = await client.query({
+    query: FIND_ONE_USER,
+    fetchPolicy: "no-cache"
+  });
+  if (errors && errors.length > 0) throw new Error(errors[0].message || "Lấy coach profile thất bại");
   return data.findOneUser;
 }

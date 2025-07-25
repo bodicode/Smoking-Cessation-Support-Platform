@@ -227,25 +227,27 @@ export default function HealthCriteriaPage() {
         <h1 className="text-2xl font-bold text-sky-700">
           Quản lý Tiêu chí Sức khỏe
         </h1>
-        <button
-          onClick={() => {
-            setEditingItem(null);
-            setShowForm((v) => !v);
-          }}
-          className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-semibold shadow transition"
-        >
-          {showForm ? (
-            <div className="flex items-center gap-2">
-              <X size={20} />
-              <p>Đóng form</p>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Plus size={20} />
-              <p>Thêm tiêu chí mới</p>
-            </div>
-          )}
-        </button>
+        {criteriaList.length === 0 && (
+          <button
+            onClick={() => {
+              setEditingItem(null);
+              setShowForm((v) => !v);
+            }}
+            className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-semibold shadow transition"
+          >
+            {showForm ? (
+              <div className="flex items-center gap-2">
+                <X size={20} />
+                <p>Đóng form</p>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Plus size={20} />
+                <p>Thêm tiêu chí mới</p>
+              </div>
+            )}
+          </button>
+        )}
       </div>
 
       {showForm && (

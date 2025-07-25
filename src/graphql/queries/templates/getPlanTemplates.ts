@@ -35,7 +35,12 @@ export const GET_PLAN_TEMPLATES = gql`
         }
         stages {
           id
+          stage_order
           title
+          description
+          recommended_actions
+          max_cigarettes_per_day
+          duration_days
         }
       }
       total
