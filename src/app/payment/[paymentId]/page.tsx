@@ -104,7 +104,7 @@ export default function PaymentPage() {
                 sessionStorage.removeItem("pendingPaymentId");
                 setRedirecting(true);
                 setTimeout(() => {
-                  router.push("/");
+                  window.location.href = "/";
                 }, 2000);
               }
             }}

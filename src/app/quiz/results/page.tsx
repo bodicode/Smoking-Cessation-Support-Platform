@@ -196,7 +196,7 @@ export default function QuizResultsPage() {
                 </Link>
 
                 <Link
-                  href="/quiz"
+                  href="/quiz?retry=1"
                   className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
                 >
                   <RefreshCw className="w-4 h-4" />

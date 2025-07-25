@@ -10,9 +10,11 @@ import CriteriaModal from "./CriteriaModal";
 export default function ProgressRecordTable({
   planId,
   coachId,
+  onRecordAdded,
 }: {
   planId: string;
   coachId: string;
+  onRecordAdded?: () => void;
 }) {
   const { records, loading, error, handleCreate, handleUpdate, handleDelete } =
     useProgressRecords(planId);
@@ -81,7 +83,10 @@ export default function ProgressRecordTable({
             coachId={coachId}
             planId={planId}
             handleCreate={handleCreate}
-            onSuccess={() => setShowForm(false)}
+            onSuccess={() => {
+              setShowForm(false);
+              onRecordAdded?.();
+            }}
           />
         </div>
       )}

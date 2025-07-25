@@ -23,6 +23,7 @@ const defaultStage: Omit<PlanStageInput, "template_id"> = {
     recommended_actions: "",
     duration_days: 1,
     stage_order: 1,
+    max_cigarettes_per_day: undefined,
 };
 
 export default function PlanStageManage({ templateId }: Props) {
@@ -42,7 +43,7 @@ export default function PlanStageManage({ templateId }: Props) {
         setStageForm((prev) => ({
             ...prev,
             [name]:
-                name === "duration_days" || name === "stage_order"
+                name === "duration_days" || name === "stage_order" || name === "max_cigarettes_per_day"
                     ? Number(value)
                     : value,
         }));
@@ -87,6 +88,7 @@ export default function PlanStageManage({ templateId }: Props) {
                 title: stageForm.title,
                 description: stageForm.description,
                 recommended_actions: stageForm.recommended_actions,
+                max_cigarettes_per_day: stageForm.max_cigarettes_per_day,
                 duration_days: stageForm.duration_days,
                 stage_order: stageForm.stage_order,
                 template_id: templateId,
@@ -138,6 +140,7 @@ export default function PlanStageManage({ templateId }: Props) {
             recommended_actions: stage.recommended_actions || "",
             duration_days: stage.duration_days,
             stage_order: stage.stage_order,
+            max_cigarettes_per_day: stage.max_cigarettes_per_day,
         });
         setEditingId(stage.id);
         if (formRef.current) {
@@ -221,6 +224,25 @@ export default function PlanStageManage({ templateId }: Props) {
                         required
                     />
                 </div>
+                <div className="flex flex-col gap-1">
+                    <label
+                        htmlFor="max_cigarettes_per_day"
+                        className="font-medium text-gray-600 text-sm pl-1 mb-1"
+                    >
+                        Số điếu tối đa/ngày <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                        id="max_cigarettes_per_day"
+                        className="px-4 py-3 border border-gray-300 rounded-2xl focus:border-sky-500 focus:ring-2 focus:ring-sky-100 transition outline-none text-base"
+                        name="max_cigarettes_per_day"
+                        type="number"
+                        min={0}
+                        placeholder="Số điếu tối đa/ngày"
+                        value={stageForm.max_cigarettes_per_day ?? ''}
+                        onChange={handleStageChange}
+                        required
+                    />
+                </div>
                 <div className="flex flex-col gap-1 md:col-span-2">
                     <label
                         htmlFor="recommended_actions"
@@ -261,7 +283,7 @@ export default function PlanStageManage({ templateId }: Props) {
                         className="cursor-pointer w-full flex justify-center items-center gap-2 px-4 py-2 bg-[#03256C] hover:bg-[#041E42] text-white font-semibold rounded-xl shadow transition disabled:opacity-60 h-10 min-h-[40px]"
                     >
                         {creating ? (
-                            <Loading />
+                            <Loading color="#fff" />
                         ) : editingId ? (
                             "Lưu thay đổi"
                         ) : (
@@ -320,6 +342,11 @@ export default function PlanStageManage({ templateId }: Props) {
                                             ({s.duration_days} ngày)
                                         </span>
                                     </div>
+                                    {typeof s.max_cigarettes_per_day === 'number' && (
+                                        <div className="text-xs text-red-600 mt-1">
+                                            Số điếu tối đa/ngày: <b>{s.max_cigarettes_per_day}</b>
+                                        </div>
+                                    )}
                                     {s.recommended_actions && (
                                         <div className="flex items-center gap-2 mt-1 text-green-700 text-sm my-3">
                                             <Activity className="w-4 h-4" />

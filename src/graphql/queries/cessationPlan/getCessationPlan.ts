@@ -33,6 +33,7 @@ export const GET_CESSATION_PLANS = gql`
           stage_order
           actions
           title
+          max_cigarettes_per_day
         }
       }
     }

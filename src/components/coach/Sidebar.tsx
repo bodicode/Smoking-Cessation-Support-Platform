@@ -1,9 +1,16 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FileText, BookOpen, LogOut, MessageCircle, Award } from "lucide-react";
+import {
+  FileText,
+  BookOpen,
+  LogOut,
+  MessageCircle,
+  Award,
+  User,
+} from "lucide-react";
 import { useDispatch } from "react-redux";
-import { clearUser, setUser } from "@/store/userSlice";
+import { clearUser } from "@/store/userSlice";
 
 const menu = [
   { label: "Chat", icon: MessageCircle, href: "/coach/chat" },
@@ -14,6 +21,7 @@ const menu = [
     icon: Award,
     href: "/coach/health-criteria",
   },
+  { label: "Hồ sơ cá nhân", icon: User, href: "/coach/profile" },
 ];
 
 export default function SidebarCoach() {
@@ -24,18 +32,10 @@ export default function SidebarCoach() {
   return (
     <aside
       className="
-                w-[330px]
-                min-h-screen
-                flex flex-col
-                p-5
-                rounded-tr-3xl rounded-br-3xl
-                shadow-2xl
-                border-0
-                bg-gradient-to-b
-                from-[#b6f7c1]
-                via-[#e0fae7]
-                to-white
-            "
+        w-[330px] min-h-screen flex flex-col p-5
+        rounded-tr-3xl rounded-br-3xl shadow-2xl border-0
+        bg-gradient-to-b from-[#b6f7c1] via-[#e0fae7] to-white
+      "
     >
       <div className="flex items-center gap-3 mb-10 mt-2 px-1">
         <img
@@ -47,35 +47,45 @@ export default function SidebarCoach() {
           Coach Panel
         </span>
       </div>
+
       <nav className="flex flex-col gap-2">
-        {menu.map((item) => (
-          <Link
-            href={item.href}
-            key={item.href}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-nowrap transition-all text-base
-                    ${
-                      pathname.startsWith(item.href)
-                        ? "bg-green-100 text-green-700 shadow"
-                        : "text-gray-600 hover:bg-green-50 hover:text-green-800"
-                    }`}
-          >
-            <item.icon className="w-4 h-4" />
-            {item.label}
-          </Link>
-        ))}
+        {menu.map((item) => {
+          const isActive = pathname.startsWith(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`group flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all
+                ${isActive
+                  ? "bg-white text-green-700 border-l-4 border-green-600 shadow-sm scale-[1.02]"
+                  : "text-gray-600 hover:bg-green-50 hover:text-green-700"
+                }`}
+            >
+              <item.icon
+                className={`w-4 h-4 transition-transform duration-200
+                  ${isActive ? "text-green-600 scale-110" : "group-hover:scale-105"}
+                `}
+              />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
       </nav>
-      <div className="flex-1"></div>
+
+      <div className="flex-1" />
+
       <button
         onClick={() => {
           dispatch(clearUser());
           localStorage.removeItem("access_token");
-          router.push(`/login`);
+          router.push("/login");
         }}
         className="cursor-pointer flex items-center gap-2 px-4 py-2 mt-6 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-800 font-semibold transition shadow"
       >
         <LogOut className="w-4 h-4" />
         Đăng xuất
       </button>
+
       <div className="text-xs text-gray-400 pl-2 pt-8">© 2025 ReAir</div>
     </aside>
   );

@@ -7,5 +7,5 @@ export type SmokeFreeStatsProps = {
     records: any[];
     loading: boolean;
     avgPricePerPack?: number;
-    cigarettesPerPack?: number;
+    totalMoneySaved?: number;
 };

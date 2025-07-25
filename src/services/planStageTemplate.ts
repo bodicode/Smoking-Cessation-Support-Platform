@@ -10,6 +10,7 @@ export async function createPlanStage(input: PlanStageInput): Promise<PlanStage>
     const inputWithSnakeCase = {
         ...input,
         template_id: input.template_id,
+        max_cigarettes_per_day: input.max_cigarettes_per_day,
     };
     delete (inputWithSnakeCase as any).templateId;
 
