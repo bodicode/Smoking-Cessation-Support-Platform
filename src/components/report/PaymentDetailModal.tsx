@@ -248,7 +248,7 @@ export default function PaymentDetailModal({ open, onClose, paymentId }: { open:
                     </div>
                     <div>
                       <label className="text-sm font-medium text-gray-500">Body</label>
-                      <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
+                      <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border break-all whitespace-pre-wrap">
                         {detail.payment_transaction.body || '-'}
                       </p>
                     </div>
