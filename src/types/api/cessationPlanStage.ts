@@ -12,6 +12,7 @@ export interface PlanStage {
     template_stage_id?: string;
     start_date?: string;
     end_date?: string;
+    max_cigarettes_per_day?: number;
 }
 
 export interface CreatePlanStageInput {
@@ -22,6 +23,7 @@ export interface CreatePlanStageInput {
     stage_order?: number;
     start_date?: string;
     end_date?: string;
+    max_cigarettes_per_day?: number;
 }
 
 export interface UpdatePlanStageInput {
@@ -33,4 +35,5 @@ export interface UpdatePlanStageInput {
     stage_order?: number;
     start_date?: string;
     end_date?: string;
+    max_cigarettes_per_day?: number;
 }

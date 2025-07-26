@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { createPayment } from "@/services/paymentService";
 import { useMembership } from "@/hooks/useMembership";
 import Loading from "@/components/common/Loading";
+import toast from "react-hot-toast";
 
 const iconMap: Record<string, JSX.Element> = {
     crown: <Crown className="w-8 h-8 text-yellow-400" />,
@@ -33,6 +34,7 @@ export default function MembershipPage() {
     const [pendingMembershipId, setPendingMembershipId] = useState<string | null>(null);
     const [pendingPaymentId, setPendingPaymentId] = useState<string | null>(null);
     const [filteredPackages, setFilteredPackages] = useState(membershipPackages);
+    const [loadingPackageId, setLoadingPackageId] = useState<string | null>(null);
 
     // On mount, check for pending payment in sessionStorage
     useEffect(() => {
@@ -49,7 +51,7 @@ export default function MembershipPage() {
 
     // Placeholder for createPayment mutation (replace with actual GraphQL mutation)
     async function initiatePayment(membershipPackageId: string) {
-        setLoading(true);
+        setLoadingPackageId(membershipPackageId);
         try {
             // Use centralized payment service - user ID is automatically extracted from JWT token
             const payment = await createPayment(membershipPackageId);
@@ -57,10 +59,14 @@ export default function MembershipPage() {
             sessionStorage.setItem("pendingPaymentId", payment.id);
             router.push(`/payment/${payment.id}`);
         } catch (error) {
-            console.error('Payment initiation failed:', error);
-            alert('Payment initiation failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
+            let msg = (error instanceof Error ? error.message : 'Unknown error');
+            if (msg.includes('You already have an active subscription. Cannot create new payment')) {
+                toast.error('Bạn đã đăng ký gói thành viên rồi');
+            } else {
+                toast.error('Payment initiation failed: ' + msg);
+            }
         } finally {
-            setLoading(false);
+            setLoadingPackageId(null);
         }
     }
 
@@ -157,7 +163,7 @@ export default function MembershipPage() {
                                 whileHover={{ scale: 1.04 }}
                                 whileTap={{ scale: 0.96 }}
                                 onClick={() => router.push(`/payment/${pendingPaymentId}`)}
-                                disabled={loading}
+                                disabled={loadingPackageId === plan.id}
                             >
                                 Tiếp tục thanh toán
                             </motion.button>
@@ -168,9 +174,9 @@ export default function MembershipPage() {
                                 whileHover={{ scale: 1.04 }}
                                 whileTap={{ scale: 0.96 }}
                                 onClick={() => initiatePayment(plan.id)}
-                                disabled={loading}
+                                disabled={loadingPackageId === plan.id}
                             >
-                                {loading ? "Đang xử lý..." : "Mua ngay"}
+                                {loadingPackageId === plan.id ? <Loading color="#FFF" /> : "Mua ngay"}
                             </motion.button>
                         )}
                     </motion.div>

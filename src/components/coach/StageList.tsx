@@ -25,6 +25,11 @@ export function StageList({ templateId }: { templateId: string }) {
                         <span className="font-semibold text-[#03256C]">Bước {stage.stage_order}:</span> <span className="font-semibold">{stage.title}</span>
                         <div className="text-gray-500 text-sm mt-1">{stage.description}</div>
                         <div className="text-gray-500 text-sm mt-1">Hành động: {stage.recommended_actions}</div>
+                        {typeof stage.max_cigarettes_per_day === 'number' && (
+                            <div className="text-xs text-red-600 mt-1">
+                                Số điếu tối đa/ngày: <b>{stage.max_cigarettes_per_day}</b>
+                            </div>
+                        )}
                     </div>
                     <div className="flex gap-4 text-xs text-gray-600 min-w-fit md:justify-end">
                         <span className="flex items-center gap-1"><Clock size={14} /> {stage.duration_days} ngày</span>

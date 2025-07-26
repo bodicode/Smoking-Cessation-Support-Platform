@@ -57,8 +57,8 @@ export function translatePlanStatus(status: string) {
     //   return "Tạm dừng";
     case "COMPLETED":
       return "Hoàn thành";
-    // case "ABANDONED":
-    //   return "Bỏ dở";
+    case "ABANDONED":
+      return "Bỏ dở";
     case "CANCELLED":
       return "Hủy";
     default:

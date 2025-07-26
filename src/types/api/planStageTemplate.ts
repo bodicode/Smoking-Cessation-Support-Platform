@@ -5,6 +5,7 @@ export interface PlanStageInput {
     duration_days: number;
     stage_order: number;
     template_id: string;
+    max_cigarettes_per_day?: number;
 }
 
 export interface PlanStageUpdateInput extends PlanStageInput {
@@ -18,4 +19,5 @@ export interface PlanStage {
     recommended_actions: string;
     duration_days: number;
     stage_order: number;
+    max_cigarettes_per_day?: number;
 }

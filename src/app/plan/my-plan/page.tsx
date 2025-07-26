@@ -24,21 +24,20 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import ChatBubble from "@/components/myPlan/ChatBubble";
 
-function statusBadge(status: string) {
+function statusBadge(status: string, label?: string) {
   const colors: any = {
-    PLANNING: "bg-gray-200 text-gray-700",
-    ACTIVE: "bg-sky-200 text-sky-700",
-    // PAUSED: "bg-yellow-100 text-yellow-700",
-    COMPLETED: "bg-green-200 text-green-700",
-    // ABANDONED: "bg-red-100 text-red-700",
-    CANCELLED: "bg-red-200 text-red-700",
+    PLANNING: "bg-yellow-100 text-yellow-800 border border-yellow-300",
+    ACTIVE: "bg-sky-200 text-sky-800 border border-sky-300",
+    PAUSED: "bg-orange-100 text-orange-700 border border-orange-300",
+    COMPLETED: "bg-green-200 text-green-700 border border-green-300",
+    ABANDONED: "bg-gray-300 text-gray-700 border border-gray-400",
+    CANCELLED: "bg-red-200 text-red-700 border border-red-300",
   };
   return (
     <span
-      className={`ml-2 px-3 py-1 rounded-full text-xs font-bold shadow-sm ${colors[status] || "bg-gray-100 text-gray-600"
-        }`}
+      className={`ml-2 px-3 py-1 rounded-full text-xs font-bold shadow-sm ${colors[status] || "bg-gray-100 text-gray-600 border border-gray-200"}`}
     >
-      {status}
+      {label || status}
     </span>
   );
 }
@@ -93,7 +92,6 @@ function StatusButtonGroup({
     </div>
   );
 }
-
 export default function CustomStages() {
   const {
     plans,
@@ -187,7 +185,7 @@ export default function CustomStages() {
               <h1 className="text-2xl font-extrabold text-sky-700">
                 {plan.template?.name}
               </h1>
-              {plan.status && statusBadge(translatePlanStatus(plan.status))}
+              {plan.status && statusBadge(plan.status, translatePlanStatus(plan.status))}
             </div>
             <div className="text-gray-700 mb-1">
               <b>Lý do bắt đầu:</b> {plan.reason}
@@ -278,6 +276,19 @@ export default function CustomStages() {
                 return null;
               })()}
             </div>
+
+            {/* Hiển thị thông báo nếu kế hoạch bị bỏ dở */}
+            {plan.status === "ABANDONED" && (
+              <div className="mb-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                <div className="flex items-center gap-2 text-yellow-800 font-semibold">
+                  <span className="text-lg">⚠️</span>
+                  Kế hoạch của bạn đang bị bỏ dở. Hãy thêm tiến trình mới để tiếp tục kế hoạch!
+                </div>
+                <p className="text-yellow-700 text-sm mt-1">
+                  Bạn có thể thêm ghi nhận mới hoặc cập nhật các giai đoạn để kích hoạt lại kế hoạch này.
+                </p>
+              </div>
+            )}
 
             {!isCancelled && (
               <>
@@ -497,6 +508,11 @@ export default function CustomStages() {
                             <b className="text-gray-500">Mô tả:</b>
                             <span className="ml-2">{stage.description}</span>
                           </div>
+                          {typeof stage.max_cigarettes_per_day === 'number' && (
+                            <div className="text-xs text-red-600 mt-1">
+                              Số điếu tối đa/ngày: <b>{stage.max_cigarettes_per_day}</b>
+                            </div>
+                          )}
 
                           {/* <div className="mt-2 flex items-center gap-2">
                             <label className="text-sm font-medium text-gray-500">
@@ -622,9 +638,10 @@ export default function CustomStages() {
                   <ProgressRecordTable
                     planId={plan.id}
                     coachId={plan.template.coach_id}
+                    onRecordAdded={fetchPlans}
                   />
                 </div>
-                
+
                 {plan.status === "COMPLETED" && (
                   <div className="mt-6 p-6 bg-gradient-to-r from-sky-50 to-green-50 border border-sky-200 rounded-xl">
                     <div className="text-center">
@@ -632,7 +649,7 @@ export default function CustomStages() {
                         🎉 Chúc mừng bạn đã hoàn thành!
                       </h3>
                       <p className="text-gray-600 mb-4">
-                        Bạn đã chứng minh được sự kiên trì và quyết tâm của mình. 
+                        Bạn đã chứng minh được sự kiên trì và quyết tâm của mình.
                         Hãy tiếp tục duy trì thành quả này!
                       </p>
                       <Link

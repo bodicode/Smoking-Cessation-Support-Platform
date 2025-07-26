@@ -5,9 +5,11 @@ import { Clock, CigaretteOff, PiggyBank } from "lucide-react";
 export default function SmokeFreeSummary({
     planCreatedAt,
     records,
+    totalMoneySaved,
 }: {
     planCreatedAt: string,
     records: any[],
+    totalMoneySaved: number,
 }) {
     const start = new Date(planCreatedAt);
     const end = new Date();
@@ -35,6 +37,11 @@ export default function SmokeFreeSummary({
                 <span className="w-7 h-7 mb-1 flex items-center justify-center text-blue-600 font-extrabold text-lg">❤️</span>
                 <div className="text-sm text-blue-600 font-medium">Sức khỏe TB</div>
                 <div className="font-mono text-2xl font-bold text-blue-600">{avgHealth}</div>
+            </div>
+            <div className="flex-1 flex flex-col items-center">
+                <PiggyBank className="w-7 h-7 mb-1 text-yellow-600" />
+                <div className="text-sm text-yellow-600 font-medium">Tiền tiết kiệm</div>
+                <div className="font-mono text-2xl font-bold text-yellow-600">{totalMoneySaved?.toLocaleString() ?? 0} đ</div>
             </div>
         </div>
     );

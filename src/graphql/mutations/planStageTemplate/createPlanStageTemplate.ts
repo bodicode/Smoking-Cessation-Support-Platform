@@ -10,6 +10,7 @@ export const CREATE_PLAN_STAGE_TEMPLATE = gql`
       recommended_actions
       duration_days
       stage_order
+      max_cigarettes_per_day
     }
   }
 `;

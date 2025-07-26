@@ -1,108 +1,130 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { getStreakLeaderboard } from '@/services/userService';
+import { useAuth } from '@/hooks/useAuth';
 
 const Achieveboard = () => {
-    const leaderboard = [
-        {
-            name: "Nguyễn Văn A",
-            avatar: "https://i.pravatar.cc/100?img=1",
-            daysSmokeFree: 45,
-            moneySaved: 90.000,
-            badges: ["🔥 7-Day Streak", "💰 500K Saved"],
-        },
-        {
-            name: "Trần Thị B",
-            avatar: "https://i.pravatar.cc/100?img=2",
-            daysSmokeFree: 30,
-            moneySaved: 60.000,
-            badges: ["💪 30-Day Clean", "🎯 Goal Setter"],
-        },
-        {
-            name: "Lê Văn C",
-            avatar: "https://i.pravatar.cc/100?img=3",
-            daysSmokeFree: 15,
-            moneySaved: 30.000,
-            badges: ["⭐ 15-Day Mark"],
-        },
-    ];
+    const [leaderboard, setLeaderboard] = useState<any[]>([]);
+    const [myRank, setMyRank] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
+
+    useEffect(() => {
+        // Chỉ gọi API khi có user đăng nhập
+        if (user?.accessToken) {
+            setLoading(true);
+            getStreakLeaderboard(10, 0)
+                .then((data) => {
+                    setLeaderboard(data.data || []);
+                    setMyRank(data.myRank || null);
+                })
+                .catch((error) => {
+                    console.error('Error fetching leaderboard:', error);
+                    setLeaderboard([]);
+                    setMyRank(null);
+                })
+                .finally(() => setLoading(false));
+        } else {
+            // Reset data khi không có user
+            setLeaderboard([]);
+            setMyRank(null);
+            setLoading(false);
+        }
+    }, [user?.accessToken]);
+
+    const getRankIcon = (rank: number) => {
+        if (rank === 1) return '🥇';
+        if (rank === 2) return '🥈';
+        if (rank === 3) return '🥉';
+        return `#${rank}`;
+    };
 
     const listVariants = {
         hidden: { opacity: 0, y: 32 },
-        visible: (i: any) => ({
+        visible: (i: number) => ({
             opacity: 1,
             y: 0,
             transition: {
-                delay: i * 0.16,
+                delay: i * 0.12,
                 type: "spring",
                 stiffness: 200,
-                damping: 16
-            }
-        })
+                damping: 18,
+            },
+        }),
     };
+
+    // Không hiển thị khi không có user
+    if (!user?.accessToken) {
+        return null;
+    }
+
+    if (loading)
+        return (
+            <div className="max-w-3xl mx-auto mt-8 p-4 space-y-4 animate-pulse">
+                {Array.from({ length: 5 }).map((_, i) => (
+                    <div
+                        key={i}
+                        className="bg-gray-100 rounded-lg p-4 h-[88px]"
+                    />
+                ))}
+            </div>
+        );
 
     return (
         <motion.div
-            className="max-w-5xl mx-auto mt-4 p-4"
+            className="max-w-5xl mx-auto mt-6 p-4"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.25 }}
-            transition={{ staggerChildren: 0.16 }}
+            transition={{ staggerChildren: 0.1 }}
         >
             <motion.h2
-                className="text-2xl font-bold text-center mb-6 text-[#03256C]"
-                initial={{ opacity: 0, y: -32 }}
+                className="text-3xl font-bold text-center mb-6 text-[#03256C]"
+                initial={{ opacity: 0, y: -24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.55, type: "spring", stiffness: 200 }}
+                transition={{ duration: 0.5 }}
             >
-                Bảng xếp hạng
+                <div className='flex items-center gap-2 justify-center'>
+                    Bảng xếp hạng chuỗi ngày không hút thuốc
+                </div>
             </motion.h2>
 
             <div className="space-y-4">
-                {leaderboard.map((user, idx) => (
-                    <motion.div
-                        key={idx}
-                        className="flex flex-col sm:flex-row items-center justify-between bg-gray-100 p-4 rounded-lg shadow-sm gap-4"
-                        custom={idx}
-                        variants={listVariants}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                    >
-                        <div className="flex items-center space-x-4 w-full sm:w-auto">
-                            <img
-                                src={user.avatar}
-                                alt={user.name}
-                                className="w-12 h-12 rounded-full object-cover"
-                            />
-                            <div>
-                                <p className="text-lg font-semibold text-[#03256C]">
-                                    {user.name}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                    {user.daysSmokeFree} ngày không hút thuốc
-                                </p>
-                                <p className="text-sm text-green-600 font-medium">
-                                    {user.moneySaved.toLocaleString()} đồng đã tiết kiệm
-                                </p>
+                {leaderboard.map((item, idx) => {
+                    const isMe = myRank && item.userId === myRank.userId;
+                    return (
+                        <motion.div
+                            key={item.userId}
+                            className={`flex flex-col sm:flex-row items-center justify-between bg-white border border-gray-200 p-4 rounded-xl shadow-md transition-all duration-200 hover:shadow-lg ${isMe ? 'ring-2 ring-blue-400 bg-blue-50' : ''
+                                }`}
+                            custom={idx}
+                            variants={listVariants}
+                            initial="hidden"
+                            whileInView="visible"
+                        >
+                            <div className="flex items-center gap-4 w-full sm:w-auto">
+                                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-lg font-bold text-blue-700">
+                                    {getRankIcon(item.rank)}
+                                </div>
+                                <div>
+                                    <p className={`text-lg font-semibold ${isMe ? 'text-blue-700' : 'text-gray-800'}`}>
+                                        {item.name}
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                        Chuỗi ngày không hút thuốc: <b>{item.streak}</b>
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2 justify-start sm:justify-end w-full sm:w-auto mt-2 sm:mt-0">
-                            {user.badges.map((badge, i) => (
-                                <motion.span
-                                    key={i}
-                                    whileHover={{ scale: 1.1, rotate: -2 }}
-                                    transition={{ type: "spring", stiffness: 280, damping: 14 }}
-                                    className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium cursor-pointer"
-                                >
-                                    {badge}
-                                </motion.span>
-                            ))}
-                        </div>
-                    </motion.div>
-                ))}
+                            {isMe && (
+                                <span className="mt-2 sm:mt-0 text-xs font-bold bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
+                                    Bạn
+                                </span>
+                            )}
+                        </motion.div>
+                    );
+                })}
             </div>
         </motion.div>
     );

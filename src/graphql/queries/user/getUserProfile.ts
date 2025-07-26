@@ -13,7 +13,14 @@ export const FIND_ONE_USER = gql`
       coach_profile {
         id
         experience_years
-        user_id
+        average_rating
+        certifications  
+        education
+        professional_bio
+        specializations
+        success_rate
+        total_clients
+        total_sessions
       }
       member_profile {
         id

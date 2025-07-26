@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Header from "@/components/home/Header";
 import Footer from "@/components/home/Footer";
+import MembershipBanner from "@/components/common/MembershipBanner";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
@@ -57,6 +58,7 @@ export default function ClientLayout({
   return (
     <div className="bg-[#f9f5ec]">
       <SubscriptionProvider>
+        {!hideLayout && <MembershipBanner />}
         {!hideLayout && <Header />}
         {children}
         {!hideLayout && <Footer />}
