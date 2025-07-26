@@ -12,7 +12,7 @@ export default function AdminRevenue() {
   const [selectedPaymentId, setSelectedPaymentId] = useState<string | null>(null);
 
   return (
-    <div className="max-w-4xl mx-auto mt-8">
+    <div className="max-w-8xl mx-auto mt-8">
       <PaymentDetailModal open={modalOpen} onClose={() => setModalOpen(false)} paymentId={selectedPaymentId} />
       <div className="bg-white rounded-2xl shadow-lg p-8">
         <div className="mb-6">
