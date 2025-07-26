@@ -191,12 +191,6 @@ export default function PaymentDetailModal({ open, onClose, paymentId }: { open:
                         </p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-500">Tài khoản phụ</label>
-                        <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
-                          {detail.payment_transaction.subAccount || '-'}
-                        </p>
-                      </div>
-                      <div>
                         <label className="text-sm font-medium text-gray-500">Mã tham chiếu</label>
                         <p className="text-gray-900 font-mono text-sm bg-white px-3 py-2 rounded-lg border">
                           {detail.payment_transaction.referenceNumber || '-'}
@@ -217,18 +211,6 @@ export default function PaymentDetailModal({ open, onClose, paymentId }: { open:
                         </p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-500">Số tiền ra</label>
-                        <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
-                          {detail.payment_transaction.amountOut?.toLocaleString('vi-VN') || '0'} đ
-                        </p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-gray-500">Tích lũy</label>
-                        <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
-                          {detail.payment_transaction.accumulated?.toLocaleString('vi-VN') || '0'} đ
-                        </p>
-                      </div>
-                      <div>
                         <label className="text-sm font-medium text-gray-500">Ngày giao dịch</label>
                         <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
                           {detail.payment_transaction.transactionDate 
@@ -240,12 +222,6 @@ export default function PaymentDetailModal({ open, onClose, paymentId }: { open:
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Mã code</label>
-                      <p className="text-gray-900 font-mono text-sm bg-white px-3 py-2 rounded-lg border">
-                        {detail.payment_transaction.code || '-'}
-                      </p>
-                    </div>
                     <div>
                       <label className="text-sm font-medium text-gray-500">Body</label>
                       <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border break-all whitespace-pre-wrap">
