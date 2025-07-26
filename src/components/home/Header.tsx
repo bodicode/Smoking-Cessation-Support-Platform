@@ -66,7 +66,7 @@ const Header = () => {
   return (
     <header
       className={`
-        sticky top-2 z-50
+        sticky top-2 z-40
         flex flex-wrap items-center justify-between
         px-2 sm:px-4 md:px-6 py-2 md:py-3
         bg-[#60C3A4] backdrop-blur-md text-white
