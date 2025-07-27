@@ -106,7 +106,21 @@ const ChatBubble: React.FC<ChatBubbleProps> = () => {
     if (mounted && !isSwitchingRoom) {
       loadChatRoomAndMessages();
     }
-  }, [mounted, chatRoomIdFromUrl]);
+  }, [mounted, chatRoomIdFromUrl, user?.id]);
+
+  // Reset state when user changes
+  useEffect(() => {
+    if (user?.id) {
+      setActualChatRoomId(null);
+      setMessages([]);
+      setCoachNameForHeader(null);
+      setCoachId(null);
+      setAllRooms([]);
+      setIsOpen(false);
+      setShowRoomSelector(false);
+      setIsSwitchingRoom(false);
+    }
+  }, [user?.id]);
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
