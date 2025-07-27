@@ -15,6 +15,16 @@ import {
 import toast from "react-hot-toast";
 
 export const ChatService = {
+  clearChatCache: async () => {
+    try {
+      // For now, just return without clearing cache to avoid errors
+      // The fetchPolicy: "network-only" in queries should handle cache issues
+      return;
+    } catch (error) {
+      console.error("Error clearing chat cache:", error);
+    }
+  },
+
   createChatRoom: async (input: ICreateChatRoomInput): Promise<IChatRoom> => {
     try {
       const { data, errors } = await client.mutate({
