@@ -31,6 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { href: '/admin/templates', label: 'Mẫu kế hoạch', icon: FileText },
         { href: '/admin/badges', label: 'Huy hiệu', icon: Medal },
         { href: '/admin/profile-quiz', label: 'Quiz', icon: Medal },
+        { href: '/admin/membership', label: 'Gói thành viên', icon: Medal },
     ];
 
     return (
