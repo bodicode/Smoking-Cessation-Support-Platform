@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 import MembershipTable from "@/components/membership/MembershipTable";
 import MembershipModal from "@/components/membership/MembershipModal";
 
-// Update: description is always a string array
 type Pack = {
   id?: string;
   name: string;
@@ -24,7 +23,7 @@ export default function AdminMembership() {
     name: "",
     price: 0,
     duration: 1,
-    description: "", // textarea value, will split to array
+    description: "",
   });
 
   // For edit modal
@@ -102,7 +101,6 @@ export default function AdminMembership() {
     setUpdating(true);
     try {
       const pack = packs[editingIdx];
-      // Fix type issue: always treat as string or string[]
       let descArr: string[];
       const descRaw = editModalPack.description as unknown;
       if (Array.isArray(descRaw)) {
