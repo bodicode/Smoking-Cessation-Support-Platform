@@ -189,7 +189,7 @@ Coach hỗ trợ 24/7"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Thời hạn</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Thời hạn (Ngày)</label>
                   <input
                     className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-[#60C3A4] focus:border-transparent transition"
                     type="number"

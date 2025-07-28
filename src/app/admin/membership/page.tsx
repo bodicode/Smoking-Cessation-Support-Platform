@@ -185,8 +185,8 @@ export default function AdminMembership() {
     <div className="max-w-8xl mx-auto mt-8">
       <div className="bg-white rounded-2xl shadow-lg p-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[#03256C] mb-1">Manage Membership Packs</h1>
-          <p className="text-gray-500 text-sm">Edit, update, or remove membership packs for users.</p>
+          <h1 className="text-2xl font-bold text-[#03256C] mb-1">Quản lý gói thành viên</h1>
+          <p className="text-gray-500 text-sm">Chỉnh sửa, cập nhật hoặc xóa các gói thành viên cho người dùng.</p>
         </div>
         <div className="mb-4 flex justify-end">
           <button
