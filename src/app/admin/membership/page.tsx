@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { createMembershipPackage, updateMembershipPackage, getMembershipPackages } from "@/services/membershipService";
+import { createMembershipPackage, updateMembershipPackage, getMembershipPackages, deleteMembershipPackage } from "@/services/membershipService";
 import { SuccessToast, ErrorToast } from "@/components/common/CustomToast";
 import toast from "react-hot-toast";
 import MembershipTable from "@/components/membership/MembershipTable";
@@ -13,6 +13,7 @@ type Pack = {
   price: number;
   duration: number;
   description: string[];
+  is_active?: boolean; // <-- add is_active here
 };
 
 export default function AdminMembership() {
@@ -24,6 +25,7 @@ export default function AdminMembership() {
     price: 0,
     duration: 1,
     description: "",
+    is_active: true,
   });
 
   // For edit modal
@@ -49,6 +51,7 @@ export default function AdminMembership() {
             price: pkg.price,
             duration: pkg.duration_days,
             description: Array.isArray(pkg.description) ? pkg.description : [pkg.description],
+            is_active: pkg.is_active,
           }))
         );
       } catch (e) {
@@ -64,8 +67,16 @@ export default function AdminMembership() {
     setShowEdit(true);
   };
 
-  const deletePack = (idx: number) => {
-    setPacks(packs.filter((_, i) => i !== idx));
+  const deletePack = async (idx: number) => {
+    const pack = packs[idx];
+    if (!pack.id) return;
+    try {
+      await deleteMembershipPackage(pack.id);
+      setPacks(packs.filter((_, i) => i !== idx));
+      toast.custom(<SuccessToast message="Xóa gói thành viên thành công!" />);
+    } catch (e) {
+      toast.custom(<ErrorToast message="Xóa gói thất bại!" />);
+    }
   };
 
   const handleCreate = async () => {
@@ -75,20 +86,23 @@ export default function AdminMembership() {
         .split('\n')
         .map(line => line.trim())
         .filter(line => line.length > 0);
+      // Pass is_active to the service
       const newPack = await createMembershipPackage({
         name: createPack.name,
         price: createPack.price,
         duration_days: createPack.duration,
         description: descArr,
+        is_active: createPack.is_active, // <-- ensure is_active is sent
       });
       setPacks([...packs, {
         name: newPack.name,
         price: newPack.price,
         duration: newPack.duration_days,
+        is_active: newPack.is_active,
         description: Array.isArray(newPack.description) ? newPack.description : [newPack.description],
       }]);
       setShowCreate(false);
-      setCreatePack({ name: "", price: 0, duration: 1, description: "" });
+      setCreatePack({ name: "", price: 0, duration: 1, description: "", is_active: true });
       toast.custom(<SuccessToast message="Tạo gói thành viên thành công!" />);
     } catch (e) {
       toast.custom(<ErrorToast message="Tạo gói mới thất bại!" />);
@@ -128,6 +142,7 @@ export default function AdminMembership() {
         price: editModalPack.price,
         duration_days: editModalPack.duration,
         description: descArr,
+        is_active: editModalPack.is_active, // <-- ensure is_active is sent
       });
       const newPacks = [...packs];
       newPacks[editingIdx] = {
@@ -140,18 +155,38 @@ export default function AdminMembership() {
       setPacks(newPacks);
       setShowEdit(false);
       toast.custom(<SuccessToast message="Cập nhật gói thành viên thành công!" />);
-    } catch (e) {
-      toast.custom(<ErrorToast message="Cập nhật gói thất bại!" />);
+    } catch (e: any) {
+      toast.custom(<ErrorToast message={e?.message || "Cập nhật gói thất bại!"} />);
     }
     setUpdating(false);
+  };
+
+  // Add handleToggleActive here
+  const handleToggleActive = async (pack: Pack, idx: number) => {
+    if (!pack.id) return;
+    try {
+      const updated = await updateMembershipPackage({
+        id: pack.id,
+        is_active: !pack.is_active,
+      });
+      toast.custom(
+        <SuccessToast message={`Gói "${pack.name}" đã ${updated.is_active ? "được bật" : "được tắt"}`} />
+      );
+      // Update local state
+      const newPacks = [...packs];
+      newPacks[idx].is_active = updated.is_active;
+      setPacks(newPacks);
+    } catch (e) {
+      toast.custom(<ErrorToast message="Cập nhật trạng thái thất bại!" />);
+    }
   };
 
   return (
     <div className="max-w-8xl mx-auto mt-8">
       <div className="bg-white rounded-2xl shadow-lg p-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[#03256C] mb-1">Manage Membership Packs</h1>
-          <p className="text-gray-500 text-sm">Edit, update, or remove membership packs for users.</p>
+          <h1 className="text-2xl font-bold text-[#03256C] mb-1">Quản lý gói thành viên</h1>
+          <p className="text-gray-500 text-sm">Chỉnh sửa, cập nhật hoặc xóa các gói thành viên cho người dùng.</p>
         </div>
         <div className="mb-4 flex justify-end">
           <button
@@ -181,6 +216,7 @@ export default function AdminMembership() {
           packs={packs}
           startEdit={startEdit}
           deletePack={deletePack}
+          handleToggleActive={handleToggleActive}
         />
       </div>
     </div>

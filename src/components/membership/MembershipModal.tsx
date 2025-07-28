@@ -2,7 +2,7 @@ interface MembershipModalProps {
   showCreate: boolean;
   setShowCreate: (v: boolean) => void;
   creating: boolean;
-  createPack: { name: string; price: number; duration: number; description: string };
+  createPack: { name: string; price: number; duration: number; description: string; is_active: boolean };
   setCreatePack: (v: any) => void;
   handleCreate: () => void;
   showEdit: boolean;
@@ -74,7 +74,7 @@ export default function MembershipModal({
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Thời hạn (tháng)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Thời hạn</label>
                   <input
                     className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-[#60C3A4] focus:border-transparent transition"
                     type="number"
@@ -98,6 +98,21 @@ Coach hỗ trợ 24/7"
                   rows={3}
                   required
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Trạng thái hoạt động</label>
+                <button
+                  type="button"
+                  className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors focus:outline-none ${createPack.is_active ? 'bg-green-400' : 'bg-gray-200'}`}
+                  onClick={() => setCreatePack({ ...createPack, is_active: !createPack.is_active })}
+                >
+                  <span
+                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform ${createPack.is_active ? 'translate-x-7' : 'translate-x-1'}`}
+                  />
+                  <span className={`absolute left-2 text-xs font-semibold ${createPack.is_active ? 'text-green-700' : 'text-gray-500'}`}>
+                    {createPack.is_active ? 'Bật' : 'Tắt'}
+                  </span>
+                </button>
               </div>
               <div className="flex justify-end gap-2 mt-2">
                 <button
@@ -174,7 +189,7 @@ Coach hỗ trợ 24/7"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Thời hạn (tháng)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Thời hạn (Ngày)</label>
                   <input
                     className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-[#60C3A4] focus:border-transparent transition"
                     type="number"
