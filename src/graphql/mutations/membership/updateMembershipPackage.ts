@@ -8,6 +8,7 @@ export const UPDATE_MEMBERSHIP_PACKAGE = gql`
       price
       description
       duration_days
+      is_active
       created_at
       updated_at
     }
