@@ -18,6 +18,14 @@ import {
   UserSubscription,
   GetUserSubscriptionResponse,
 } from "@/types/api/subscription";
+import {
+  GET_MEMBER_PAYMENTS_WITH_TRANSACTIONS,
+  GET_MEMBER_PAYMENT_DETAIL,
+  GetMemberPaymentsWithTransactionsResponse,
+  MemberPaymentWithTransaction,
+  GetMemberPaymentDetailResponse,
+  MemberPaymentDetail
+} from "@/graphql/queries/payments";
 
 // Get user ID from JWT token using existing pattern
 export function getUserIdFromToken(): string | null {
@@ -181,4 +189,41 @@ export async function getCurrentUserSubscription(): Promise<UserSubscription | n
   }
 
   return getUserSubscription();
+}
+
+// Get all member payments with transactions
+export async function getMemberPaymentsWithTransactions(): Promise<MemberPaymentWithTransaction[]> {
+  try {
+    const { data, errors } = await client.query<GetMemberPaymentsWithTransactionsResponse>({
+      query: GET_MEMBER_PAYMENTS_WITH_TRANSACTIONS,
+      fetchPolicy: "network-only",
+    });
+
+    if (errors && errors.length > 0) {
+      throw new Error(errors[0].message);
+    }
+
+    return data.getMemberPaymentsWithTransactions;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Get member payment detail by ID
+export async function getMemberPaymentDetail(id: string): Promise<MemberPaymentDetail> {
+  try {
+    const { data, errors } = await client.query<GetMemberPaymentDetailResponse>({
+      query: GET_MEMBER_PAYMENT_DETAIL,
+      variables: { getMemberPaymentDetailId: id },
+      fetchPolicy: "network-only",
+    });
+
+    if (errors && errors.length > 0) {
+      throw new Error(errors[0].message);
+    }
+
+    return data.getMemberPaymentDetail;
+  } catch (error) {
+    throw error;
+  }
 }

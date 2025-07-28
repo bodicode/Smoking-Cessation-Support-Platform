@@ -10,6 +10,7 @@ import { getUserProfileNew, updateUserProfile } from "@/services/userService";
 import { useAuth } from "@/hooks/useAuth";
 import Loading from "@/components/common/Loading";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
@@ -19,6 +20,7 @@ export default function ProfilePage() {
     const params = useParams();
     const locale = (params.locale as string) || "vi";
     const { user: authUser } = useAuth();
+    const router = useRouter();
 
     const [userProfile, setUserProfile] = useState<any>(null);
     const [profileLoading, setProfileLoading] = useState(true);
@@ -195,6 +197,20 @@ export default function ProfilePage() {
                                 <path d="M12 11v-4a2 2 0 0 1 4 0" />
                             </svg>
                             Thay đổi mật khẩu
+                        </button>
+                    </div>
+                    <div className="flex justify-center mt-3">
+                        <button
+                            className="cursor-pointer flex items-center gap-2 bg-yellow-50 border border-yellow-300 text-yellow-700 px-6 py-2 rounded-full font-semibold hover:bg-yellow-100 hover:scale-105 transition"
+                            onClick={() => {
+                                router.push('/profile/transactions');
+                            }}
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                <rect x="3" y="4" width="18" height="16" rx="2" />
+                                <path d="M8 11h8M8 15h6" />
+                            </svg>
+                            Xem lịch sử giao dịch
                         </button>
                     </div>
                 </div>
