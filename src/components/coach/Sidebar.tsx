@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { clearUser } from "@/store/userSlice";
+import { useEffect, useState } from "react";
+import { ChatService } from "@/services/chatService";
 
 const menu = [
   { label: "Chat", icon: MessageCircle, href: "/coach/chat" },
@@ -28,6 +30,28 @@ export default function SidebarCoach() {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const router = useRouter();
+
+  // Hydrate from localStorage for instant feedback
+  const [unreadCount, setUnreadCount] = useState(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("coach_unread_count");
+      return stored ? parseInt(stored, 10) : 0;
+    }
+    return 0;
+  });
+
+  useEffect(() => {
+    // Subscribe to unread count changes (totalCount for the account)
+    const unsubscribe = ChatService.subscribeToUnreadCountChanged(
+      ({ totalCount }) => {
+        setUnreadCount(totalCount > 0 ? totalCount : 0);
+        // Save to localStorage for next mount
+        localStorage.setItem("coach_unread_count", String(totalCount > 0 ? totalCount : 0));
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <aside
@@ -66,7 +90,14 @@ export default function SidebarCoach() {
                   ${isActive ? "text-green-600 scale-110" : "group-hover:scale-105"}
                 `}
               />
-              <span>{item.label}</span>
+              <span className="relative flex items-center">
+                {item.label}
+                {item.label === "Chat" && unreadCount > 0 && (
+                  <span className="ml-2 inline-flex items-center justify-center rounded-full bg-red-600 text-white text-xs font-bold w-5 h-5">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+              </span>
             </Link>
           );
         })}
