@@ -15,6 +15,7 @@ export const GET_ALL_CHAT_ROOMS_BY_USER_QUERY = gql`
       created_at
       updated_at
       is_deleted
+      hasUnread
     }
   }
 `;

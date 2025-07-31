@@ -16,6 +16,7 @@ export default function CoachChatPage() {
     null
   );
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [activeCessationPlan, setActiveCessationPlan] = useState<any>(null);
   const [loadingRooms, setLoadingRooms] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(false);
 
@@ -31,9 +32,9 @@ export default function CoachChatPage() {
         const rooms = await ChatService.getAllChatRoomsByUser();
         setChatRooms(rooms);
 
-        if (rooms.length > 0) {
-          setSelectedChatRoom(rooms[0]);
-        }
+        // if (rooms.length > 0) {
+        //   setSelectedChatRoom(rooms[0]);
+        // }
       } catch (error) {
         toast.error("Không thể tải danh sách phòng chat.");
       } finally {
@@ -52,18 +53,22 @@ export default function CoachChatPage() {
     const fetchMessages = async () => {
       if (!selectedChatRoom?.id) {
         setMessages([]);
+        setActiveCessationPlan(null);
         return;
       }
       setLoadingMessages(true);
       try {
-        const fetchedMessages = await ChatService.getChatMessagesByRoomId(
+        const data = await ChatService.getChatMessagesByRoomId(
           selectedChatRoom.id
         );
-        const sortedMessages = [...fetchedMessages].sort(
-          (a, b) =>
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-        );
-        setMessages(sortedMessages);
+        // If ChatService.getChatMessagesByRoomId returns only messages, fetch plan from data.getChatMessagesByRoomId
+        if (Array.isArray(data)) {
+          setMessages(data);
+          setActiveCessationPlan(null);
+        } else {
+          setMessages(data.messages || []);
+          setActiveCessationPlan(data.activeCessationPlan || null);
+        }
 
         unsubscribe = ChatService.subscribeToChatMessages(
           selectedChatRoom.id,
@@ -84,6 +89,7 @@ export default function CoachChatPage() {
       } catch (error) {
         toast.error("Không thể tải tin nhắn cho phòng chat này.");
         setMessages([]);
+        setActiveCessationPlan(null);
       } finally {
         setLoadingMessages(false);
       }
@@ -123,7 +129,9 @@ export default function CoachChatPage() {
                   ${
                     selectedChatRoom?.id === room.id
                       ? "bg-blue-100 text-blue-800 shadow-sm font-semibold"
-                      : "bg-gray-50 hover:bg-gray-100 text-gray-700"
+                      : `bg-gray-50 hover:bg-gray-100 text-gray-700${
+                          room.hasUnread ? " font-semibold" : ""
+                        }`
                   }`}
                 onClick={() => setSelectedChatRoom(room)}
               >
@@ -136,7 +144,11 @@ export default function CoachChatPage() {
       </div>
 
       <div className="flex-1 p-4 flex flex-col h-full">
-        {selectedChatRoom ? (
+        {loadingMessages ? (
+          <div className="flex items-center justify-center h-full">
+            <Loading />
+          </div>
+        ) : selectedChatRoom ? (
           <ChatComponent
             planId="coach-view"
             chatRoomId={selectedChatRoom.id}
@@ -144,6 +156,7 @@ export default function CoachChatPage() {
             messages={messages}
             setMessages={setMessages}
             coachName={selectedChatRoom.creator.name}
+            activeCessationPlan={activeCessationPlan}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500 italic text-lg">

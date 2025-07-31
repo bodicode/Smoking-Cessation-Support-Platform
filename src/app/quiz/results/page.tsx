@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { CheckCircle, Home, RefreshCw, TrendingUp, Award, Target, Heart } from 'lucide-react';
 import Link from 'next/link';
-import { getAIRecommendation, getQuizAttemptOnCurrentUser } from '@/services/quizService';
+import { getQuizAttemptOnCurrentUser, getAIRecommendation } from '@/services/quizService';
+import { quizResultService } from '@/services/quizResultService';
 
 interface QuizResult {
   id: string;
@@ -19,6 +20,9 @@ interface QuizResult {
 export default function QuizResultsPage() {
   const router = useRouter();
   const [results, setResults] = useState<QuizResult | null>(null);
+  const [matchingResult, setMatchingResult] = useState<any>(null);
+  const [loadingMatching, setLoadingMatching] = useState(false);
+  const [matchingError, setMatchingError] = useState<string | null>(null);
   const [aiRecommendation, setAIRecommendation] = useState<any>(null);
   const [loadingAI, setLoadingAI] = useState(false);
   const [aiError, setAIError] = useState<string | null>(null);
@@ -42,11 +46,30 @@ export default function QuizResultsPage() {
       } catch (err) {
         router.push('/quiz');
       }
-      setLoadingAI(true);
-      getAIRecommendation()
-        .then(setAIRecommendation)
-        .catch((err) => setAIError(err.message || 'Lỗi lấy gợi ý AI'))
-        .finally(() => setLoadingAI(false));
+
+      setLoadingMatching(true);
+      quizResultService.getMyTemplateMatchingResults()
+        .then(async (arr) => {
+          if (Array.isArray(arr) && arr.length > 0) {
+            // Sort by createdAt desc, take the latest
+            const sorted = [...arr].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            setMatchingResult(sorted[0]);
+            setAIRecommendation(null);
+          } else {
+            setMatchingResult(null);
+            setLoadingAI(true);
+            try {
+              const aiRes = await getAIRecommendation();
+              setAIRecommendation(aiRes);
+            } catch (err: any) {
+              setAIError(err?.message || 'Lỗi lấy gợi ý AI');
+            } finally {
+              setLoadingAI(false);
+            }
+          }
+        })
+        .catch((err) => setMatchingError(err.message || 'Lỗi lấy gợi ý AI'))
+        .finally(() => setLoadingMatching(false));
     }
     fetchQuizResult();
   }, [router]);
@@ -111,7 +134,7 @@ export default function QuizResultsPage() {
 
           </motion.div>
 
-          {loadingAI && !aiRecommendation && (
+          {loadingMatching && !matchingResult && !aiRecommendation && (
             <div className="mt-8 flex flex-col items-center justify-center">
               <svg className="animate-spin h-8 w-8 text-blue-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -120,7 +143,106 @@ export default function QuizResultsPage() {
               <span className="text-blue-600 font-semibold">Đang lấy gợi ý AI...</span>
             </div>
           )}
-          {aiRecommendation && (
+          {matchingResult && (
+            <motion.div
+              variants={itemVariants}
+              className="mt-8 bg-white rounded-2xl p-6"
+            >
+              <h3 className="text-xl font-bold text-gray-800 mb-4">
+                Gợi ý từ AI cho kế hoạch bỏ thuốc dựa trên kết quả bài kiểm tra của bạn
+              </h3>
+              <div className="flex items-center gap-2 mb-4">
+                <Award className="text-green-500" />
+                <span className="font-bold text-lg">Độ tin cậy AI:</span>
+                <div className="flex-1 bg-gray-200 rounded h-3 mx-2">
+                  <div
+                    className={`h-3 rounded ${matchingResult.matchingFactors?.confidence > 0.8 ? 'bg-green-500' : matchingResult.matchingFactors?.confidence > 0.6 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                    style={{ width: `${(matchingResult.matchingFactors?.confidence || 0) * 100}%` }}
+                  />
+                </div>
+                <span className="font-bold">{Math.round((matchingResult.matchingFactors?.confidence || 0) * 100)}%</span>
+              </div>
+
+              <div className="flex flex-col gap-8 mt-4">
+                <div>
+                  <div className="flex items-center justify-start gap-2 mb-2">
+                    <Award className="text-blue-500" />
+                    <h4 className="font-semibold text-blue-700 text-lg">Phân tích & cân nhắc</h4>
+                  </div>
+                  <ul className="list-disc ml-7 text-gray-700 space-y-1 text-left">
+                    {matchingResult.matchingFactors?.reasoning?.considerations?.map((c: string, i: number) => (
+                      <li className='mb-2' key={i}>{c}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <div className="flex items-center justify-start gap-2 mb-2">
+                    <Target className="text-blue-500" />
+                    <h4 className="font-semibold text-blue-700 text-lg">Yếu tố phù hợp</h4>
+                  </div>
+                  <ul className="list-disc ml-7 text-gray-700 space-y-1 text-left">
+                    {matchingResult.matchingFactors?.reasoning?.matchingFactors?.map((c: string, i: number) => (
+                      <li className='mb-2' key={i}>{c}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <div className="flex items-center justify-start gap-2 mb-2">
+                    <Heart className="text-red-500" />
+                    <h4 className="font-semibold text-red-700 text-lg">Rủi ro</h4>
+                  </div>
+                  <ul className="list-disc ml-7 text-gray-700 space-y-1 text-left">
+                    {matchingResult.matchingFactors?.reasoning?.risks?.map((c: string, i: number) => (
+                      <li className='mb-2' key={i}>{c}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <div className="flex items-center justify-start gap-2 mb-2">
+                    <TrendingUp className="text-green-500" />
+                    <h4 className="font-semibold text-green-700 text-lg">Đề xuất hành động</h4>
+                  </div>
+                  <ul className="list-disc ml-7 text-gray-700 space-y-1 text-left">
+                    {matchingResult.matchingFactors?.reasoning?.suggestions?.map((c: string, i: number) => (
+                      <li className='mb-2' key={i}>{c}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className="flex justify-center mt-8 gap-4">
+                <Link
+                  href="/"
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-lg font-semibold hover:from-sky-600 hover:to-blue-700 transition-all"
+                >
+                  <Home className="w-4 h-4" />
+                  Quay về trang chủ
+                </Link>
+
+                <Link
+                  href="/quiz?retry=1"
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  Làm lại bài kiểm tra
+                </Link>
+                <button
+                  disabled={loadingMatching || !matchingResult?.template?.id}
+                  onClick={() => {
+                    if (matchingResult?.template?.id) {
+                      router.push(`/template/${matchingResult.template.id}`);
+                    }
+                  }}
+                  className={`flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-semibold transition-all
+                    hover:from-green-600 hover:to-green-700 cursor-pointer
+                    ${loadingMatching || !matchingResult?.template?.id ? 'opacity-60 cursor-not-allowed' : ''}`}
+                >
+                  <Target className="w-4 h-4" />
+                  {loadingMatching ? 'Đang lấy gợi ý...' : matchingResult?.template?.id ? 'Lấy mẫu kế hoạch dựa trên AI' : 'Không có gợi ý phù hợp'}
+                </button>
+              </div>
+            </motion.div>
+          )}
+          {!matchingResult && aiRecommendation && (
             <motion.div
               variants={itemVariants}
               className="mt-8 bg-white rounded-2xl p-6"

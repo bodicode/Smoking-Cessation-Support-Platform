@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -71,10 +70,9 @@ const ChatBubble: React.FC<ChatBubbleProps> = () => {
         setCoachNameForHeader(tempCoachName || "Coach");
         setIsOpen(true);
 
-        const fetchedMessages = await ChatService.getChatMessagesByRoomId(
-          roomIdToUse
-        );
-        const sortedMessages = [...fetchedMessages].sort(
+        const fetched = await ChatService.getChatMessagesByRoomId(roomIdToUse);
+        // fetched is now an object, not an array
+        const sortedMessages = [...(fetched.messages || [])].sort(
           (a, b) =>
             new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
         );
@@ -186,9 +184,8 @@ const ChatBubble: React.FC<ChatBubbleProps> = () => {
                       setCoachNameForHeader(selectedRoom.receiver.name);
                       setCoachId(selectedRoom.receiver.id);
 
-                      const fetchedMessages = await ChatService.getChatMessagesByRoomId(roomId);
-
-                      const sortedMessages = [...fetchedMessages].sort(
+                      const fetched = await ChatService.getChatMessagesByRoomId(roomId);
+                      const sortedMessages = [...(fetched.messages || [])].sort(
                         (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
                       );
                       setMessages(sortedMessages);

@@ -10,6 +10,7 @@ export interface IChatRoom {
   created_at: string;
   is_deleted: boolean;
   updated_at: string;
+  hasUnread?: boolean;
 }
 
 export interface ICreateChatRoomInput {
