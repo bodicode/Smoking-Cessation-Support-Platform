@@ -37,7 +37,6 @@ export default function QuizPage() {
 
   useEffect(() => {
     async function checkQuizAttempt() {
-      // Nếu có retry=1 thì cho phép làm lại
       if (searchParams.get("retry") === "1") return;
       try {
         const attempt = await getQuizAttemptOnCurrentUser();

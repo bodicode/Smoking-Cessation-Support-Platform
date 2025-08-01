@@ -1,27 +1,39 @@
-'use client';
-import React, { useState } from 'react';
-import { useProfileQuizzes, createProfileQuiz, createQuizQuestion, updateProfileQuiz, deleteProfileQuiz, updateQuizQuestion, deleteQuizQuestion } from '@/services/quizService';
-import { motion } from 'framer-motion';
-import { PlusCircle, Search } from 'lucide-react';
-import { ProfileQuiz, QuizQuestion } from '@/types/api/quiz';
-import QuizList from '@/components/quiz/QuizList';
-import ProfileQuizModal from '@/components/quiz/ProfileQuizModal';
-import EditQuizModal from '@/components/quiz/EditQuizModal';
-import DeleteQuizModal from '@/components/quiz/DeleteQuizModal';
-import QuizQuestionForm from '@/components/quiz/QuizQuestionForm';
-import QuestionsModal from '@/components/quiz/QuestionsModal';
+"use client";
+import React, { useState } from "react";
+import {
+  useProfileQuizzes,
+  createProfileQuiz,
+  createQuizQuestion,
+  updateProfileQuiz,
+  deleteProfileQuiz,
+  updateQuizQuestion,
+  deleteQuizQuestion,
+} from "@/services/quizService";
+import { motion } from "framer-motion";
+import { PlusCircle, Search } from "lucide-react";
+import { ProfileQuiz, QuizQuestion } from "@/types/api/quiz";
+import QuizList from "@/components/quiz/QuizList";
+import ProfileQuizModal from "@/components/quiz/ProfileQuizModal";
+import EditQuizModal from "@/components/quiz/EditQuizModal";
+import DeleteQuizModal from "@/components/quiz/DeleteQuizModal";
+import QuizQuestionForm from "@/components/quiz/QuizQuestionForm";
+import QuestionsModal from "@/components/quiz/QuestionsModal";
 
 const AdminProfileQuizPage = () => {
   const { quizzes, loading, error, refetch } = useProfileQuizzes();
   const [showQuizModal, setShowQuizModal] = useState(false);
   const [selectedQuizId, setSelectedQuizId] = useState<string | null>(null);
-  const [showQuestionsModal, setShowQuestionsModal] = useState<string | null>(null);
-  const [filter, setFilter] = useState('');
+  const [showQuestionsModal, setShowQuestionsModal] = useState<string | null>(
+    null
+  );
+  const [filter, setFilter] = useState("");
   const [editQuiz, setEditQuiz] = useState<any | null>(null);
   const [deleteQuiz, setDeleteQuiz] = useState<any | null>(null);
   const [isActiveLoading, setIsActiveLoading] = useState(false);
   const [editQuestion, setEditQuestion] = useState<QuizQuestion | null>(null);
-  const [deleteQuestion, setDeleteQuestion] = useState<QuizQuestion | null>(null);
+  const [deleteQuestion, setDeleteQuestion] = useState<QuizQuestion | null>(
+    null
+  );
 
   const filteredQuizzes = quizzes.filter((quiz: ProfileQuiz) =>
     quiz.title.toLowerCase().includes(filter.toLowerCase())
@@ -33,7 +45,9 @@ const AdminProfileQuizPage = () => {
     try {
       if (newActive) {
         // Find currently active quiz (if any, and not the same)
-        const currentActive = quizzes.find((q: ProfileQuiz) => q.is_active && q.id !== quiz.id);
+        const currentActive = quizzes.find(
+          (q: ProfileQuiz) => q.is_active && q.id !== quiz.id
+        );
         if (currentActive) {
           await updateProfileQuiz({
             id: currentActive.id,
@@ -58,8 +72,7 @@ const AdminProfileQuizPage = () => {
       }
       await refetch();
     } catch (err) {
-      // Optionally show error toast
-      alert('Failed to update active status.');
+      alert("Failed to update active status.");
     } finally {
       setIsActiveLoading(false);
     }
@@ -73,8 +86,12 @@ const AdminProfileQuizPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8 mb-8"
         >
-          <h1 className="text-3xl font-bold text-[#03256c] mb-2">Quản lý bài kiểm tra</h1>
-          <p className="text-gray-500 mb-6">Tạo và quản lý bài kiểm tra cho người dùng</p>
+          <h1 className="text-3xl font-bold text-[#03256c] mb-2">
+            Quản lý bài kiểm tra
+          </h1>
+          <p className="text-gray-500 mb-6">
+            Tạo và quản lý bài kiểm tra cho người dùng
+          </p>
 
           <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div className="relative">
@@ -84,7 +101,7 @@ const AdminProfileQuizPage = () => {
                 className="border border-gray-200 rounded-full pl-10 pr-4 py-2 w-full sm:w-64 focus:ring-2 ring-[#60c3a4] outline-none transition"
                 placeholder="Lọc theo tên bài kiểm tra..."
                 value={filter}
-                onChange={e => setFilter(e.target.value)}
+                onChange={(e) => setFilter(e.target.value)}
               />
             </div>
             <motion.button
@@ -154,28 +171,34 @@ const AdminProfileQuizPage = () => {
           deleteProfileQuiz={deleteProfileQuiz}
         />
       )}
+      {/* FORM TẠO MỚI QUESTION */}
       {selectedQuizId && (
         <QuizQuestionForm
           quizId={selectedQuizId}
+          onClose={() => setSelectedQuizId(null)} // SỬA: luôn truyền onClose để đóng modal
           onCreated={async () => {
             await refetch();
           }}
           createQuizQuestion={createQuizQuestion}
         />
       )}
+      {/* MODAL XEM DANH SÁCH QUESTION */}
       {showQuestionsModal && (
         <QuestionsModal
-          quiz={filteredQuizzes.find((q: ProfileQuiz) => q.id === showQuestionsModal)}
+          quiz={filteredQuizzes.find(
+            (q: ProfileQuiz) => q.id === showQuestionsModal
+          )}
           onClose={() => setShowQuestionsModal(null)}
           onEditQuestion={setEditQuestion}
           onDeleteQuestion={setDeleteQuestion}
         />
       )}
-      {/* Edit Question Modal */}
+      {/* FORM EDIT QUESTION */}
       {editQuestion && (
         <QuizQuestionForm
           quizId={editQuestion.quiz_id}
           question={editQuestion}
+          onClose={() => setEditQuestion(null)} // SỬA: luôn truyền onClose để đóng modal
           onUpdated={async () => {
             setEditQuestion(null);
             await refetch();
@@ -183,7 +206,7 @@ const AdminProfileQuizPage = () => {
           updateQuizQuestion={updateQuizQuestion}
         />
       )}
-      {/* Delete Question Modal */}
+      {/* MODAL XÓA QUESTION */}
       {deleteQuestion && (
         <DeleteQuizModal
           question={deleteQuestion}
