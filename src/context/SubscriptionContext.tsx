@@ -53,6 +53,41 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     }
   };
 
+  // Refetch khi token thay đổi
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const token = localStorage.getItem("access_token");
+      if (token) {
+        fetchSubscription();
+      } else {
+        setLoading(false);
+        setSubscription(null);
+      }
+    };
+
+    // Lắng nghe sự thay đổi của localStorage
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Tạo custom event để lắng nghe khi user thay đổi
+    const handleUserChange = () => {
+      const token = localStorage.getItem("access_token");
+      if (token) {
+        fetchSubscription();
+      } else {
+        setLoading(false);
+        setSubscription(null);
+      }
+    };
+
+    window.addEventListener('userChanged', handleUserChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('userChanged', handleUserChange);
+    };
+  }, []);
+
+  // Refetch ngay khi component mount
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
     if (token) {

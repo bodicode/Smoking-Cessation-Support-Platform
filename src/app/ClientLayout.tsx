@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Header from "@/components/home/Header";
 import Footer from "@/components/home/Footer";
+import MembershipBanner from "@/components/common/MembershipBanner";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
@@ -10,6 +11,8 @@ import { setUser } from "@/store/userSlice";
 import { useAuth } from "@/hooks/useAuth";
 import Loading from "@/components/common/Loading";
 import { SubscriptionProvider } from "@/context/SubscriptionContext";
+import ChatBubble from "@/components/myPlan/ChatBubble";
+import { useUserPlans } from "@/hooks/useUserPlans";
 // Import SubscriptionProvider
 
 export default function ClientLayout({
@@ -27,6 +30,8 @@ export default function ClientLayout({
   const dispatch = useDispatch();
   const { user } = useAuth();
   const [hydrated, setHydrated] = useState(false);
+  const { hasActivePlans, loading: loadingPlans } = useUserPlans();
+  const [chatKey, setChatKey] = useState(0);
 
   useEffect(() => {
     if (!user?.accessToken) {
@@ -50,6 +55,13 @@ export default function ClientLayout({
     setTimeout(() => setHydrated(true), 0);
   }, [user?.accessToken, dispatch]);
 
+  // Reset chat component when user changes
+  useEffect(() => {
+    if (user?.id) {
+      setChatKey(prev => prev + 1);
+    }
+  }, [user?.id]);
+
   if (!hydrated) {
     return <Loading />;
   }
@@ -57,9 +69,11 @@ export default function ClientLayout({
   return (
     <div className="bg-[#f9f5ec]">
       <SubscriptionProvider>
+        {!hideLayout && <MembershipBanner />}
         {!hideLayout && <Header />}
         {children}
         {!hideLayout && <Footer />}
+        {hasActivePlans && !loadingPlans && <ChatBubble key={chatKey} />}
       </SubscriptionProvider>
     </div>
   );

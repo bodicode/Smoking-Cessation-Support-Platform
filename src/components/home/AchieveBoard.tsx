@@ -12,14 +12,27 @@ const Achieveboard = () => {
     const { user } = useAuth();
 
     useEffect(() => {
-        setLoading(true);
-        getStreakLeaderboard(10, 0)
-            .then((data) => {
-                setLeaderboard(data.data || []);
-                setMyRank(data.myRank || null);
-            })
-            .finally(() => setLoading(false));
-    }, []);
+        // Chỉ gọi API khi có user đăng nhập
+        if (user?.accessToken) {
+            setLoading(true);
+            getStreakLeaderboard(10, 0)
+                .then((data) => {
+                    setLeaderboard(data.data || []);
+                    setMyRank(data.myRank || null);
+                })
+                .catch((error) => {
+                    console.error('Error fetching leaderboard:', error);
+                    setLeaderboard([]);
+                    setMyRank(null);
+                })
+                .finally(() => setLoading(false));
+        } else {
+            // Reset data khi không có user
+            setLeaderboard([]);
+            setMyRank(null);
+            setLoading(false);
+        }
+    }, [user?.accessToken]);
 
     const getRankIcon = (rank: number) => {
         if (rank === 1) return '🥇';
@@ -41,6 +54,11 @@ const Achieveboard = () => {
             },
         }),
     };
+
+    // Không hiển thị khi không có user
+    if (!user?.accessToken) {
+        return null;
+    }
 
     if (loading)
         return (

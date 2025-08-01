@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { getCessationPlans } from "@/services/cessationPlanService";
 import { useAuth } from "@/hooks/useAuth";
+import { quizResultService } from "@/services/quizResultService";
 
 const cards = [
   {
@@ -58,6 +59,7 @@ const Hero = () => {
   const { user } = useAuth();
   const [hasPlan, setHasPlan] = useState<boolean | null>(null);
   const [checkingPlan, setCheckingPlan] = useState(false);
+  const [checkingQuizResult, setCheckingQuizResult] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -85,6 +87,22 @@ const Hero = () => {
       router.push("/plan/my-plan");
     } else {
       router.push("/template");
+    }
+  };
+
+  const handleQuizCardClick = async () => {
+    setCheckingQuizResult(true);
+    try {
+      const results = await quizResultService.getMyTemplateMatchingResults();
+      if (Array.isArray(results) && results.length > 0) {
+        router.push("/quiz/results");
+      } else {
+        router.push("/quiz");
+      }
+    } catch {
+      router.push("/quiz");
+    } finally {
+      setCheckingQuizResult(false);
     }
   };
 
@@ -129,7 +147,37 @@ const Hero = () => {
             }}
             transition={{ type: "spring", stiffness: 350, damping: 20 }}
           >
-            {i === 1 ? (
+            {i === 0 ? (
+              <button
+                onClick={handleQuizCardClick}
+                disabled={checkingQuizResult}
+                className={`
+                  ${c.bg} text-white rounded-2xl p-4 sm:p-6 w-40 sm:w-44 md:w-48 flex flex-col items-center
+                  transition hover:scale-105 hover:shadow-lg cursor-pointer border-none outline-none relative
+                  ${checkingQuizResult ? "opacity-60 pointer-events-none" : ""}
+                `}
+                type="button"
+                style={{ appearance: "none" }}
+              >
+                <div className="relative bg-white w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden flex items-center justify-center mb-3 sm:mb-4">
+                  <Image
+                    src={c.icon}
+                    alt={c.titleKey}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 64px, (max-width: 1024px) 80px, 96px"
+                  />
+                </div>
+                <p className="text-center text-xs sm:text-sm md:text-base">
+                  {c.titleKey}
+                </p>
+                {checkingQuizResult && (
+                  <span className="absolute top-1 right-2 text-xs text-white animate-pulse">
+                    ...
+                  </span>
+                )}
+              </button>
+            ) : i === 1 ? (
               <button
                 onClick={handleSecondCardClick}
                 disabled={checkingPlan || hasPlan === null}

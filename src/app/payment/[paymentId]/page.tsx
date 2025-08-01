@@ -15,6 +15,28 @@ export default function PaymentPage() {
   const { payment, loading, error, refetch } = usePayment(paymentId as string);
   const { status, checkStatus, checking } = usePaymentStatus(paymentId as string, payment?.status);
   const [redirecting, setRedirecting] = useState(false);
+  const [autoChecking, setAutoChecking] = useState(false);
+
+  // Polling for payment status every 5 seconds
+  useEffect(() => {
+    if (status === "SUCCESS" || redirecting) return;
+
+    setAutoChecking(true);
+    const interval = setInterval(async () => {
+      const result = await checkStatus();
+      if (result === "SUCCESS") {
+        sessionStorage.removeItem("pendingMembershipId");
+        sessionStorage.removeItem("pendingPaymentId");
+        setRedirecting(true);
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2000);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, redirecting, checkStatus]);
 
   if (loading) {
     return (
@@ -87,32 +109,18 @@ export default function PaymentPage() {
         <div className="mb-4 mt-6">
           <PaymentStatusBadge status={status} />
         </div>
-        {status === "SUCCESS" || redirecting ? (
-          <button
-            className="mt-2 px-6 py-2 bg-gray-400 text-white rounded-lg font-bold transition flex items-center gap-2 cursor-not-allowed"
-            disabled
-          >
-            Đang trở về trang chủ
-          </button>
-        ) : (
-          <button
-            className="mt-2 px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold transition flex items-center gap-2"
-            onClick={async () => {
-              const result = await checkStatus();
-              if (result === "SUCCESS") {
-                sessionStorage.removeItem("pendingMembershipId");
-                sessionStorage.removeItem("pendingPaymentId");
-                setRedirecting(true);
-                setTimeout(() => {
-                  window.location.href = "/";
-                }, 2000);
-              }
-            }}
-            disabled={checking}
-          >
-            {checking ? "Đang kiểm tra..." : "Kiểm tra trạng thái thanh toán"}
-          </button>
-        )}
+        {/* Replace button with polling status text */}
+        <div className="mt-2 mb-2 text-gray-700 text-sm flex items-center gap-2">
+          {status === "SUCCESS" || redirecting ? (
+            <span className="px-6 py-2 bg-gray-400 text-white rounded-lg font-bold flex items-center gap-2 cursor-not-allowed">
+              Đang trở về trang chủ
+            </span>
+          ) : (
+            <span>
+              Đang kiểm tra trạng thái thanh toán tự động...
+            </span>
+          )}
+        </div>
         <Link
           href="/membership"
           className="mt-4 flex items-center text-sky-700 hover:text-sky-900 font-bold transition"
@@ -125,4 +133,4 @@ export default function PaymentPage() {
       </motion.div>
     </div>
   );
-} 
+}

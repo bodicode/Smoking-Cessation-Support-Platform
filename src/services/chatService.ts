@@ -4,6 +4,7 @@ import { SEND_MESSAGE_MUTATION } from "@/graphql/mutations/chat/sendMessage";
 import { GET_CHAT_MESSAGES_QUERY } from "@/graphql/queries/chat/Chat";
 import { GET_ALL_CHAT_ROOMS_BY_USER_QUERY } from "@/graphql/queries/chat/getRoom";
 import { CHAT_ROOM_MESSAGES_SUBSCRIPTION } from "@/graphql/subscription/listenChatMessage";
+import { UNREAD_COUNT_CHANGED_SUBSCRIPTION } from "@/graphql/subscription/listenUnreadCountChanged";
 import {
   ChatMessage,
   CreateChatMessageInput,
@@ -14,7 +15,21 @@ import {
 } from "@/types/api/chat";
 import toast from "react-hot-toast";
 
+// Ensure IChatRoom type includes hasUnread
+// If not, extend it here for local type safety:
+export type IChatRoomWithUnread = IChatRoom & { hasUnread: boolean };
+
 export const ChatService = {
+  clearChatCache: async () => {
+    try {
+      // For now, just return without clearing cache to avoid errors
+      // The fetchPolicy: "network-only" in queries should handle cache issues
+      return;
+    } catch (error) {
+      console.error("Error clearing chat cache:", error);
+    }
+  },
+
   createChatRoom: async (input: ICreateChatRoomInput): Promise<IChatRoom> => {
     try {
       const { data, errors } = await client.mutate({
@@ -39,9 +54,15 @@ export const ChatService = {
     }
   },
 
-  getChatMessagesByRoomId: async (roomId: string): Promise<ChatMessage[]> => {
+  getChatMessagesByRoomId: async (
+    roomId: string
+  ): Promise<{
+    messages: ChatMessage[];
+    activeCessationPlan?: any;
+    chatRoom?: any;
+  }> => {
     try {
-      const { data, errors } = await client.query<GetChatMessagesResponse>({
+      const { data, errors } = await client.query<any>({
         query: GET_CHAT_MESSAGES_QUERY,
         variables: { roomId },
         fetchPolicy: "network-only",
@@ -55,19 +76,20 @@ export const ChatService = {
       }
 
       if (!data || !data.getChatMessagesByRoomId) {
-        return [];
+        return { messages: [] };
       }
 
+      // Return the full object for destructuring in the page
       return data.getChatMessagesByRoomId;
     } catch (error) {
       throw new Error("Không thể lấy tin nhắn chat.");
     }
   },
 
-  getAllChatRoomsByUser: async (): Promise<IChatRoom[]> => {
+  getAllChatRoomsByUser: async (): Promise<IChatRoomWithUnread[]> => {
     try {
       const { data, errors } = await client.query<{
-        getAllChatRoomsByUser: IChatRoom[];
+        getAllChatRoomsByUser: IChatRoomWithUnread[];
       }>({
         query: GET_ALL_CHAT_ROOMS_BY_USER_QUERY,
         fetchPolicy: "network-only",
@@ -108,7 +130,34 @@ export const ChatService = {
       error: (err) => {
         toast.error("Lỗi kết nối chat thời gian thực.");
       },
-      complete: () => { },
+      complete: () => {},
+    });
+
+    return () => subscription.unsubscribe();
+  },
+
+  subscribeToUnreadCountChanged: (
+    onUnreadCountChanged: (payload: {
+      hasUnread: boolean;
+      roomId: string;
+      totalCount: number;
+    }) => void
+  ): (() => void) => {
+    const observable = client.subscribe({
+      query: UNREAD_COUNT_CHANGED_SUBSCRIPTION,
+    });
+
+    const subscription = observable.subscribe({
+      next: ({ data }) => {
+        if (data && data.unreadCountChanged) {
+          console.log("unreadCountChanged:", data.unreadCountChanged); // log event
+          onUnreadCountChanged(data.unreadCountChanged);
+        }
+      },
+      error: (err) => {
+        toast.error("Lỗi kết nối thông báo tin nhắn chưa đọc.");
+      },
+      complete: () => {},
     });
 
     return () => subscription.unsubscribe();
@@ -139,4 +188,33 @@ export const ChatService = {
       throw new Error("Không thể gửi tin nhắn.");
     }
   },
+
+  // Add this method to mark a room as read (set unread count to 0)
+  markRoomAsRead: (roomId: string) => {
+    // If you have an API/mutation to mark as read, call it here.
+    // Otherwise, simulate the unread count changed event locally:
+    // This will only affect the local state, not the backend.
+    setTimeout(() => {
+      // Simulate unreadCountChanged event with totalCount: 0
+      window.dispatchEvent(
+        new CustomEvent("unreadCountChanged", {
+          detail: { hasUnread: false, roomId, totalCount: 0 },
+        })
+      );
+    }, 0);
+  },
+};
+
+// Listen for the simulated unreadCountChanged event and call subscribers
+const originalSubscribe = ChatService.subscribeToUnreadCountChanged;
+ChatService.subscribeToUnreadCountChanged = (onUnreadCountChanged) => {
+  const unsubscribe = originalSubscribe(onUnreadCountChanged);
+  const handler = (e: any) => {
+    if (e.detail) onUnreadCountChanged(e.detail);
+  };
+  window.addEventListener("unreadCountChanged", handler);
+  return () => {
+    unsubscribe();
+    window.removeEventListener("unreadCountChanged", handler);
+  };
 };

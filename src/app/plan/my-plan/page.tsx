@@ -22,7 +22,7 @@ import {
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import ChatBubble from "@/components/myPlan/ChatBubble";
+
 
 function statusBadge(status: string, label?: string) {
   const colors: any = {
@@ -671,7 +671,7 @@ export default function CustomStages() {
         );
       })}
 
-      {plans.some(plan => plan.status !== "CANCELLED") && <ChatBubble />}
+
 
       <ConfirmModal
         open={!!deleteStageId}

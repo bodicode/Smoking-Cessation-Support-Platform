@@ -8,7 +8,9 @@ import {
     FileText,
     LayoutDashboard,
     Medal,
-    LogOut
+    LogOut,
+    ListChecks,
+    CreditCard
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -30,7 +32,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { href: '/admin/reports', label: 'Báo cáo', icon: BarChart3 },
         { href: '/admin/templates', label: 'Mẫu kế hoạch', icon: FileText },
         { href: '/admin/badges', label: 'Huy hiệu', icon: Medal },
-        { href: '/admin/profile-quiz', label: 'Quiz', icon: Medal },
+        { href: '/admin/profile-quiz', label: 'Quiz', icon: ListChecks },
+        { href: '/admin/membership', label: 'Gói thành viên', icon: CreditCard },
     ];
 
     return (

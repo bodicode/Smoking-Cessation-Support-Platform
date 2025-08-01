@@ -54,35 +54,113 @@ export default function PaymentDetailModal({ open, onClose, paymentId }: { open:
             </div>
           ) : detail ? (
             <div className="space-y-6">
+              {/* Transaction Info */}
+              <div className="bg-gray-50 rounded-xl p-4">
+                <h3 className="text-lg font-semibold text-[#03256C] mb-4">Thông tin giao dịch</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Mã giao dịch</label>
+                      <p className="text-gray-900 font-mono text-sm bg-white px-3 py-2 rounded-lg border">{detail.id}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Trạng thái</label>
+                      <div className="mt-1">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                          <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                          {detail.status}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Phương thức thanh toán</label>
+                      <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">{detail.payment_method}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Ngày tạo</label>
+                      <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
+                        {new Date(detail.created_at).toLocaleString('vi-VN')}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Số tiền</label>
+                      <p className="text-2xl font-bold text-[#60C3A4] bg-white px-3 py-2 rounded-lg border">
+                        {detail.price.toLocaleString('vi-VN')} đ
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Ngày cập nhật</label>
+                      <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
+                        {new Date(detail.updated_at).toLocaleString('vi-VN')}
+                      </p>
+                    </div>
+                    {detail.content && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Nội dung</label>
+                        <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
+                          {detail.content}
+                        </p>
+                      </div>
+                    )}
+                    {detail.notes && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Ghi chú</label>
+                        <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
+                          {detail.notes}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               {/* Package Info */}
               {detail.subscription?.package && (
                 <div className="bg-blue-50 rounded-xl p-4">
                   <h3 className="text-lg font-semibold text-[#03256C] mb-4">Thông tin gói dịch vụ</h3>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Tên gói</label>
-                      <p className="text-gray-900 font-medium bg-white px-3 py-2 rounded-lg border">
-                        {detail.subscription.package.name}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Thời hạn</label>
-                      <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
-                        {detail.subscription.package.duration_days} ngày
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Mô tả gói</label>
-                      <div className="bg-white rounded-lg border p-3">
-                        <ul className="space-y-1">
-                          {Array.isArray(detail.subscription.package.description) && detail.subscription.package.description.map((desc, i) => (
-                            <li key={i} className="flex items-start">
-                              <span className="text-[#60C3A4] mr-2 mt-1.5">•</span>
-                              <span className="text-gray-700">{desc}</span>
-                            </li>
-                          ))}
-                        </ul>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Mã subscription</label>
+                        <p className="text-gray-900 font-mono text-sm bg-white px-3 py-2 rounded-lg border">
+                          {detail.subscription.id}
+                        </p>
                       </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Tên gói</label>
+                        <p className="text-gray-900 font-medium bg-white px-3 py-2 rounded-lg border">
+                          {detail.subscription.package.name}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Giá gói</label>
+                        <p className="text-lg font-bold text-blue-600 bg-white px-3 py-2 rounded-lg border">
+                          {detail.subscription.package.price.toLocaleString('vi-VN')} đ
+                        </p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Thời hạn</label>
+                        <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
+                          {detail.subscription.package.duration_days} ngày
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <label className="text-sm font-medium text-gray-500">Mô tả gói</label>
+                    <div className="bg-white rounded-lg border p-3 mt-1">
+                      <ul className="space-y-1">
+                        {Array.isArray(detail.subscription.package.description) && detail.subscription.package.description.map((desc, i) => (
+                          <li key={i} className="flex items-start">
+                            <span className="text-[#60C3A4] mr-2 mt-1.5">•</span>
+                            <span className="text-gray-700">{desc}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -95,6 +173,12 @@ export default function PaymentDetailModal({ open, onClose, paymentId }: { open:
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-3">
                       <div>
+                        <label className="text-sm font-medium text-gray-500">Mã giao dịch NH</label>
+                        <p className="text-gray-900 font-mono text-sm bg-white px-3 py-2 rounded-lg border">
+                          {detail.payment_transaction.id}
+                        </p>
+                      </div>
+                      <div>
                         <label className="text-sm font-medium text-gray-500">Ngân hàng</label>
                         <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
                           {detail.payment_transaction.gateway}
@@ -106,8 +190,20 @@ export default function PaymentDetailModal({ open, onClose, paymentId }: { open:
                           {detail.payment_transaction.accountNumber}
                         </p>
                       </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Mã tham chiếu</label>
+                        <p className="text-gray-900 font-mono text-sm bg-white px-3 py-2 rounded-lg border">
+                          {detail.payment_transaction.referenceNumber || '-'}
+                        </p>
+                      </div>
                     </div>
                     <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Sepay ID</label>
+                        <p className="text-gray-900 font-mono text-sm bg-white px-3 py-2 rounded-lg border">
+                          {detail.payment_transaction.sepay_id || '-'}
+                        </p>
+                      </div>
                       <div>
                         <label className="text-sm font-medium text-gray-500">Số tiền vào</label>
                         <p className="text-xl font-bold text-green-600 bg-white px-3 py-2 rounded-lg border">
@@ -118,15 +214,23 @@ export default function PaymentDetailModal({ open, onClose, paymentId }: { open:
                         <label className="text-sm font-medium text-gray-500">Ngày giao dịch</label>
                         <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border">
                           {detail.payment_transaction.transactionDate 
-                            ? new Date(detail.payment_transaction.transactionDate).toLocaleString('vi-VN') 
+                            ? new Date(detail.payment_transaction.transactionDate).toLocaleDateString('vi-VN') 
                             : 'Chưa có thông tin'
                           }
                         </p>
                       </div>
                     </div>
                   </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Body</label>
+                      <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border break-all whitespace-pre-wrap">
+                        {detail.payment_transaction.body || '-'}
+                      </p>
+                    </div>
+                  </div>
                   {detail.payment_transaction.transactionContent && (
-                    <div className="mt-3">
+                    <div className="mt-4">
                       <label className="text-sm font-medium text-gray-500">Nội dung giao dịch</label>
                       <p className="text-gray-900 bg-white px-3 py-2 rounded-lg border mt-1">
                         {detail.payment_transaction.transactionContent}
@@ -152,4 +256,4 @@ export default function PaymentDetailModal({ open, onClose, paymentId }: { open:
       </div>
     </div>
   );
-} 
+}
