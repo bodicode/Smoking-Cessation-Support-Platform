@@ -20,6 +20,13 @@ export default function CoachChatPage() {
   const [loadingRooms, setLoadingRooms] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(false);
 
+  function sortMessages(msgs: ChatMessage[]) {
+    return [...msgs].sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    );
+  }
+
   useEffect(() => {
     const fetchChatRooms = async () => {
       if (!user?.id) {
@@ -31,10 +38,6 @@ export default function CoachChatPage() {
       try {
         const rooms = await ChatService.getAllChatRoomsByUser();
         setChatRooms(rooms);
-
-        // if (rooms.length > 0) {
-        //   setSelectedChatRoom(rooms[0]);
-        // }
       } catch (error) {
         toast.error("Không thể tải danh sách phòng chat.");
       } finally {
@@ -61,12 +64,12 @@ export default function CoachChatPage() {
         const data = await ChatService.getChatMessagesByRoomId(
           selectedChatRoom.id
         );
-        // If ChatService.getChatMessagesByRoomId returns only messages, fetch plan from data.getChatMessagesByRoomId
+
         if (Array.isArray(data)) {
-          setMessages(data);
+          setMessages(sortMessages(data));
           setActiveCessationPlan(null);
         } else {
-          setMessages(data.messages || []);
+          setMessages(sortMessages(data.messages || []));
           setActiveCessationPlan(data.activeCessationPlan || null);
         }
 
@@ -75,12 +78,7 @@ export default function CoachChatPage() {
           (newMessage) => {
             setMessages((prevMessages) => {
               if (!prevMessages.some((msg) => msg.id === newMessage.id)) {
-                const updatedMessages = [...prevMessages, newMessage];
-                return updatedMessages.sort(
-                  (a, b) =>
-                    new Date(a.created_at).getTime() -
-                    new Date(b.created_at).getTime()
-                );
+                return sortMessages([...prevMessages, newMessage]);
               }
               return prevMessages;
             });
@@ -114,6 +112,7 @@ export default function CoachChatPage() {
 
   return (
     <div className="flex h-[calc(100vh-80px)] bg-gray-50 rounded-lg shadow-lg overflow-hidden">
+      {/* Sidebar: Danh sách phòng chat */}
       <div className="w-1/3 bg-white border-r border-gray-200 p-4 overflow-y-auto">
         <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
           <MessageSquare size={24} /> Đoạn chat
@@ -143,6 +142,7 @@ export default function CoachChatPage() {
         )}
       </div>
 
+      {/* Khu vực chat */}
       <div className="flex-1 p-4 flex flex-col h-full">
         {loadingMessages ? (
           <div className="flex items-center justify-center h-full">
