@@ -113,7 +113,7 @@ export default function QuizResultsPage() {
               } finally {
                 setLoadingAI(false);
               }
-            }, 15000); // Wait for 3 seconds before fetching results again
+            }, 10000); // Wait for 3 seconds before fetching results again
           } catch (error) {
             setAIError("Lỗi lấy gợi ý từ AI");
             console.error("AI recommendation error:", error);
