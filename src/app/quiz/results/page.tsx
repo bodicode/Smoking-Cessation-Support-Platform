@@ -86,9 +86,71 @@ export default function QuizResultsPage() {
         const arr = await quizResultService.getMyTemplateMatchingResults();
         if (Array.isArray(arr) && arr.length > 0) {
           setMatchingResults(arr);
+        } else {
+          // If no matching results, trigger AI recommendation process
+          setLoadingAI(true);
+          try {
+            // First, call getAIRecommendation to trigger the process
+            await getAIRecommendation();
+
+            // Wait for a moment (3 seconds) to allow the backend to process
+            setTimeout(async () => {
+              try {
+                // Fetch the matching results again after waiting
+                const newResults = await quizResultService.getMyTemplateMatchingResults();
+                if (Array.isArray(newResults) && newResults.length > 0) {
+                  setMatchingResults(newResults);
+                } else {
+                  // If still no results, try to get the AI recommendation directly
+                  const aiRecommend = await getAIRecommendation();
+                  if (aiRecommend) {
+                    setAIRecommendation(aiRecommend);
+                  }
+                }
+              } catch (error) {
+                setAIError("Lỗi lấy gợi ý từ AI");
+                console.error("AI recommendation error:", error);
+              } finally {
+                setLoadingAI(false);
+              }
+            }, 10000); // Wait for 3 seconds before fetching results again
+          } catch (error) {
+            setAIError("Lỗi lấy gợi ý từ AI");
+            console.error("AI recommendation error:", error);
+            setLoadingAI(false);
+          }
         }
-      } catch {
+      } catch (error) {
         setMatchingError("Lỗi lấy gợi ý kế hoạch");
+        // If error getting matching results, try AI recommendation
+        setLoadingAI(true);
+        try {
+          await getAIRecommendation();
+
+          // Wait for a moment before fetching results again
+          setTimeout(async () => {
+            try {
+              const newResults = await quizResultService.getMyTemplateMatchingResults();
+              if (Array.isArray(newResults) && newResults.length > 0) {
+                setMatchingResults(newResults);
+              } else {
+                const aiRecommend = await getAIRecommendation();
+                if (aiRecommend) {
+                  setAIRecommendation(aiRecommend);
+                }
+              }
+            } catch (error) {
+              setAIError("Lỗi lấy gợi ý từ AI");
+              console.error("AI recommendation error:", error);
+            } finally {
+              setLoadingAI(false);
+            }
+          }, 3000);
+        } catch (error) {
+          setAIError("Lỗi lấy gợi ý từ AI");
+          console.error("AI recommendation error:", error);
+          setLoadingAI(false);
+        }
       } finally {
         setLoadingMatching(false);
       }
@@ -209,7 +271,11 @@ export default function QuizResultsPage() {
   );
 
   const renderRecommendationContent = () => {
-    if (loadingMatching && !matchingResults.length && !aiRecommendation) {
+    if (
+      (loadingMatching || loadingAI) &&
+      !matchingResults.length &&
+      !aiRecommendation
+    ) {
       return (
         <div className="mt-8 flex flex-col items-center justify-center">
           <Loading />
@@ -228,30 +294,6 @@ export default function QuizResultsPage() {
       return (
         <>
           {sortedResults.map((data, idx) => (
-            <motion.div
-              key={data.id}
-              variants={itemVariants}
-              className="mt-8 bg-white rounded-2xl p-6"
-            >
-              <h3 className="text-xl font-bold text-gray-800 mb-4">
-                Gợi ý #{idx + 1}: {data.template?.name}
-              </h3>
-              {renderProgressBar(data.matchingFactors?.confidence || 0)}
-              {renderReasoningSection(data.matchingFactors?.reasoning)}
-              {renderActionButtons(
-                data.template?.id || null,
-                loadingMatching || loadingAI
-              )}
-            </motion.div>
-          ))}
-        </>
-      );
-    }
-
-    if (matchingResults.length > 0) {
-      return (
-        <>
-          {matchingResults.map((data, idx) => (
             <motion.div
               key={data.id}
               variants={itemVariants}
@@ -301,7 +343,36 @@ export default function QuizResultsPage() {
       );
     }
 
-    return null;
+    if (matchingError || aiError) {
+      return (
+        <motion.div
+          variants={itemVariants}
+          className="mt-8 bg-white rounded-2xl p-6"
+        >
+          <h3 className="text-xl font-bold text-red-600 mb-4">
+            {matchingError || aiError}
+          </h3>
+          <p className="text-gray-600">
+            Vui lòng thử lại sau hoặc liên hệ với chúng tôi để được hỗ trợ.
+          </p>
+        </motion.div>
+      );
+    }
+
+    return (
+      <motion.div
+        variants={itemVariants}
+        className="mt-8 bg-white rounded-2xl p-6"
+      >
+        <h3 className="text-xl font-bold text-gray-800 mb-4">
+          Không tìm thấy gợi ý phù hợp
+        </h3>
+        <p className="text-gray-600 mb-4">
+          Hệ thống không thể tìm thấy gợi ý phù hợp dựa trên kết quả bài kiểm tra của bạn.
+        </p>
+        {renderActionButtons(null, false)}
+      </motion.div>
+    );
   };
 
   if (!results) {
